@@ -1,0 +1,27 @@
+{
+  "name": "vue-i18n-manager",
+  "version": "0.0.1",
+  "description": "vue-i18n manager for Vue 2.0",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MatteoGabriele/vue-i18n-manager.git"
+  },
+  "keywords": [
+    "vue",
+    "vue-i18n",
+    "localization",
+    "internationalization",
+    "languages",
+    "i18n"
+  ],
+  "author": "Matteo Gabriele <m.gabriele.dev@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MatteoGabriele/vue-i18n-manager/issues"
+  },
+  "homepage": "https://github.com/MatteoGabriele/vue-i18n-manager#readme"
+}
