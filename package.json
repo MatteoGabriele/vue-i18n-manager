@@ -2,9 +2,9 @@
   "name": "vue-i18n-manager",
   "version": "0.0.1",
   "description": "vue-i18n manager for Vue 2.0",
-  "main": "src/index.js",
+  "main": "dist/vue-i18n-manager.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "./node_modules/.bin/webpack -w"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,29 @@
   "bugs": {
     "url": "https://github.com/MatteoGabriele/vue-i18n-manager/issues"
   },
-  "homepage": "https://github.com/MatteoGabriele/vue-i18n-manager#readme"
+  "homepage": "https://github.com/MatteoGabriele/vue-i18n-manager#readme",
+  "dependencies": {
+    "axios": "^0.15.2",
+    "lodash": "^4.16.4",
+    "vue-i18n": "^4.6.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.17.0",
+    "babel-eslint": "^7.0.0",
+    "babel-loader": "^6.2.5",
+    "babel-plugin-syntax-async-functions": "^6.13.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-es2015": "^6.16.0",
+    "babel-preset-stage-2": "^6.17.0",
+    "babel-register": "^6.16.3",
+    "eslint": "^3.8.1",
+    "eslint-config-standard": "^6.2.0",
+    "eslint-friendly-formatter": "^2.0.6",
+    "eslint-import-resolver-webpack": "^0.6.0",
+    "eslint-loader": "^1.6.0",
+    "eslint-plugin-promise": "^3.3.0",
+    "eslint-plugin-standard": "^2.0.1",
+    "storage-helper": "^1.0.0",
+    "webpack": "^1.13.2"
+  }
 }
