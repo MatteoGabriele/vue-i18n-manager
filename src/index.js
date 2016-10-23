@@ -4,18 +4,20 @@ import axios from 'axios'
 
 import state from './config'
 import storeManager, { dispatch } from './store/storeManager'
-import {
-  REMOVE_LANGUAGE_PERSISTENCY,
-  IMPORT_MANAGER_STATE
-} from './store/module/events'
 
 /**
  * The current Vue instance reference
  */
 let _vue
 
+/**
+ * Installation options
+ */
 let _options
 
+/**
+ * i18n state
+ */
 let _state
 
 /**
@@ -28,6 +30,7 @@ let _state
 const install = (Vue, options = {}) => {
   _vue = Vue
   _options = options
+
   _vue.initI18nManager = initI18nManager
 }
 
@@ -49,12 +52,7 @@ const getLanguageCode = () => {
 
 const translateBy = async (language) => {
   const { translateTo, code } = language
-  const {
-    persistent,
-    storageKey,
-    hasStore,
-    languagePath
-  } = _state
+  const { persistent, storageKey, hasStore, languagePath } = _state
 
   if (hasStore) {
     return
@@ -87,19 +85,18 @@ const getConfigurations = async (config) => {
    * don't change the state object.
    * not even know how can be changed if it's in readonly
    * but try to dispatch every kind of event to keep track
-   * of every mutation.
+   * of every mutation
    */
-  return _.assignIn(state, newConfig)
+  return _.assignIn({ ...state }, newConfig)
 }
 
 const initI18nManager = async () => {
-  const { store, config } = _options
+  /**
+   * Update the default state with new changes
+   */
+  _state = await getConfigurations(_options.config)
 
-  _state = await getConfigurations()
-
-  const { persistent, name, storageKey, languages } = _state
-
-  storeManager(store, name)
+  const { persistent, storageKey, languages } = _state
 
   if (!persistent) {
     removeItem(storageKey)
@@ -114,8 +111,9 @@ const initI18nManager = async () => {
   _vue.config.fallback = code
 
   const language = _.find(languages, { code })
+  const translations = await translateBy(language)
 
-  await translateBy(language)
+  return { translations, language }
 }
 
 export default { install }

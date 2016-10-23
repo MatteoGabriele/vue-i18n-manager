@@ -67,6 +67,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  value: true
 	});
 
+	var _extends2 = __webpack_require__(111);
+
+	var _extends3 = _interopRequireDefault(_extends2);
+
 	var _regenerator = __webpack_require__(2);
 
 	var _regenerator2 = _interopRequireDefault(_regenerator);
@@ -85,15 +89,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _axios2 = _interopRequireDefault(_axios);
 
-	var _config = __webpack_require__(117);
+	var _config = __webpack_require__(100);
 
 	var _config2 = _interopRequireDefault(_config);
 
-	var _storeManager = __webpack_require__(100);
+	var _storeManager = __webpack_require__(101);
 
 	var _storeManager2 = _interopRequireDefault(_storeManager);
-
-	var _events = __webpack_require__(107);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -102,8 +104,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var _vue = void 0;
 
+	/**
+	 * Installation options
+	 */
 	var _options = void 0;
 
+	/**
+	 * i18n state
+	 */
 	var _state = void 0;
 
 	/**
@@ -118,6 +126,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  _vue = Vue;
 	  _options = options;
+
 	  _vue.initI18nManager = initI18nManager;
 	};
 
@@ -227,7 +236,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	          case 7:
 	            newConfig = _context2.t0;
-	            return _context2.abrupt('return', _lodash2.default.assignIn(_config2.default, newConfig));
+	            return _context2.abrupt('return', _lodash2.default.assignIn((0, _extends3.default)({}, _config2.default), newConfig));
 
 	          case 9:
 	          case 'end':
@@ -244,28 +253,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var initI18nManager = function () {
 	  var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
-	    var _options2, store, config, _state4, persistent, name, storageKey, languages, code, language;
+	    var _state4, persistent, storageKey, languages, code, language, translations;
 
 	    return _regenerator2.default.wrap(function _callee3$(_context3) {
 	      while (1) {
 	        switch (_context3.prev = _context3.next) {
 	          case 0:
-	            _options2 = _options;
-	            store = _options2.store;
-	            config = _options2.config;
-	            _context3.next = 5;
-	            return getConfigurations();
+	            _context3.next = 2;
+	            return getConfigurations(_options.config);
 
-	          case 5:
+	          case 2:
 	            _state = _context3.sent;
 	            _state4 = _state;
 	            persistent = _state4.persistent;
-	            name = _state4.name;
 	            storageKey = _state4.storageKey;
 	            languages = _state4.languages;
 
-
-	            (0, _storeManager2.default)(store, name);
 
 	            if (!persistent) {
 	              (0, _storageHelper.removeItem)(storageKey);
@@ -281,10 +284,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _vue.config.fallback = code;
 
 	            language = _lodash2.default.find(languages, { code: code });
-	            _context3.next = 19;
+	            _context3.next = 14;
 	            return translateBy(language);
 
-	          case 19:
+	          case 14:
+	            translations = _context3.sent;
+	            return _context3.abrupt('return', { translations: translations, language: language });
+
+	          case 16:
 	          case 'end':
 	            return _context3.stop();
 	        }
@@ -21278,204 +21285,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 100 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.dispatch = undefined;
-
-	var _module2 = __webpack_require__(101);
-
-	var _module3 = _interopRequireDefault(_module2);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var _store = void 0;
-
-	var storeManager = function storeManager(store, name) {
-	  if (!store) {
-	    return;
-	  }
-
-	  _store = store;
-	  _store.registerModule(name, _module3.default);
-	};
-
-	var dispatch = exports.dispatch = function dispatch(event, payload) {
-	  if (!_store) {
-	    return;
-	  }
-
-	  _store.dispatch(event, payload);
-	};
-
-	exports.default = storeManager;
-
-/***/ },
-/* 101 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _mutations = __webpack_require__(102);
-
-	var _config = __webpack_require__(117);
-
-	var _config2 = _interopRequireDefault(_config);
-
-	var _getters = __webpack_require__(108);
-
-	var getters = _interopRequireWildcard(_getters);
-
-	var _actions = __webpack_require__(109);
-
-	var _actions2 = _interopRequireDefault(_actions);
-
-	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	console.log(_config2.default);
-	exports.default = {
-	  state: _config2.default,
-	  mutations: _mutations.mutations,
-	  getters: getters,
-	  actions: _actions2.default
-	};
-
-/***/ },
-/* 102 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.mutations = undefined;
-
-	var _defineProperty2 = __webpack_require__(103);
-
-	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
-	var _events = __webpack_require__(107);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var mutations = exports.mutations = (0, _defineProperty3.default)({}, _events.REMOVE_LANGUAGE_PERSISTENCY, function (state, payload) {
-	  state.persistent = false;
-	});
-
-/***/ },
-/* 103 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	exports.__esModule = true;
-
-	var _defineProperty = __webpack_require__(104);
-
-	var _defineProperty2 = _interopRequireDefault(_defineProperty);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = function (obj, key, value) {
-	  if (key in obj) {
-	    (0, _defineProperty2.default)(obj, key, {
-	      value: value,
-	      enumerable: true,
-	      configurable: true,
-	      writable: true
-	    });
-	  } else {
-	    obj[key] = value;
-	  }
-
-	  return obj;
-	};
-
-/***/ },
-/* 104 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = { "default": __webpack_require__(105), __esModule: true };
-
-/***/ },
-/* 105 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(106);
-	var $Object = __webpack_require__(18).Object;
-	module.exports = function defineProperty(it, key, desc){
-	  return $Object.defineProperty(it, key, desc);
-	};
-
-/***/ },
-/* 106 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var $export = __webpack_require__(16);
-	// 19.1.2.4 / 15.2.3.6 Object.defineProperty(O, P, Attributes)
-	$export($export.S + $export.F * !__webpack_require__(26), 'Object', {defineProperty: __webpack_require__(22).f});
-
-/***/ },
-/* 107 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	var REMOVE_LANGUAGE_PERSISTENCY = exports.REMOVE_LANGUAGE_PERSISTENCY = 'REMOVE_LANGUAGE_PERSISTENCY';
-
-/***/ },
-/* 108 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-/***/ },
-/* 109 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _defineProperty2 = __webpack_require__(103);
-
-	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
-	var _events = __webpack_require__(107);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	exports.default = (0, _defineProperty3.default)({}, _events.REMOVE_LANGUAGE_PERSISTENCY, function (_ref) {
-	  var commit = _ref.commit;
-
-	  commit(_events.REMOVE_LANGUAGE_PERSISTENCY);
-	});
-
-/***/ },
-/* 110 */,
-/* 111 */,
-/* 112 */,
-/* 113 */,
-/* 114 */,
-/* 115 */,
-/* 116 */,
-/* 117 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -21506,6 +21315,296 @@ return /******/ (function(modules) { // webpackBootstrap
 	    translateTo: 'en'
 	  }]
 	};
+
+/***/ },
+/* 101 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.dispatch = undefined;
+
+	var _module2 = __webpack_require__(102);
+
+	var _module3 = _interopRequireDefault(_module2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var _store = void 0;
+
+	var storeManager = function storeManager(store, name) {
+	  if (!store) {
+	    return;
+	  }
+
+	  _store = store;
+	  _store.registerModule(name, _module3.default);
+	};
+
+	var dispatch = exports.dispatch = function dispatch(event, payload) {
+	  if (!_store) {
+	    return;
+	  }
+
+	  _store.dispatch(event, payload);
+	};
+
+	exports.default = storeManager;
+
+/***/ },
+/* 102 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _mutations = __webpack_require__(103);
+
+	var _config = __webpack_require__(100);
+
+	var _config2 = _interopRequireDefault(_config);
+
+	var _getters = __webpack_require__(109);
+
+	var getters = _interopRequireWildcard(_getters);
+
+	var _actions = __webpack_require__(110);
+
+	var _actions2 = _interopRequireDefault(_actions);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = {
+	  state: _config2.default,
+	  mutations: _mutations.mutations,
+	  getters: getters,
+	  actions: _actions2.default
+	};
+
+/***/ },
+/* 103 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.mutations = undefined;
+
+	var _defineProperty2 = __webpack_require__(104);
+
+	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+	var _events = __webpack_require__(108);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var mutations = exports.mutations = (0, _defineProperty3.default)({}, _events.REMOVE_LANGUAGE_PERSISTENCY, function (state, payload) {
+	  state.persistent = false;
+	});
+
+/***/ },
+/* 104 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+
+	var _defineProperty = __webpack_require__(105);
+
+	var _defineProperty2 = _interopRequireDefault(_defineProperty);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = function (obj, key, value) {
+	  if (key in obj) {
+	    (0, _defineProperty2.default)(obj, key, {
+	      value: value,
+	      enumerable: true,
+	      configurable: true,
+	      writable: true
+	    });
+	  } else {
+	    obj[key] = value;
+	  }
+
+	  return obj;
+	};
+
+/***/ },
+/* 105 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(106), __esModule: true };
+
+/***/ },
+/* 106 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(107);
+	var $Object = __webpack_require__(18).Object;
+	module.exports = function defineProperty(it, key, desc){
+	  return $Object.defineProperty(it, key, desc);
+	};
+
+/***/ },
+/* 107 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var $export = __webpack_require__(16);
+	// 19.1.2.4 / 15.2.3.6 Object.defineProperty(O, P, Attributes)
+	$export($export.S + $export.F * !__webpack_require__(26), 'Object', {defineProperty: __webpack_require__(22).f});
+
+/***/ },
+/* 108 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var REMOVE_LANGUAGE_PERSISTENCY = exports.REMOVE_LANGUAGE_PERSISTENCY = 'REMOVE_LANGUAGE_PERSISTENCY';
+
+/***/ },
+/* 109 */
+/***/ function(module, exports) {
+
+	"use strict";
+
+/***/ },
+/* 110 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _defineProperty2 = __webpack_require__(104);
+
+	var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+	var _events = __webpack_require__(108);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = (0, _defineProperty3.default)({}, _events.REMOVE_LANGUAGE_PERSISTENCY, function (_ref) {
+	  var commit = _ref.commit;
+
+	  commit(_events.REMOVE_LANGUAGE_PERSISTENCY);
+	});
+
+/***/ },
+/* 111 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	exports.__esModule = true;
+
+	var _assign = __webpack_require__(112);
+
+	var _assign2 = _interopRequireDefault(_assign);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	exports.default = _assign2.default || function (target) {
+	  for (var i = 1; i < arguments.length; i++) {
+	    var source = arguments[i];
+
+	    for (var key in source) {
+	      if (Object.prototype.hasOwnProperty.call(source, key)) {
+	        target[key] = source[key];
+	      }
+	    }
+	  }
+
+	  return target;
+	};
+
+/***/ },
+/* 112 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(113), __esModule: true };
+
+/***/ },
+/* 113 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(114);
+	module.exports = __webpack_require__(18).Object.assign;
+
+/***/ },
+/* 114 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.3.1 Object.assign(target, source)
+	var $export = __webpack_require__(16);
+
+	$export($export.S + $export.F, 'Object', {assign: __webpack_require__(115)});
+
+/***/ },
+/* 115 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	// 19.1.2.1 Object.assign(target, source, ...)
+	var getKeys  = __webpack_require__(37)
+	  , gOPS     = __webpack_require__(116)
+	  , pIE      = __webpack_require__(117)
+	  , toObject = __webpack_require__(53)
+	  , IObject  = __webpack_require__(40)
+	  , $assign  = Object.assign;
+
+	// should work with symbols and should have deterministic property order (V8 bug)
+	module.exports = !$assign || __webpack_require__(27)(function(){
+	  var A = {}
+	    , B = {}
+	    , S = Symbol()
+	    , K = 'abcdefghijklmnopqrst';
+	  A[S] = 7;
+	  K.split('').forEach(function(k){ B[k] = k; });
+	  return $assign({}, A)[S] != 7 || Object.keys($assign({}, B)).join('') != K;
+	}) ? function assign(target, source){ // eslint-disable-line no-unused-vars
+	  var T     = toObject(target)
+	    , aLen  = arguments.length
+	    , index = 1
+	    , getSymbols = gOPS.f
+	    , isEnum     = pIE.f;
+	  while(aLen > index){
+	    var S      = IObject(arguments[index++])
+	      , keys   = getSymbols ? getKeys(S).concat(getSymbols(S)) : getKeys(S)
+	      , length = keys.length
+	      , j      = 0
+	      , key;
+	    while(length > j)if(isEnum.call(S, key = keys[j++]))T[key] = S[key];
+	  } return T;
+	} : $assign;
+
+/***/ },
+/* 116 */
+/***/ function(module, exports) {
+
+	exports.f = Object.getOwnPropertySymbols;
+
+/***/ },
+/* 117 */
+/***/ function(module, exports) {
+
+	exports.f = {}.propertyIsEnumerable;
 
 /***/ }
 /******/ ])
