@@ -5,7 +5,9 @@ import axios from 'axios'
 /**
  * The current Vue instance reference
  */
-let $vue
+let _vue
+
+let _options
 
 /**
  * Default configuration Object
@@ -18,7 +20,6 @@ let i18nState = {
   defaultCode: 'en',
   hasStore: false,
   hasRouter: false,
-  translations: null,
   language: null,
   pending: false,
   error: false,
@@ -41,8 +42,9 @@ let i18nState = {
  * and options object with allows to pass some default parameters
  */
 const install = (Vue, options = {}) => {
-  $vue = Vue
-  initI18nManager(options)
+  _vue = Vue
+  _options = options
+  _vue.initI18nManager = initI18nManager
 }
 
 /**
@@ -62,8 +64,13 @@ const getLanguageCode = () => {
 }
 
 const translateBy = async (language) => {
-  const { persistent, storageKey, hasStore, languagePath } = i18nState
   const { translateTo, code } = language
+  const {
+    persistent,
+    storageKey,
+    hasStore,
+    languagePath
+  } = i18nState
 
   if (hasStore) {
     return
@@ -75,8 +82,8 @@ const translateBy = async (language) => {
     setItem(storageKey, code)
   }
 
-  $vue.locale(code, data, () => {
-    $vue.config.lang = code
+  _vue.locale(code, data, () => {
+    _vue.config.lang = code
   })
 
   return data
@@ -93,7 +100,9 @@ const getConfigurations = async (config) => {
   return _.assignIn(i18nState, newConfig)
 }
 
-const initI18nManager = async ({ store, router, config }) => {
+const initI18nManager = async () => {
+  const { config } = _options
+
   i18nState = await getConfigurations(config)
 
   const { persistent, storageKey, languages } = i18nState
@@ -107,10 +116,11 @@ const initI18nManager = async ({ store, router, config }) => {
   /**
    * Nothing to fancy here, just need override defaults of vue-i18n
    */
-  $vue.config.lang = code
-  $vue.config.fallback = code
+  _vue.config.lang = code
+  _vue.config.fallback = code
 
   const language = _.find(languages, { code })
+
   await translateBy(language)
 }
 

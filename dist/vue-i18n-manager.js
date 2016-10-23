@@ -90,7 +90,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	/**
 	 * The current Vue instance reference
 	 */
-	var $vue = void 0;
+	var _vue = void 0;
+
+	var _options = void 0;
 
 	/**
 	 * Default configuration Object
@@ -103,7 +105,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  defaultCode: 'en',
 	  hasStore: false,
 	  hasRouter: false,
-	  translations: null,
 	  language: null,
 	  pending: false,
 	  error: false,
@@ -126,8 +127,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	var install = function install(Vue) {
 	  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-	  $vue = Vue;
-	  initI18nManager(options);
+	  _vue = Vue;
+	  _options = options;
+	  _vue.initI18nManager = initI18nManager;
 	};
 
 	/**
@@ -152,19 +154,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var translateBy = function () {
 	  var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(language) {
-	    var _i18nState2, persistent, storageKey, hasStore, languagePath, translateTo, code, _ref2, data;
+	    var translateTo, code, _i18nState2, persistent, storageKey, hasStore, languagePath, _ref2, data;
 
 	    return _regenerator2.default.wrap(function _callee$(_context) {
 	      while (1) {
 	        switch (_context.prev = _context.next) {
 	          case 0:
+	            translateTo = language.translateTo;
+	            code = language.code;
 	            _i18nState2 = i18nState;
 	            persistent = _i18nState2.persistent;
 	            storageKey = _i18nState2.storageKey;
 	            hasStore = _i18nState2.hasStore;
 	            languagePath = _i18nState2.languagePath;
-	            translateTo = language.translateTo;
-	            code = language.code;
 
 	            if (!hasStore) {
 	              _context.next = 9;
@@ -186,8 +188,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	              (0, _storageHelper.setItem)(storageKey, code);
 	            }
 
-	            $vue.locale(code, data, function () {
-	              $vue.config.lang = code;
+	            _vue.locale(code, data, function () {
+	              _vue.config.lang = code;
 	            });
 
 	            return _context.abrupt('return', data);
@@ -252,21 +254,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	}();
 
 	var initI18nManager = function () {
-	  var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(_ref5) {
-	    var store = _ref5.store;
-	    var router = _ref5.router;
-	    var config = _ref5.config;
-
-	    var _i18nState3, persistent, storageKey, languages, code, language;
+	  var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
+	    var _options2, config, _i18nState3, persistent, storageKey, languages, code, language;
 
 	    return _regenerator2.default.wrap(function _callee3$(_context3) {
 	      while (1) {
 	        switch (_context3.prev = _context3.next) {
 	          case 0:
-	            _context3.next = 2;
+	            _options2 = _options;
+	            config = _options2.config;
+	            _context3.next = 4;
 	            return getConfigurations(config);
 
-	          case 2:
+	          case 4:
 	            i18nState = _context3.sent;
 	            _i18nState3 = i18nState;
 	            persistent = _i18nState3.persistent;
@@ -284,14 +284,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	             * Nothing to fancy here, just need override defaults of vue-i18n
 	             */
 
-	            $vue.config.lang = code;
-	            $vue.config.fallback = code;
+	            _vue.config.lang = code;
+	            _vue.config.fallback = code;
 
 	            language = _lodash2.default.find(languages, { code: code });
-	            _context3.next = 14;
+	            _context3.next = 16;
 	            return translateBy(language);
 
-	          case 14:
+	          case 16:
 	          case 'end':
 	            return _context3.stop();
 	        }
@@ -299,7 +299,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }, _callee3, undefined);
 	  }));
 
-	  return function initI18nManager(_x4) {
+	  return function initI18nManager() {
 	    return _ref4.apply(this, arguments);
 	  };
 	}();
