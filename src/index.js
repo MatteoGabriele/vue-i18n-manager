@@ -2,6 +2,13 @@ import { setItem, getItem, removeItem } from 'storage-helper'
 import _ from 'lodash'
 import axios from 'axios'
 
+import state from './config'
+import storeManager, { dispatch } from './store/storeManager'
+import {
+  REMOVE_LANGUAGE_PERSISTENCY,
+  IMPORT_MANAGER_STATE
+} from './store/module/events'
+
 /**
  * The current Vue instance reference
  */
@@ -9,30 +16,7 @@ let _vue
 
 let _options
 
-/**
- * Default configuration Object
- * @type {Object}
- */
-let i18nState = {
-  persistent: true,
-  storageKey: 'language_key',
-  languagePath: 'static/i18n',
-  defaultCode: 'en',
-  hasStore: false,
-  hasRouter: false,
-  language: null,
-  pending: false,
-  error: false,
-  errorMessage: null,
-  languages: [
-    {
-      name: 'English',
-      code: 'en',
-      urlPrefix: 'en',
-      translateTo: 'en'
-    }
-  ]
-}
+let _state
 
 /**
  * To be able to use a Vue plugin we need to expose an install
@@ -53,7 +37,7 @@ const install = (Vue, options = {}) => {
  * @return {String} [description]
  */
 const getLanguageCode = () => {
-  const { persistent, defaultCode, storageKey } = i18nState
+  const { persistent, defaultCode, storageKey } = _state
   const storagedLanguageCode = getItem(storageKey)
 
   if (persistent && storagedLanguageCode) {
@@ -70,7 +54,7 @@ const translateBy = async (language) => {
     storageKey,
     hasStore,
     languagePath
-  } = i18nState
+  } = _state
 
   if (hasStore) {
     return
@@ -97,15 +81,25 @@ const translateBy = async (language) => {
  */
 const getConfigurations = async (config) => {
   let newConfig = (config && config.then) ? await config : config
-  return _.assignIn(i18nState, newConfig)
+
+  /**
+   * @todo
+   * don't change the state object.
+   * not even know how can be changed if it's in readonly
+   * but try to dispatch every kind of event to keep track
+   * of every mutation.
+   */
+  return _.assignIn(state, newConfig)
 }
 
 const initI18nManager = async () => {
-  const { config } = _options
+  const { store, config } = _options
 
-  i18nState = await getConfigurations(config)
+  _state = await getConfigurations()
 
-  const { persistent, storageKey, languages } = i18nState
+  const { persistent, name, storageKey, languages } = _state
+
+  storeManager(store, name)
 
   if (!persistent) {
     removeItem(storageKey)
