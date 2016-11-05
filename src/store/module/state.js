@@ -1,16 +1,13 @@
 /**
- * Default configuration Object
+ * Default store state
  * @type {Object}
  */
-export default {
-  name: 'i18n',
+const state = {
   persistent: true,
   storageKey: 'language_key',
   languagePath: 'static/i18n',
   defaultCode: 'en',
-  hasStore: false,
-  hasRouter: false,
-  language: null,
+  currentLanguage: null,
   pending: false,
   error: false,
   errorMessage: null,
@@ -20,6 +17,14 @@ export default {
       code: 'en',
       urlPrefix: 'en',
       translateTo: 'en'
+    },
+    {
+      name: 'Italiano',
+      code: 'it',
+      urlPrefix: 'it',
+      translateTo: 'it'
     }
   ]
 }
+
+export default state

@@ -1911,6 +1911,10 @@ jodid25519@^1.0.0:
   dependencies:
     jsbn "~0.1.0"
 
+js-cookie@^2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-2.1.3.tgz#48071625217ac9ecfab8c343a13d42ec09ff0526"
+
 js-tokens@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-1.0.3.tgz#14e56eb68c8f1a92c43d59f5014ec29dc20f2ae1"
@@ -2712,8 +2716,10 @@ sshpk@^1.7.0:
     tweetnacl "~0.14.0"
 
 storage-helper:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/storage-helper/-/storage-helper-1.0.0.tgz#bfaf718755ea90fb59515bc9eda0aca93b0140be"
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/storage-helper/-/storage-helper-1.3.0.tgz#c58a300786f10eec598105f20a426100aa723a6a"
+  dependencies:
+    js-cookie "^2.1.3"
 
 stream-browserify@^1.0.0:
   version "1.0.0"
