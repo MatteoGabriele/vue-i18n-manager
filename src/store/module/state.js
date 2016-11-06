@@ -5,24 +5,25 @@
 const state = {
   persistent: true,
   storageKey: 'language_key',
-  languagePath: 'static/i18n',
-  defaultCode: 'en',
+  path: 'static/i18n',
+  defaultCode: 'en-GB',
   currentLanguage: null,
-  pending: false,
+  initialized: false,
   error: false,
   errorMessage: null,
+  translations: null,
   languages: [
     {
       name: 'English',
-      code: 'en',
+      code: 'en-GB',
       urlPrefix: 'en',
-      translateTo: 'en'
+      translateTo: 'en-GB'
     },
     {
       name: 'Italiano',
-      code: 'it',
+      code: 'it-IT',
       urlPrefix: 'it',
-      translateTo: 'it'
+      translateTo: 'it-IT'
     }
   ]
 }
