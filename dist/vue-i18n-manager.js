@@ -92,13 +92,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var I18n = function () {
-	  function I18n(Vue, options) {
+	  function I18n(Vue, _ref) {
+	    var store = _ref.store;
+	    var config = _ref.config;
 	    (0, _classCallCheck3.default)(this, I18n);
-	    var store = options.store;
-	    var config = options.config;
 	
-	
-	    this._options = options;
 	    this._vue = Vue;
 	    this._store = store;
 	    this._config = config;
@@ -106,10 +104,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    (0, _module.registerModule)(this._store);
 	  }
 	
+	  /**
+	   * Update plugin state.
+	   * Updates the module default state merging it with the plugin config options
+	   */
+	
+	
 	  (0, _createClass3.default)(I18n, [{
 	    key: 'updatePluginState',
 	    value: function () {
-	      var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
+	      var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
 	        return _regenerator2.default.wrap(function _callee$(_context) {
 	          while (1) {
 	            switch (_context.prev = _context.next) {
@@ -126,15 +130,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }));
 	
 	      function updatePluginState() {
-	        return _ref.apply(this, arguments);
+	        return _ref2.apply(this, arguments);
 	      }
 	
 	      return updatePluginState;
 	    }()
+	
+	    /**
+	     * Set language
+	     * It sets the new requested language and returns the translations
+	     * which are then applyed via vue-i18n.
+	     * If no language is passed, the language will be the one choosen as default
+	     * @type {String}
+	     */
+	
 	  }, {
 	    key: 'setLanguage',
 	    value: function () {
-	      var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
+	      var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
 	        var _this = this;
 	
 	        var code = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -164,15 +177,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }));
 	
 	      function setLanguage(_x) {
-	        return _ref2.apply(this, arguments);
+	        return _ref3.apply(this, arguments);
 	      }
 	
 	      return setLanguage;
 	    }()
+	
+	    /**
+	     * Initialize the plugin mutations
+	     */
+	
 	  }, {
 	    key: 'init',
 	    value: function () {
-	      var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
+	      var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
 	        return _regenerator2.default.wrap(function _callee3$(_context3) {
 	          while (1) {
 	            switch (_context3.prev = _context3.next) {
@@ -193,7 +211,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }));
 	
 	      function init() {
-	        return _ref3.apply(this, arguments);
+	        return _ref4.apply(this, arguments);
 	      }
 	
 	      return init;

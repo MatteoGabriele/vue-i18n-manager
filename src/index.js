@@ -2,14 +2,7 @@ import { UPDATE_I18N_STATE, CHANGE_LANGUAGE } from './store/module/events'
 import { registerModule } from './store/module'
 
 class I18n {
-  _vue
-  _config
-  _store
-
-  constructor (Vue, options) {
-    const { store, config } = options
-
-    this._options = options
+  constructor (Vue, { store, config }) {
     this._vue = Vue
     this._store = store
     this._config = config
@@ -17,10 +10,21 @@ class I18n {
     registerModule(this._store)
   }
 
+  /**
+   * Update plugin state.
+   * Updates the module default state merging it with the plugin config options
+   */
   async updatePluginState () {
     await this._store.dispatch(UPDATE_I18N_STATE, this._config)
   }
 
+  /**
+   * Set language
+   * It sets the new requested language and returns the translations
+   * which are then applyed via vue-i18n.
+   * If no language is passed, the language will be the one choosen as default
+   * @type {String}
+   */
   async setLanguage (code = null) {
     const translations = await this._store.dispatch(CHANGE_LANGUAGE, code)
 
@@ -30,6 +34,9 @@ class I18n {
     })
   }
 
+  /**
+   * Initialize the plugin mutations
+   */
   async init () {
     await this.updatePluginState()
     await this.setLanguage()
