@@ -26,11 +26,13 @@ class I18n {
    * @type {String}
    */
   async setLanguage (code = null) {
-    const translations = await this._store.dispatch(CHANGE_LANGUAGE, code)
+    const { defaultCode } = this._store.getters.defaultCode
+    const newCode = code || defaultCode
+    const translations = await this._store.dispatch(CHANGE_LANGUAGE, newCode)
 
     // Set vue-i18n locale configuration
-    this._vue.locale(code, translations, () => {
-      this._vue.config.lang = code
+    this._vue.locale(newCode, translations, () => {
+      this._vue.config.lang = newCode
     })
   }
 

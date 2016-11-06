@@ -151,24 +151,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _this = this;
 	
 	        var code = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-	        var translations;
+	        var defaultCode, newCode, translations;
 	        return _regenerator2.default.wrap(function _callee2$(_context2) {
 	          while (1) {
 	            switch (_context2.prev = _context2.next) {
 	              case 0:
-	                _context2.next = 2;
-	                return this._store.dispatch(_events.CHANGE_LANGUAGE, code);
+	                defaultCode = this._store.getters.defaultCode.defaultCode;
+	                newCode = code || defaultCode;
+	                _context2.next = 4;
+	                return this._store.dispatch(_events.CHANGE_LANGUAGE, newCode);
 	
-	              case 2:
+	              case 4:
 	                translations = _context2.sent;
 	
 	
 	                // Set vue-i18n locale configuration
-	                this._vue.locale(code, translations, function () {
-	                  _this._vue.config.lang = code;
+	                this._vue.locale(newCode, translations, function () {
+	                  _this._vue.config.lang = newCode;
 	                });
 	
-	              case 4:
+	              case 6:
 	              case 'end':
 	                return _context2.stop();
 	            }
