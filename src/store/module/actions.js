@@ -16,6 +16,11 @@ export default {
     commit(REMOVE_LANGUAGE_PERSISTENCY)
   },
 
+  /**
+   * This action will merge all parameter that are passed to the plugin with existing
+   * parameter in the default state of the store.
+   * No new parameters are allowed: they will simply be ignored.
+   */
   [UPDATE_I18N_STATE]: async ({ commit, state }, payload) => {
     const params = (payload && payload.then) ? await payload : payload
     const availableKeys = keys(state)
@@ -42,7 +47,7 @@ export default {
       return data
     } catch (e) {
       commit(SET_TRANSLATION_ERROR, { message: e.message, request: url })
-      return {}
+      return
     }
   },
 

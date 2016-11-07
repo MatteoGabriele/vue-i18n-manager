@@ -85,6 +85,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	exports.default = install;
 	
+	var _vueI18n = __webpack_require__(263);
+	
+	var _vueI18n2 = _interopRequireDefault(_vueI18n);
+	
 	var _find2 = __webpack_require__(77);
 	
 	var _find3 = _interopRequireDefault(_find2);
@@ -95,7 +99,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _module3 = _interopRequireDefault(_module2);
 	
-	var _utils = __webpack_require__(255);
+	var _utils = __webpack_require__(262);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -136,10 +140,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var urlLanguage = (0, _find3.default)(languages, { urlPrefix: urlCode });
 	
 	        /**
-	         * In case of a failed call to an not existing json file,
-	         * the store will pushing the default language as a fallback.
-	         * Here we just redirect the browser to the current page
-	         * and inject the current url prefix.
+	         * In case the language is not provided or doesn't exists,
+	         * the default language will be used
 	         */
 	        if (!urlLanguage && !from.name) {
 	          var _find = (0, _find3.default)(languages, { code: defaultCode });
@@ -156,13 +158,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * Check if the detected language in the URL is also the current
 	         * translated language, otherwise it needs to be updated.
-	         * Browser language has prioriry over the store state.
-	         * Next method or vue-router needs to be called after the translation
-	         * has been retrieved or there's a chance that the application
-	         * is not entirely affected.
+	         * Browser language has prioriry over the store state
 	         */
 	        if (urlLanguage && urlLanguage.urlPrefix !== currentLanguage.urlPrefix) {
-	          _this.setLanguage(urlLanguage.code).then(function () {
+	          _this.setLanguage(urlLanguage.code, false).then(function () {
 	            return next();
 	          });
 	          return;
@@ -216,10 +215,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    /**
 	     * Set language
-	     * It sets the new requested language and returns the translations
-	     * which are then applyed via vue-i18n.
+	     * It sets the new requested language, replaces the url prefix in the url
+	     * and returns translations which are then applyed using vue-i18n.
 	     * If no language is passed, the language will be the one choosen as default
-	     * @type {String}
+	     * @param {String} [code=null]
+	     * @param {Boolean} [replaceRoute=true]
+	     * @return {Promise}
 	     */
 	
 	  }, {
@@ -229,6 +230,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var _this2 = this;
 	
 	        var code = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+	        var replaceRoute = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
 	        var defaultCode, newCode, translations, currentRoute, urlPrefix;
 	        return _regenerator2.default.wrap(function _callee2$(_context2) {
 	          while (1) {
@@ -243,11 +245,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	                translations = _context2.sent;
 	
 	
-	                /**
-	                 * If the route is defined we also going to replace the current language
-	                 * in the url with the new selected
-	                 */
-	                if (this._router && this._router.currentRoute) {
+	                // Set vue-i18n locale configuration
+	                this._vue.locale(newCode, translations, function () {
+	                  _this2._vue.config.lang = newCode;
+	                });
+	
+	                if (replaceRoute && this._router && this._router.currentRoute) {
 	                  currentRoute = this._router.currentRoute;
 	                  urlPrefix = this._store.getters.currentLanguage.urlPrefix;
 	
@@ -260,11 +263,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	                  });
 	                }
 	
-	                // Set vue-i18n locale configuration
-	                this._vue.locale(newCode, translations, function () {
-	                  _this2._vue.config.lang = newCode;
-	                });
-	
 	              case 7:
 	              case 'end':
 	                return _context2.stop();
@@ -273,7 +271,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }, _callee2, this);
 	      }));
 	
-	      function setLanguage(_x) {
+	      function setLanguage(_x, _x2) {
 	        return _ref3.apply(this, arguments);
 	      }
 	
@@ -337,6 +335,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 	
 	  var I18nInstance = new I18n(Vue, options);
+	
+	  Vue.use(_vueI18n2.default);
 	
 	  Vue.$i18n = I18nInstance;
 	  Vue.prototype.$i18n = I18nInstance;
@@ -6676,15 +6676,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _mutations2 = _interopRequireDefault(_mutations);
 	
-	var _state = __webpack_require__(213);
+	var _state = __webpack_require__(220);
 	
 	var _state2 = _interopRequireDefault(_state);
 	
-	var _getters = __webpack_require__(214);
+	var _getters = __webpack_require__(221);
 	
 	var getters = _interopRequireWildcard(_getters);
 	
-	var _actions = __webpack_require__(215);
+	var _actions = __webpack_require__(222);
 	
 	var _actions2 = _interopRequireDefault(_actions);
 	
@@ -6718,11 +6718,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _find2 = _interopRequireDefault(_find);
 	
-	var _assignIn = __webpack_require__(195);
+	var _map = __webpack_require__(195);
+	
+	var _map2 = _interopRequireDefault(_map);
+	
+	var _assignIn = __webpack_require__(202);
 	
 	var _assignIn2 = _interopRequireDefault(_assignIn);
 	
-	var _storageHelper = __webpack_require__(212);
+	var _storageHelper = __webpack_require__(219);
 	
 	var _storageHelper2 = _interopRequireDefault(_storageHelper);
 	
@@ -6741,6 +6745,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  state.error = true;
 	}), (0, _defineProperty3.default)(_mutations, _events.UPDATE_I18N_STATE, function (state, newState) {
 	  state = (0, _assignIn2.default)(state, newState);
+	
+	  if (state.availableLanguages.length) {
+	    state.languages = (0, _map2.default)(state.availableLanguages, function (code) {
+	      return (0, _find2.default)(state.languages, { code: code });
+	    });
+	  }
 	}), (0, _defineProperty3.default)(_mutations, _events.CHANGE_LANGUAGE, function (state, code) {
 	  var languages = state.languages;
 	  var persistent = state.persistent;
@@ -6794,9 +6804,229 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var copyObject = __webpack_require__(196),
-	    createAssigner = __webpack_require__(200),
-	    keysIn = __webpack_require__(209);
+	var arrayMap = __webpack_require__(175),
+	    baseIteratee = __webpack_require__(79),
+	    baseMap = __webpack_require__(196),
+	    isArray = __webpack_require__(142);
+	
+	/**
+	 * Creates an array of values by running each element in `collection` thru
+	 * `iteratee`. The iteratee is invoked with three arguments:
+	 * (value, index|key, collection).
+	 *
+	 * Many lodash methods are guarded to work as iteratees for methods like
+	 * `_.every`, `_.filter`, `_.map`, `_.mapValues`, `_.reject`, and `_.some`.
+	 *
+	 * The guarded methods are:
+	 * `ary`, `chunk`, `curry`, `curryRight`, `drop`, `dropRight`, `every`,
+	 * `fill`, `invert`, `parseInt`, `random`, `range`, `rangeRight`, `repeat`,
+	 * `sampleSize`, `slice`, `some`, `sortBy`, `split`, `take`, `takeRight`,
+	 * `template`, `trim`, `trimEnd`, `trimStart`, and `words`
+	 *
+	 * @static
+	 * @memberOf _
+	 * @since 0.1.0
+	 * @category Collection
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+	 * @returns {Array} Returns the new mapped array.
+	 * @example
+	 *
+	 * function square(n) {
+	 *   return n * n;
+	 * }
+	 *
+	 * _.map([4, 8], square);
+	 * // => [16, 64]
+	 *
+	 * _.map({ 'a': 4, 'b': 8 }, square);
+	 * // => [16, 64] (iteration order is not guaranteed)
+	 *
+	 * var users = [
+	 *   { 'user': 'barney' },
+	 *   { 'user': 'fred' }
+	 * ];
+	 *
+	 * // The `_.property` iteratee shorthand.
+	 * _.map(users, 'user');
+	 * // => ['barney', 'fred']
+	 */
+	function map(collection, iteratee) {
+	  var func = isArray(collection) ? arrayMap : baseMap;
+	  return func(collection, baseIteratee(iteratee, 3));
+	}
+	
+	module.exports = map;
+
+
+/***/ },
+/* 196 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseEach = __webpack_require__(197),
+	    isArrayLike = __webpack_require__(156);
+	
+	/**
+	 * The base implementation of `_.map` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array} Returns the new mapped array.
+	 */
+	function baseMap(collection, iteratee) {
+	  var index = -1,
+	      result = isArrayLike(collection) ? Array(collection.length) : [];
+	
+	  baseEach(collection, function(value, key, collection) {
+	    result[++index] = iteratee(value, key, collection);
+	  });
+	  return result;
+	}
+	
+	module.exports = baseMap;
+
+
+/***/ },
+/* 197 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseForOwn = __webpack_require__(198),
+	    createBaseEach = __webpack_require__(201);
+	
+	/**
+	 * The base implementation of `_.forEach` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Array|Object} collection The collection to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Array|Object} Returns `collection`.
+	 */
+	var baseEach = createBaseEach(baseForOwn);
+	
+	module.exports = baseEach;
+
+
+/***/ },
+/* 198 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var baseFor = __webpack_require__(199),
+	    keys = __webpack_require__(136);
+	
+	/**
+	 * The base implementation of `_.forOwn` without support for iteratee shorthands.
+	 *
+	 * @private
+	 * @param {Object} object The object to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @returns {Object} Returns `object`.
+	 */
+	function baseForOwn(object, iteratee) {
+	  return object && baseFor(object, iteratee, keys);
+	}
+	
+	module.exports = baseForOwn;
+
+
+/***/ },
+/* 199 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var createBaseFor = __webpack_require__(200);
+	
+	/**
+	 * The base implementation of `baseForOwn` which iterates over `object`
+	 * properties returned by `keysFunc` and invokes `iteratee` for each property.
+	 * Iteratee functions may exit iteration early by explicitly returning `false`.
+	 *
+	 * @private
+	 * @param {Object} object The object to iterate over.
+	 * @param {Function} iteratee The function invoked per iteration.
+	 * @param {Function} keysFunc The function to get the keys of `object`.
+	 * @returns {Object} Returns `object`.
+	 */
+	var baseFor = createBaseFor();
+	
+	module.exports = baseFor;
+
+
+/***/ },
+/* 200 */
+/***/ function(module, exports) {
+
+	/**
+	 * Creates a base function for methods like `_.forIn` and `_.forOwn`.
+	 *
+	 * @private
+	 * @param {boolean} [fromRight] Specify iterating from right to left.
+	 * @returns {Function} Returns the new base function.
+	 */
+	function createBaseFor(fromRight) {
+	  return function(object, iteratee, keysFunc) {
+	    var index = -1,
+	        iterable = Object(object),
+	        props = keysFunc(object),
+	        length = props.length;
+	
+	    while (length--) {
+	      var key = props[fromRight ? length : ++index];
+	      if (iteratee(iterable[key], key, iterable) === false) {
+	        break;
+	      }
+	    }
+	    return object;
+	  };
+	}
+	
+	module.exports = createBaseFor;
+
+
+/***/ },
+/* 201 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var isArrayLike = __webpack_require__(156);
+	
+	/**
+	 * Creates a `baseEach` or `baseEachRight` function.
+	 *
+	 * @private
+	 * @param {Function} eachFunc The function to iterate over a collection.
+	 * @param {boolean} [fromRight] Specify iterating from right to left.
+	 * @returns {Function} Returns the new base function.
+	 */
+	function createBaseEach(eachFunc, fromRight) {
+	  return function(collection, iteratee) {
+	    if (collection == null) {
+	      return collection;
+	    }
+	    if (!isArrayLike(collection)) {
+	      return eachFunc(collection, iteratee);
+	    }
+	    var length = collection.length,
+	        index = fromRight ? length : -1,
+	        iterable = Object(collection);
+	
+	    while ((fromRight ? index-- : ++index < length)) {
+	      if (iteratee(iterable[index], index, iterable) === false) {
+	        break;
+	      }
+	    }
+	    return collection;
+	  };
+	}
+	
+	module.exports = createBaseEach;
+
+
+/***/ },
+/* 202 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var copyObject = __webpack_require__(203),
+	    createAssigner = __webpack_require__(207),
+	    keysIn = __webpack_require__(216);
 	
 	/**
 	 * This method is like `_.assign` except that it iterates over own and
@@ -6837,11 +7067,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 196 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var assignValue = __webpack_require__(197),
-	    baseAssignValue = __webpack_require__(198);
+	var assignValue = __webpack_require__(204),
+	    baseAssignValue = __webpack_require__(205);
 	
 	/**
 	 * Copies properties of `source` to `object`.
@@ -6883,10 +7113,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 197 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseAssignValue = __webpack_require__(198),
+	var baseAssignValue = __webpack_require__(205),
 	    eq = __webpack_require__(87);
 	
 	/** Used for built-in method references. */
@@ -6917,10 +7147,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 198 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var defineProperty = __webpack_require__(199);
+	var defineProperty = __webpack_require__(206);
 	
 	/**
 	 * The base implementation of `assignValue` and `assignMergeValue` without
@@ -6948,7 +7178,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 199 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var getNative = __webpack_require__(97);
@@ -6965,11 +7195,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 200 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseRest = __webpack_require__(201),
-	    isIterateeCall = __webpack_require__(208);
+	var baseRest = __webpack_require__(208),
+	    isIterateeCall = __webpack_require__(215);
 	
 	/**
 	 * Creates a function like `_.assign`.
@@ -7008,12 +7238,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 201 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var identity = __webpack_require__(182),
-	    overRest = __webpack_require__(202),
-	    setToString = __webpack_require__(204);
+	    overRest = __webpack_require__(209),
+	    setToString = __webpack_require__(211);
 	
 	/**
 	 * The base implementation of `_.rest` which doesn't validate or coerce arguments.
@@ -7031,10 +7261,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 202 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var apply = __webpack_require__(203);
+	var apply = __webpack_require__(210);
 	
 	/* Built-in method references for those with the same name as other `lodash` methods. */
 	var nativeMax = Math.max;
@@ -7073,7 +7303,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 203 */
+/* 210 */
 /***/ function(module, exports) {
 
 	/**
@@ -7100,11 +7330,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 204 */
+/* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseSetToString = __webpack_require__(205),
-	    shortOut = __webpack_require__(207);
+	var baseSetToString = __webpack_require__(212),
+	    shortOut = __webpack_require__(214);
 	
 	/**
 	 * Sets the `toString` method of `func` to return `string`.
@@ -7120,11 +7350,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 205 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var constant = __webpack_require__(206),
-	    defineProperty = __webpack_require__(199),
+	var constant = __webpack_require__(213),
+	    defineProperty = __webpack_require__(206),
 	    identity = __webpack_require__(182);
 	
 	/**
@@ -7148,7 +7378,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 206 */
+/* 213 */
 /***/ function(module, exports) {
 
 	/**
@@ -7180,7 +7410,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 207 */
+/* 214 */
 /***/ function(module, exports) {
 
 	/** Used to detect hot functions by number of calls within a span of milliseconds. */
@@ -7223,7 +7453,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 208 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var eq = __webpack_require__(87),
@@ -7259,11 +7489,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 209 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayLikeKeys = __webpack_require__(137),
-	    baseKeysIn = __webpack_require__(210),
+	    baseKeysIn = __webpack_require__(217),
 	    isArrayLike = __webpack_require__(156);
 	
 	/**
@@ -7297,12 +7527,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 210 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(100),
 	    isPrototype = __webpack_require__(153),
-	    nativeKeysIn = __webpack_require__(211);
+	    nativeKeysIn = __webpack_require__(218);
 	
 	/** Used for built-in method references. */
 	var objectProto = Object.prototype;
@@ -7336,7 +7566,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 211 */
+/* 218 */
 /***/ function(module, exports) {
 
 	/**
@@ -7362,7 +7592,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 212 */
+/* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function webpackUniversalModuleDefinition(root, factory) {
@@ -7863,7 +8093,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	;
 
 /***/ },
-/* 213 */
+/* 220 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -7877,32 +8107,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	 */
 	var state = {
 	  persistent: true,
-	  storageKey: 'language_key',
-	  path: 'static/i18n',
-	  defaultCode: 'en-GB',
 	  currentLanguage: null,
 	  initialized: false,
 	  pending: false,
 	  error: false,
 	  errorMessage: null,
 	  translations: null,
+	  storageKey: 'language_key',
+	  path: 'static/i18n',
+	  defaultCode: 'en-GB',
+	  availableLanguages: [],
 	  languages: [{
 	    name: 'English',
 	    code: 'en-GB',
 	    urlPrefix: 'en',
 	    translateTo: 'en-GB'
-	  }, {
-	    name: 'Italiano',
-	    code: 'it-IT',
-	    urlPrefix: 'it',
-	    translateTo: 'it-IT'
 	  }]
 	};
 	
 	exports.default = state;
 
 /***/ },
-/* 214 */
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7912,7 +8138,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.defaultCode = exports.langUrlPrefix = exports.currentLanguage = exports.initialized = exports.languages = undefined;
 	
-	var _storageHelper = __webpack_require__(212);
+	var _storageHelper = __webpack_require__(219);
 	
 	var _storageHelper2 = _interopRequireDefault(_storageHelper);
 	
@@ -7949,7 +8175,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ },
-/* 215 */
+/* 222 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -7972,7 +8198,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _REMOVE_LANGUAGE_PERS;
 	
-	var _pick = __webpack_require__(216);
+	var _pick = __webpack_require__(223);
 	
 	var _pick2 = _interopRequireDefault(_pick);
 	
@@ -7980,7 +8206,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _keys2 = _interopRequireDefault(_keys);
 	
-	var _size = __webpack_require__(224);
+	var _size = __webpack_require__(231);
 	
 	var _size2 = _interopRequireDefault(_size);
 	
@@ -7988,7 +8214,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _find2 = _interopRequireDefault(_find);
 	
-	var _axios = __webpack_require__(230);
+	var _axios = __webpack_require__(237);
 	
 	var _axios2 = _interopRequireDefault(_axios);
 	
@@ -8087,7 +8313,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            _context2.t0 = _context2['catch'](5);
 	
 	            commit(_events.SET_TRANSLATION_ERROR, { message: _context2.t0.message, request: url });
-	            return _context2.abrupt('return', {});
+	            return _context2.abrupt('return');
 	
 	          case 18:
 	          case 'end':
@@ -8143,12 +8369,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	}()), _REMOVE_LANGUAGE_PERS);
 
 /***/ },
-/* 216 */
+/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var arrayMap = __webpack_require__(175),
-	    basePick = __webpack_require__(217),
-	    flatRest = __webpack_require__(219),
+	    basePick = __webpack_require__(224),
+	    flatRest = __webpack_require__(226),
 	    toKey = __webpack_require__(178);
 	
 	/**
@@ -8176,10 +8402,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 217 */
+/* 224 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var basePickBy = __webpack_require__(218);
+	var basePickBy = __webpack_require__(225);
 	
 	/**
 	 * The base implementation of `_.pick` without support for individual
@@ -8201,10 +8427,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 218 */
+/* 225 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseAssignValue = __webpack_require__(198);
+	var baseAssignValue = __webpack_require__(205);
 	
 	/**
 	 * The base implementation of  `_.pickBy` without support for iteratee shorthands.
@@ -8235,12 +8461,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 219 */
+/* 226 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var flatten = __webpack_require__(220),
-	    overRest = __webpack_require__(202),
-	    setToString = __webpack_require__(204);
+	var flatten = __webpack_require__(227),
+	    overRest = __webpack_require__(209),
+	    setToString = __webpack_require__(211);
 	
 	/**
 	 * A specialized version of `baseRest` which flattens the rest array.
@@ -8257,10 +8483,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 220 */
+/* 227 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var baseFlatten = __webpack_require__(221);
+	var baseFlatten = __webpack_require__(228);
 	
 	/**
 	 * Flattens `array` a single level deep.
@@ -8285,11 +8511,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 221 */
+/* 228 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var arrayPush = __webpack_require__(222),
-	    isFlattenable = __webpack_require__(223);
+	var arrayPush = __webpack_require__(229),
+	    isFlattenable = __webpack_require__(230);
 	
 	/**
 	 * The base implementation of `_.flatten` with support for restricting flattening.
@@ -8329,7 +8555,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 222 */
+/* 229 */
 /***/ function(module, exports) {
 
 	/**
@@ -8355,7 +8581,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 223 */
+/* 230 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var Symbol = __webpack_require__(131),
@@ -8381,14 +8607,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 224 */
+/* 231 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseKeys = __webpack_require__(152),
 	    getTag = __webpack_require__(157),
 	    isArrayLike = __webpack_require__(156),
-	    isString = __webpack_require__(225),
-	    stringSize = __webpack_require__(226);
+	    isString = __webpack_require__(232),
+	    stringSize = __webpack_require__(233);
 	
 	/** `Object#toString` result references. */
 	var mapTag = '[object Map]',
@@ -8433,7 +8659,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 225 */
+/* 232 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArray = __webpack_require__(142),
@@ -8478,12 +8704,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 226 */
+/* 233 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var asciiSize = __webpack_require__(227),
-	    hasUnicode = __webpack_require__(228),
-	    unicodeSize = __webpack_require__(229);
+	var asciiSize = __webpack_require__(234),
+	    hasUnicode = __webpack_require__(235),
+	    unicodeSize = __webpack_require__(236);
 	
 	/**
 	 * Gets the number of symbols in `string`.
@@ -8502,7 +8728,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 227 */
+/* 234 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var baseProperty = __webpack_require__(184);
@@ -8520,7 +8746,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 228 */
+/* 235 */
 /***/ function(module, exports) {
 
 	/** Used to compose unicode character classes. */
@@ -8550,7 +8776,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 229 */
+/* 236 */
 /***/ function(module, exports) {
 
 	/** Used to compose unicode character classes. */
@@ -8598,20 +8824,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 230 */
+/* 237 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(231);
+	module.exports = __webpack_require__(238);
 
 /***/ },
-/* 231 */
+/* 238 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(232);
-	var bind = __webpack_require__(233);
-	var Axios = __webpack_require__(234);
+	var utils = __webpack_require__(239);
+	var bind = __webpack_require__(240);
+	var Axios = __webpack_require__(241);
 	
 	/**
 	 * Create an instance of Axios
@@ -8644,15 +8870,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	// Expose Cancel & CancelToken
-	axios.Cancel = __webpack_require__(252);
-	axios.CancelToken = __webpack_require__(253);
-	axios.isCancel = __webpack_require__(249);
+	axios.Cancel = __webpack_require__(259);
+	axios.CancelToken = __webpack_require__(260);
+	axios.isCancel = __webpack_require__(256);
 	
 	// Expose all/spread
 	axios.all = function all(promises) {
 	  return Promise.all(promises);
 	};
-	axios.spread = __webpack_require__(254);
+	axios.spread = __webpack_require__(261);
 	
 	module.exports = axios;
 	
@@ -8661,12 +8887,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 232 */
+/* 239 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var bind = __webpack_require__(233);
+	var bind = __webpack_require__(240);
 	
 	/*global toString:true*/
 	
@@ -8966,7 +9192,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 233 */
+/* 240 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -8983,17 +9209,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 234 */
+/* 241 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var defaults = __webpack_require__(235);
-	var utils = __webpack_require__(232);
-	var InterceptorManager = __webpack_require__(246);
-	var dispatchRequest = __webpack_require__(247);
-	var isAbsoluteURL = __webpack_require__(250);
-	var combineURLs = __webpack_require__(251);
+	var defaults = __webpack_require__(242);
+	var utils = __webpack_require__(239);
+	var InterceptorManager = __webpack_require__(253);
+	var dispatchRequest = __webpack_require__(254);
+	var isAbsoluteURL = __webpack_require__(257);
+	var combineURLs = __webpack_require__(258);
 	
 	/**
 	 * Create a new instance of Axios
@@ -9074,13 +9300,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 235 */
+/* 242 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 	
-	var utils = __webpack_require__(232);
-	var normalizeHeaderName = __webpack_require__(236);
+	var utils = __webpack_require__(239);
+	var normalizeHeaderName = __webpack_require__(243);
 	
 	var PROTECTION_PREFIX = /^\)\]\}',?\n/;
 	var DEFAULT_CONTENT_TYPE = {
@@ -9097,10 +9323,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var adapter;
 	  if (typeof XMLHttpRequest !== 'undefined') {
 	    // For browsers use XHR adapter
-	    adapter = __webpack_require__(237);
+	    adapter = __webpack_require__(244);
 	  } else if (typeof process !== 'undefined') {
 	    // For node use HTTP adapter
-	    adapter = __webpack_require__(237);
+	    adapter = __webpack_require__(244);
 	  }
 	  return adapter;
 	}
@@ -9167,12 +9393,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 236 */
+/* 243 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(232);
+	var utils = __webpack_require__(239);
 	
 	module.exports = function normalizeHeaderName(headers, normalizedName) {
 	  utils.forEach(headers, function processHeader(value, name) {
@@ -9185,18 +9411,18 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 237 */
+/* 244 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 	
-	var utils = __webpack_require__(232);
-	var settle = __webpack_require__(238);
-	var buildURL = __webpack_require__(241);
-	var parseHeaders = __webpack_require__(242);
-	var isURLSameOrigin = __webpack_require__(243);
-	var createError = __webpack_require__(239);
-	var btoa = (typeof window !== 'undefined' && window.btoa) || __webpack_require__(244);
+	var utils = __webpack_require__(239);
+	var settle = __webpack_require__(245);
+	var buildURL = __webpack_require__(248);
+	var parseHeaders = __webpack_require__(249);
+	var isURLSameOrigin = __webpack_require__(250);
+	var createError = __webpack_require__(246);
+	var btoa = (typeof window !== 'undefined' && window.btoa) || __webpack_require__(251);
 	
 	module.exports = function xhrAdapter(config) {
 	  return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -9292,7 +9518,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // This is only done if running in a standard browser environment.
 	    // Specifically not if we're in a web worker, or react-native.
 	    if (utils.isStandardBrowserEnv()) {
-	      var cookies = __webpack_require__(245);
+	      var cookies = __webpack_require__(252);
 	
 	      // Add xsrf header
 	      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -9369,12 +9595,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ },
-/* 238 */
+/* 245 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var createError = __webpack_require__(239);
+	var createError = __webpack_require__(246);
 	
 	/**
 	 * Resolve or reject a Promise based on response status.
@@ -9400,12 +9626,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 239 */
+/* 246 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var enhanceError = __webpack_require__(240);
+	var enhanceError = __webpack_require__(247);
 	
 	/**
 	 * Create an Error with the specified message, config, error code, and response.
@@ -9423,7 +9649,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 240 */
+/* 247 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -9448,12 +9674,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 241 */
+/* 248 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(232);
+	var utils = __webpack_require__(239);
 	
 	function encode(val) {
 	  return encodeURIComponent(val).
@@ -9522,12 +9748,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 242 */
+/* 249 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(232);
+	var utils = __webpack_require__(239);
 	
 	/**
 	 * Parse headers into an object
@@ -9565,12 +9791,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 243 */
+/* 250 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(232);
+	var utils = __webpack_require__(239);
 	
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -9639,7 +9865,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 244 */
+/* 251 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -9681,12 +9907,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 245 */
+/* 252 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(232);
+	var utils = __webpack_require__(239);
 	
 	module.exports = (
 	  utils.isStandardBrowserEnv() ?
@@ -9740,12 +9966,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 246 */
+/* 253 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(232);
+	var utils = __webpack_require__(239);
 	
 	function InterceptorManager() {
 	  this.handlers = [];
@@ -9798,15 +10024,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 247 */
+/* 254 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(232);
-	var transformData = __webpack_require__(248);
-	var isCancel = __webpack_require__(249);
-	var defaults = __webpack_require__(235);
+	var utils = __webpack_require__(239);
+	var transformData = __webpack_require__(255);
+	var isCancel = __webpack_require__(256);
+	var defaults = __webpack_require__(242);
 	
 	/**
 	 * Throws a `Cancel` if cancellation has been requested.
@@ -9883,12 +10109,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 248 */
+/* 255 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var utils = __webpack_require__(232);
+	var utils = __webpack_require__(239);
 	
 	/**
 	 * Transform the data for a request or a response
@@ -9909,7 +10135,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 249 */
+/* 256 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -9920,7 +10146,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 250 */
+/* 257 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -9940,7 +10166,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 251 */
+/* 258 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -9958,7 +10184,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 252 */
+/* 259 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -9983,12 +10209,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 253 */
+/* 260 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
-	var Cancel = __webpack_require__(252);
+	var Cancel = __webpack_require__(259);
 	
 	/**
 	 * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -10046,7 +10272,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 254 */
+/* 261 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -10079,7 +10305,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 255 */
+/* 262 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -10113,6 +10339,986 @@ return /******/ (function(modules) { // webpackBootstrap
 	  console.log('%c[VueI18nManager] ' + text, types[type]);
 	  /* eslint-enable */
 	};
+
+/***/ },
+/* 263 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/*!
+	 * vue-i18n v4.7.1
+	 * (c) 2016 kazuya kawaguchi
+	 * Released under the MIT License.
+	 */
+	'use strict';
+	
+	var babelHelpers = {};
+	babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+	  return typeof obj;
+	} : function (obj) {
+	  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+	};
+	babelHelpers;
+	
+	/**
+	 * warn
+	 *
+	 * @param {String} msg
+	 * @param {Error} [err]
+	 *
+	 */
+	
+	function warn(msg, err) {
+	  if (window.console) {
+	    console.warn('[vue-i18n] ' + msg);
+	    if (err) {
+	      console.warn(err.stack);
+	    }
+	  }
+	}
+	
+	function Asset (Vue, langVM) {
+	  /**
+	   * Register or retrieve a global locale definition.
+	   *
+	   * @param {String} id
+	   * @param {Object | Function | Promise} definition
+	   * @param {Function} cb
+	   */
+	
+	  Vue.locale = function (id, definition, cb) {
+	    if (definition === undefined) {
+	      // gettter
+	      return langVM.locales[id];
+	    } else {
+	      // setter
+	      if (definition === null) {
+	        langVM.locales[id] = undefined;
+	        delete langVM.locales[id];
+	      } else {
+	        setLocale(id, definition, function (locale) {
+	          if (locale) {
+	            langVM.locales[id] = locale;
+	          } else {
+	            warn('failed set `' + id + '` locale');
+	          }
+	          cb && cb();
+	        });
+	      }
+	    }
+	  };
+	}
+	
+	function setLocale(id, definition, cb) {
+	  var _this = this;
+	
+	  if ((typeof definition === 'undefined' ? 'undefined' : babelHelpers.typeof(definition)) === 'object') {
+	    // sync
+	    cb(definition);
+	  } else {
+	    (function () {
+	      var future = definition.call(_this);
+	      if (typeof future === 'function') {
+	        if (future.resolved) {
+	          // cached
+	          cb(future.resolved);
+	        } else if (future.requested) {
+	          // pool callbacks
+	          future.pendingCallbacks.push(cb);
+	        } else {
+	          (function () {
+	            future.requested = true;
+	            var cbs = future.pendingCallbacks = [cb];
+	            future(function (locale) {
+	              // resolve
+	              future.resolved = locale;
+	              for (var i = 0, l = cbs.length; i < l; i++) {
+	                cbs[i](locale);
+	              }
+	            }, function () {
+	              // reject
+	              cb();
+	            });
+	          })();
+	        }
+	      } else if (isPromise(future)) {
+	        // promise
+	        future.then(function (locale) {
+	          // resolve
+	          cb(locale);
+	        }, function () {
+	          // reject
+	          cb();
+	        }).catch(function (err) {
+	          console.error(err);
+	          cb();
+	        });
+	      }
+	    })();
+	  }
+	}
+	
+	/**
+	 * Forgiving check for a promise
+	 *
+	 * @param {Object} p
+	 * @return {Boolean}
+	 */
+	
+	function isPromise(p) {
+	  return p && typeof p.then === 'function';
+	}
+	
+	function Override (Vue, langVM, version) {
+	  function update(vm) {
+	    if (version > 1) {
+	      vm.$forceUpdate();
+	    } else {
+	      var i = vm._watchers.length;
+	      while (i--) {
+	        vm._watchers[i].update(true); // shallow updates
+	      }
+	    }
+	  }
+	
+	  // override _init
+	  var init = Vue.prototype._init;
+	  Vue.prototype._init = function (options) {
+	    var _this = this;
+	
+	    init.call(this, options);
+	
+	    if (!this.$parent) {
+	      // root
+	      this.$lang = langVM;
+	      this._langUnwatch = this.$lang.$watch('$data', function (val, old) {
+	        update(_this);
+	      }, { deep: true });
+	    }
+	  };
+	
+	  // override _destroy
+	  var destroy = Vue.prototype._destroy;
+	  Vue.prototype._destroy = function () {
+	    if (!this.$parent && this._langUnwatch) {
+	      this._langUnwatch();
+	      this._langUnwatch = null;
+	      this.$lang = null;
+	    }
+	
+	    destroy.apply(this, arguments);
+	  };
+	}
+	
+	/**
+	 * Observer
+	 */
+	
+	var Watcher = void 0;
+	/**
+	 * getWatcher
+	 *
+	 * @param {Vue} vm
+	 * @return {Watcher}
+	 */
+	
+	function getWatcher(vm) {
+	  if (!Watcher) {
+	    var unwatch = vm.$watch('__watcher__', function (a) {});
+	    Watcher = vm._watchers[0].constructor;
+	    unwatch();
+	  }
+	  return Watcher;
+	}
+	
+	var Dep = void 0;
+	/**
+	 * getDep
+	 *
+	 * @param {Vue} vm
+	 * @return {Dep}
+	 */
+	
+	function getDep(vm) {
+	  if (!Dep) {
+	    Dep = vm._data.__ob__.dep.constructor;
+	  }
+	  return Dep;
+	}
+	
+	var fallback = void 0; // fallback lang
+	var missingHandler = null; // missing handler
+	var i18nFormatter = null; // custom formatter
+	
+	function Config (Vue, langVM, lang) {
+	  var bind = Vue.util.bind;
+	
+	  var Watcher = getWatcher(langVM);
+	  var Dep = getDep(langVM);
+	
+	  function makeComputedGetter(getter, owner) {
+	    var watcher = new Watcher(owner, getter, null, {
+	      lazy: true
+	    });
+	
+	    return function computedGetter() {
+	      watcher.dirty && watcher.evaluate();
+	      Dep.target && watcher.depend();
+	      return watcher.value;
+	    };
+	  }
+	
+	  // define Vue.config.lang configration
+	  Object.defineProperty(Vue.config, 'lang', {
+	    enumerable: true,
+	    configurable: true,
+	    get: makeComputedGetter(function () {
+	      return langVM.lang;
+	    }, langVM),
+	    set: bind(function (val) {
+	      langVM.lang = val;
+	    }, langVM)
+	  });
+	
+	  // define Vue.config.fallbackLang configration
+	  fallback = lang;
+	  Object.defineProperty(Vue.config, 'fallbackLang', {
+	    enumerable: true,
+	    configurable: true,
+	    get: function get() {
+	      return fallback;
+	    },
+	    set: function set(val) {
+	      fallback = val;
+	    }
+	  });
+	
+	  // define Vue.config.missingHandler configration
+	  Object.defineProperty(Vue.config, 'missingHandler', {
+	    enumerable: true,
+	    configurable: true,
+	    get: function get() {
+	      return missingHandler;
+	    },
+	    set: function set(val) {
+	      missingHandler = val;
+	    }
+	  });
+	
+	  // define Vue.config.i18Formatter configration
+	  Object.defineProperty(Vue.config, 'i18nFormatter', {
+	    enumerable: true,
+	    configurable: true,
+	    get: function get() {
+	      return i18nFormatter;
+	    },
+	    set: function set(val) {
+	      i18nFormatter = val;
+	    }
+	  });
+	}
+	
+	/**
+	 *  String format template
+	 *  - Inspired:  
+	 *    https://github.com/Matt-Esch/string-template/index.js
+	 */
+	
+	var RE_NARGS = /(%|)\{([0-9a-zA-Z_]+)\}/g;
+	
+	function Format (Vue) {
+	  var hasOwn = Vue.util.hasOwn;
+	
+	  /**
+	   * template
+	   *  
+	   * @param {String} string
+	   * @param {Array} ...args
+	   * @return {String}
+	   */
+	
+	  function template(string) {
+	    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+	      args[_key - 1] = arguments[_key];
+	    }
+	
+	    if (args.length === 1 && babelHelpers.typeof(args[0]) === 'object') {
+	      args = args[0];
+	    } else {
+	      args = {};
+	    }
+	
+	    if (!args || !args.hasOwnProperty) {
+	      args = {};
+	    }
+	
+	    return string.replace(RE_NARGS, function (match, prefix, i, index) {
+	      var result = void 0;
+	
+	      if (string[index - 1] === '{' && string[index + match.length] === '}') {
+	        return i;
+	      } else {
+	        result = hasOwn(args, i) ? args[i] : match;
+	        if (result === null || result === undefined) {
+	          return '';
+	        }
+	
+	        return result;
+	      }
+	    });
+	  }
+	
+	  return template;
+	}
+	
+	/**
+	 *  Path paerser
+	 *  - Inspired:  
+	 *    Vue.js Path parser
+	 */
+	
+	// cache
+	var pathCache = Object.create(null);
+	
+	// actions
+	var APPEND = 0;
+	var PUSH = 1;
+	var INC_SUB_PATH_DEPTH = 2;
+	var PUSH_SUB_PATH = 3;
+	
+	// states
+	var BEFORE_PATH = 0;
+	var IN_PATH = 1;
+	var BEFORE_IDENT = 2;
+	var IN_IDENT = 3;
+	var IN_SUB_PATH = 4;
+	var IN_SINGLE_QUOTE = 5;
+	var IN_DOUBLE_QUOTE = 6;
+	var AFTER_PATH = 7;
+	var ERROR = 8;
+	
+	var pathStateMachine = [];
+	
+	pathStateMachine[BEFORE_PATH] = {
+	  'ws': [BEFORE_PATH],
+	  'ident': [IN_IDENT, APPEND],
+	  '[': [IN_SUB_PATH],
+	  'eof': [AFTER_PATH]
+	};
+	
+	pathStateMachine[IN_PATH] = {
+	  'ws': [IN_PATH],
+	  '.': [BEFORE_IDENT],
+	  '[': [IN_SUB_PATH],
+	  'eof': [AFTER_PATH]
+	};
+	
+	pathStateMachine[BEFORE_IDENT] = {
+	  'ws': [BEFORE_IDENT],
+	  'ident': [IN_IDENT, APPEND]
+	};
+	
+	pathStateMachine[IN_IDENT] = {
+	  'ident': [IN_IDENT, APPEND],
+	  '0': [IN_IDENT, APPEND],
+	  'number': [IN_IDENT, APPEND],
+	  'ws': [IN_PATH, PUSH],
+	  '.': [BEFORE_IDENT, PUSH],
+	  '[': [IN_SUB_PATH, PUSH],
+	  'eof': [AFTER_PATH, PUSH]
+	};
+	
+	pathStateMachine[IN_SUB_PATH] = {
+	  "'": [IN_SINGLE_QUOTE, APPEND],
+	  '"': [IN_DOUBLE_QUOTE, APPEND],
+	  '[': [IN_SUB_PATH, INC_SUB_PATH_DEPTH],
+	  ']': [IN_PATH, PUSH_SUB_PATH],
+	  'eof': ERROR,
+	  'else': [IN_SUB_PATH, APPEND]
+	};
+	
+	pathStateMachine[IN_SINGLE_QUOTE] = {
+	  "'": [IN_SUB_PATH, APPEND],
+	  'eof': ERROR,
+	  'else': [IN_SINGLE_QUOTE, APPEND]
+	};
+	
+	pathStateMachine[IN_DOUBLE_QUOTE] = {
+	  '"': [IN_SUB_PATH, APPEND],
+	  'eof': ERROR,
+	  'else': [IN_DOUBLE_QUOTE, APPEND]
+	};
+	
+	/**
+	 * Check if an expression is a literal value.
+	 *
+	 * @param {String} exp
+	 * @return {Boolean}
+	 */
+	
+	var literalValueRE = /^\s?(true|false|-?[\d.]+|'[^']*'|"[^"]*")\s?$/;
+	function isLiteral(exp) {
+	  return literalValueRE.test(exp);
+	}
+	
+	/**
+	 * Strip quotes from a string
+	 *
+	 * @param {String} str
+	 * @return {String | false}
+	 */
+	
+	function stripQuotes(str) {
+	  var a = str.charCodeAt(0);
+	  var b = str.charCodeAt(str.length - 1);
+	  return a === b && (a === 0x22 || a === 0x27) ? str.slice(1, -1) : str;
+	}
+	
+	/**
+	 * Determine the type of a character in a keypath.
+	 *
+	 * @param {Char} ch
+	 * @return {String} type
+	 */
+	
+	function getPathCharType(ch) {
+	  if (ch === undefined) {
+	    return 'eof';
+	  }
+	
+	  var code = ch.charCodeAt(0);
+	
+	  switch (code) {
+	    case 0x5B: // [
+	    case 0x5D: // ]
+	    case 0x2E: // .
+	    case 0x22: // "
+	    case 0x27: // '
+	    case 0x30:
+	      // 0
+	      return ch;
+	
+	    case 0x5F: // _
+	    case 0x24: // $
+	    case 0x2D:
+	      // -
+	      return 'ident';
+	
+	    case 0x20: // Space
+	    case 0x09: // Tab
+	    case 0x0A: // Newline
+	    case 0x0D: // Return
+	    case 0xA0: // No-break space
+	    case 0xFEFF: // Byte Order Mark
+	    case 0x2028: // Line Separator
+	    case 0x2029:
+	      // Paragraph Separator
+	      return 'ws';
+	  }
+	
+	  // a-z, A-Z
+	  if (code >= 0x61 && code <= 0x7A || code >= 0x41 && code <= 0x5A) {
+	    return 'ident';
+	  }
+	
+	  // 1-9
+	  if (code >= 0x31 && code <= 0x39) {
+	    return 'number';
+	  }
+	
+	  return 'else';
+	}
+	
+	/**
+	 * Format a subPath, return its plain form if it is
+	 * a literal string or number. Otherwise prepend the
+	 * dynamic indicator (*).
+	 *
+	 * @param {String} path
+	 * @return {String}
+	 */
+	
+	function formatSubPath(path) {
+	  var trimmed = path.trim();
+	  // invalid leading 0
+	  if (path.charAt(0) === '0' && isNaN(path)) {
+	    return false;
+	  }
+	
+	  return isLiteral(trimmed) ? stripQuotes(trimmed) : '*' + trimmed;
+	}
+	
+	/**
+	 * Parse a string path into an array of segments
+	 *
+	 * @param {String} path
+	 * @return {Array|undefined}
+	 */
+	
+	function parse(path) {
+	  var keys = [];
+	  var index = -1;
+	  var mode = BEFORE_PATH;
+	  var subPathDepth = 0;
+	  var c = void 0,
+	      newChar = void 0,
+	      key = void 0,
+	      type = void 0,
+	      transition = void 0,
+	      action = void 0,
+	      typeMap = void 0;
+	
+	  var actions = [];
+	
+	  actions[PUSH] = function () {
+	    if (key !== undefined) {
+	      keys.push(key);
+	      key = undefined;
+	    }
+	  };
+	
+	  actions[APPEND] = function () {
+	    if (key === undefined) {
+	      key = newChar;
+	    } else {
+	      key += newChar;
+	    }
+	  };
+	
+	  actions[INC_SUB_PATH_DEPTH] = function () {
+	    actions[APPEND]();
+	    subPathDepth++;
+	  };
+	
+	  actions[PUSH_SUB_PATH] = function () {
+	    if (subPathDepth > 0) {
+	      subPathDepth--;
+	      mode = IN_SUB_PATH;
+	      actions[APPEND]();
+	    } else {
+	      subPathDepth = 0;
+	      key = formatSubPath(key);
+	      if (key === false) {
+	        return false;
+	      } else {
+	        actions[PUSH]();
+	      }
+	    }
+	  };
+	
+	  function maybeUnescapeQuote() {
+	    var nextChar = path[index + 1];
+	    if (mode === IN_SINGLE_QUOTE && nextChar === "'" || mode === IN_DOUBLE_QUOTE && nextChar === '"') {
+	      index++;
+	      newChar = '\\' + nextChar;
+	      actions[APPEND]();
+	      return true;
+	    }
+	  }
+	
+	  while (mode != null) {
+	    index++;
+	    c = path[index];
+	
+	    if (c === '\\' && maybeUnescapeQuote()) {
+	      continue;
+	    }
+	
+	    type = getPathCharType(c);
+	    typeMap = pathStateMachine[mode];
+	    transition = typeMap[type] || typeMap['else'] || ERROR;
+	
+	    if (transition === ERROR) {
+	      return; // parse error
+	    }
+	
+	    mode = transition[0];
+	    action = actions[transition[1]];
+	    if (action) {
+	      newChar = transition[2];
+	      newChar = newChar === undefined ? c : newChar;
+	      if (action() === false) {
+	        return;
+	      }
+	    }
+	
+	    if (mode === AFTER_PATH) {
+	      keys.raw = path;
+	      return keys;
+	    }
+	  }
+	}
+	
+	/**
+	 * External parse that check for a cache hit first
+	 *
+	 * @param {String} path
+	 * @return {Array|undefined}
+	 */
+	
+	function parsePath(path) {
+	  var hit = pathCache[path];
+	  if (!hit) {
+	    hit = parse(path);
+	    if (hit) {
+	      pathCache[path] = hit;
+	    }
+	  }
+	  return hit;
+	}
+	
+	function Path (Vue) {
+	  var _Vue$util = Vue.util;
+	  var isObject = _Vue$util.isObject;
+	  var isPlainObject = _Vue$util.isPlainObject;
+	  var hasOwn = _Vue$util.hasOwn;
+	
+	
+	  function empty(target) {
+	    if (target === null || target === undefined) {
+	      return true;
+	    }
+	
+	    if (Array.isArray(target)) {
+	      if (target.length > 0) {
+	        return false;
+	      }
+	      if (target.length === 0) {
+	        return true;
+	      }
+	    } else if (isPlainObject(target)) {
+	      /* eslint-disable prefer-const */
+	      for (var key in target) {
+	        if (hasOwn(target, key)) {
+	          return false;
+	        }
+	      }
+	      /* eslint-enable prefer-const */
+	    }
+	
+	    return true;
+	  }
+	
+	  /**
+	   * Get value from path string
+	   *
+	   * @param {Object} obj
+	   * @param {String} path
+	   * @return value
+	   */
+	
+	  function getValue(obj, path) {
+	    if (!isObject(obj)) {
+	      return null;
+	    }
+	
+	    var paths = parsePath(path);
+	    if (empty(paths)) {
+	      return null;
+	    }
+	
+	    var length = paths.length;
+	    var ret = null;
+	    var last = obj;
+	    var i = 0;
+	    while (i < length) {
+	      var value = last[paths[i]];
+	      if (value === undefined) {
+	        last = null;
+	        break;
+	      }
+	      last = value;
+	      i++;
+	    }
+	
+	    ret = last;
+	    return ret;
+	  }
+	
+	  return getValue;
+	}
+	
+	/**
+	 * extend
+	 *
+	 * @param {Vue} Vue
+	 * @return {Vue}
+	 */
+	
+	function Extend (Vue) {
+	  var _Vue$util = Vue.util;
+	  var isObject = _Vue$util.isObject;
+	  var bind = _Vue$util.bind;
+	
+	  var format = Format(Vue);
+	  var getValue = Path(Vue);
+	
+	  function parseArgs() {
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+	
+	    var lang = Vue.config.lang;
+	    var fallback = Vue.config.fallbackLang;
+	
+	    if (args.length === 1) {
+	      if (isObject(args[0]) || Array.isArray(args[0])) {
+	        args = args[0];
+	      } else if (typeof args[0] === 'string') {
+	        lang = args[0];
+	      }
+	    } else if (args.length === 2) {
+	      if (typeof args[0] === 'string') {
+	        lang = args[0];
+	      }
+	      if (isObject(args[1]) || Array.isArray(args[1])) {
+	        args = args[1];
+	      }
+	    }
+	
+	    return { lang: lang, fallback: fallback, params: args };
+	  }
+	
+	  function interpolate(locale, key, args) {
+	    if (!locale) {
+	      return null;
+	    }
+	
+	    var val = getValue(locale, key) || locale[key];
+	    if (!val) {
+	      return null;
+	    }
+	
+	    // Check for the existance of links within the translated string
+	    if (val.indexOf('@:') >= 0) {
+	      // Match all the links within the local
+	      // We are going to replace each of
+	      // them with its translation
+	      var matches = val.match(/(@:[\w|.]+)/g);
+	      for (var idx in matches) {
+	        var link = matches[idx];
+	        // Remove the leading @:
+	        var linkPlaceholder = link.substr(2);
+	        // Translate the link
+	        var translatedstring = interpolate(locale, linkPlaceholder, args);
+	        // Replace the link with the translated string
+	        val = val.replace(link, translatedstring);
+	      }
+	    }
+	
+	    return !args ? val : Vue.config.i18nFormatter ? Vue.config.i18nFormatter.apply(null, [val].concat(args)) : format(val, args);
+	  }
+	
+	  function translate(getter, lang, fallback, key, params) {
+	    var res = null;
+	    res = interpolate(getter(lang), key, params);
+	    if (res) {
+	      return res;
+	    }
+	
+	    res = interpolate(getter(fallback), key, params);
+	    if (res) {
+	      if (process.env.NODE_ENV !== 'production') {
+	        warn('Fall back to translate the keypath "' + key + '" with "' + fallback + '" language.');
+	      }
+	      return res;
+	    } else {
+	      return null;
+	    }
+	  }
+	
+	  function warnDefault(lang, key, vm) {
+	    if (process.env.NODE_ENV !== 'production') {
+	      warn('Cannot translate the value of keypath "' + key + '". ' + 'Use the value of keypath as default');
+	    }
+	    Vue.config.missingHandler && Vue.config.missingHandler.apply(null, [lang, key, vm]);
+	    return key;
+	  }
+	
+	  function getAssetLocale(lang) {
+	    return Vue.locale(lang);
+	  }
+	
+	  function getComponentLocale(lang) {
+	    return this.$options.locales[lang];
+	  }
+	
+	  function getOldChoiceIndexFixed(choice) {
+	    return choice ? choice > 1 ? 1 : 0 : 1;
+	  }
+	
+	  function getChoiceIndex(choice, choicesLength) {
+	    choice = Math.abs(choice);
+	
+	    if (choicesLength === 2) {
+	      return getOldChoiceIndexFixed(choice);
+	    }
+	
+	    return choice ? Math.min(choice, 2) : 0;
+	  }
+	
+	  function fetchChoice(locale, choice) {
+	    if (!locale && typeof locale !== 'string') {
+	      return null;
+	    }
+	    var choices = locale.split('|');
+	
+	    choice = getChoiceIndex(choice, choices.length);
+	    if (!choices[choice]) {
+	      return locale;
+	    }
+	    return choices[choice].trim();
+	  }
+	
+	  /**
+	   * Vue.t
+	   *
+	   * @param {String} key
+	   * @param {Array} ...args
+	   * @return {String}
+	   */
+	
+	  Vue.t = function (key) {
+	    for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+	      args[_key2 - 1] = arguments[_key2];
+	    }
+	
+	    if (!key) {
+	      return '';
+	    }
+	
+	    var _parseArgs = parseArgs.apply(undefined, args);
+	
+	    var lang = _parseArgs.lang;
+	    var fallback = _parseArgs.fallback;
+	    var params = _parseArgs.params;
+	
+	    return translate(getAssetLocale, lang, fallback, key, params) || warnDefault(lang, key, null);
+	  };
+	
+	  /**
+	   * Vue.tc
+	   *
+	   * @param {String} key
+	   * @param {number|undefined} choice
+	   * @param {Array} ...args
+	   * @return {String}
+	   */
+	
+	  Vue.tc = function (key, choice) {
+	    for (var _len3 = arguments.length, args = Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+	      args[_key3 - 2] = arguments[_key3];
+	    }
+	
+	    return fetchChoice(Vue.t.apply(Vue, [key].concat(args)), choice);
+	  };
+	
+	  /**
+	   * $t
+	   *
+	   * @param {String} key
+	   * @param {Array} ...args
+	   * @return {String}
+	   */
+	
+	  Vue.prototype.$t = function (key) {
+	    if (!key) {
+	      return '';
+	    }
+	
+	    for (var _len4 = arguments.length, args = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+	      args[_key4 - 1] = arguments[_key4];
+	    }
+	
+	    var _parseArgs2 = parseArgs.apply(undefined, args);
+	
+	    var lang = _parseArgs2.lang;
+	    var fallback = _parseArgs2.fallback;
+	    var params = _parseArgs2.params;
+	
+	    var res = null;
+	    if (this.$options.locales) {
+	      res = translate(bind(getComponentLocale, this), lang, fallback, key, params);
+	      if (res) {
+	        return res;
+	      }
+	    }
+	    return translate(getAssetLocale, lang, fallback, key, params) || warnDefault(lang, key, this);
+	  };
+	
+	  /**
+	   * $tc
+	   *
+	   * @param {String} key
+	   * @param {number|undefined} choice
+	   * @param {Array} ...args
+	   * @return {String}
+	   */
+	
+	  Vue.prototype.$tc = function (key, choice) {
+	    if (typeof choice !== 'number' && typeof choice !== 'undefined') {
+	      return key;
+	    }
+	
+	    for (var _len5 = arguments.length, args = Array(_len5 > 2 ? _len5 - 2 : 0), _key5 = 2; _key5 < _len5; _key5++) {
+	      args[_key5 - 2] = arguments[_key5];
+	    }
+	
+	    return fetchChoice(this.$t.apply(this, [key].concat(args)), choice);
+	  };
+	
+	  return Vue;
+	}
+	
+	var langVM = void 0; // singleton
+	
+	/**
+	 * plugin
+	 *
+	 * @param {Object} Vue
+	 * @param {Object} opts
+	 */
+	
+	function plugin(Vue) {
+	  var opts = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+	
+	  var version = Vue.version && Number(Vue.version.split('.')[0]) || -1;
+	
+	  if (process.env.NODE_ENV !== 'production' && plugin.installed) {
+	    warn('already installed.');
+	    return;
+	  }
+	
+	  if (process.env.NODE_ENV !== 'production' && version < 1) {
+	    warn('vue-i18n (' + plugin.version + ') need to use vue version 1.0 or later (vue version: ' + Vue.version + ').');
+	    return;
+	  }
+	
+	  var lang = 'en';
+	  setupLangVM(Vue, lang);
+	
+	  Asset(Vue, langVM);
+	  Override(Vue, langVM, version);
+	  Config(Vue, langVM, lang);
+	  Extend(Vue);
+	}
+	
+	function setupLangVM(Vue, lang) {
+	  var silent = Vue.config.silent;
+	  Vue.config.silent = true;
+	  if (!langVM) {
+	    langVM = new Vue({ data: { lang: lang, locales: {} } });
+	  }
+	  Vue.config.silent = silent;
+	}
+	
+	plugin.version = '4.7.1';
+	
+	if (typeof window !== 'undefined' && window.Vue) {
+	  window.Vue.use(plugin);
+	}
+	
+	module.exports = plugin;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }
 /******/ ])

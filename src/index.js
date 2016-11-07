@@ -1,3 +1,4 @@
+import VueI18n from 'vue-i18n'
 import find from 'lodash/find'
 import { UPDATE_I18N_STATE, CHANGE_LANGUAGE } from './store/module/events'
 import module from './store/module'
@@ -27,10 +28,8 @@ class I18n {
       const urlLanguage = find(languages, { urlPrefix: urlCode })
 
       /**
-       * In case of a failed call to an not existing json file,
-       * the store will pushing the default language as a fallback.
-       * Here we just redirect the browser to the current page
-       * and inject the current url prefix.
+       * In case the language is not provided or doesn't exists,
+       * the default language will be used
        */
       if (!urlLanguage && !from.name) {
         const { urlPrefix } = find(languages, { code: defaultCode })
@@ -44,13 +43,10 @@ class I18n {
       /**
        * Check if the detected language in the URL is also the current
        * translated language, otherwise it needs to be updated.
-       * Browser language has prioriry over the store state.
-       * Next method or vue-router needs to be called after the translation
-       * has been retrieved or there's a chance that the application
-       * is not entirely affected.
+       * Browser language has prioriry over the store state
        */
       if (urlLanguage && urlLanguage.urlPrefix !== currentLanguage.urlPrefix) {
-        this.setLanguage(urlLanguage.code).then(() => next())
+        this.setLanguage(urlLanguage.code, false).then(() => next())
         return
       }
 
@@ -76,21 +72,24 @@ class I18n {
 
   /**
    * Set language
-   * It sets the new requested language and returns the translations
-   * which are then applyed via vue-i18n.
+   * It sets the new requested language, replaces the url prefix in the url
+   * and returns translations which are then applyed using vue-i18n.
    * If no language is passed, the language will be the one choosen as default
-   * @type {String}
+   * @param {String} [code=null]
+   * @param {Boolean} [replaceRoute=true]
+   * @return {Promise}
    */
-  async setLanguage (code = null) {
+  async setLanguage (code = null, replaceRoute = true) {
     const { defaultCode } = this._store.getters
     const newCode = code || defaultCode
     const translations = await this._store.dispatch(CHANGE_LANGUAGE, newCode)
 
-    /**
-     * If the route is defined we also going to replace the current language
-     * in the url with the new selected
-     */
-    if (this._router && this._router.currentRoute) {
+    // Set vue-i18n locale configuration
+    this._vue.locale(newCode, translations, () => {
+      this._vue.config.lang = newCode
+    })
+
+    if (replaceRoute && (this._router && this._router.currentRoute)) {
       const { currentRoute } = this._router
       const { urlPrefix } = this._store.getters.currentLanguage
 
@@ -101,11 +100,6 @@ class I18n {
         }
       })
     }
-
-    // Set vue-i18n locale configuration
-    this._vue.locale(newCode, translations, () => {
-      this._vue.config.lang = newCode
-    })
   }
 
   /**
@@ -133,6 +127,8 @@ class I18n {
  */
 export default function install (Vue, options = {}) {
   const I18nInstance = new I18n(Vue, options)
+
+  Vue.use(VueI18n)
 
   Vue.$i18n = I18nInstance
   Vue.prototype.$i18n = I18nInstance

@@ -1,4 +1,5 @@
 import find from 'lodash/find'
+import map from 'lodash/map'
 import assignIn from 'lodash/assignIn'
 import storageHelper from 'storage-helper'
 import {
@@ -27,6 +28,12 @@ const mutations = {
 
   [UPDATE_I18N_STATE] (state, newState) {
     state = assignIn(state, newState)
+
+    if (state.availableLanguages.length) {
+      state.languages = map(state.availableLanguages, (code) => {
+        return find(state.languages, { code })
+      })
+    }
   },
 
   [CHANGE_LANGUAGE] (state, code) {
