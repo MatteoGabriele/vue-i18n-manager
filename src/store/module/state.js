@@ -9,6 +9,7 @@ const state = {
   defaultCode: 'en-GB',
   currentLanguage: null,
   initialized: false,
+  pending: false,
   error: false,
   errorMessage: null,
   translations: null,

@@ -7,13 +7,15 @@ import {
   REMOVE_LANGUAGE_PERSISTENCY,
   UPDATE_I18N_STATE,
   CHANGE_LANGUAGE,
-  SET_TRANSLATION
+  SET_TRANSLATION,
+  SET_TRANSLATION_ERROR
 } from './events'
 
 export default {
   [REMOVE_LANGUAGE_PERSISTENCY]: ({ commit }) => {
     commit(REMOVE_LANGUAGE_PERSISTENCY)
   },
+
   [UPDATE_I18N_STATE]: async ({ commit, state }, payload) => {
     const params = (payload && payload.then) ? await payload : payload
     const availableKeys = keys(state)
@@ -27,25 +29,29 @@ export default {
 
     commit(UPDATE_I18N_STATE, parsedParams)
   },
+
   [SET_TRANSLATION]: async ({ commit, state }, code) => {
     const { path, languages, defaultCode } = state
     const language = find(languages, { code: code || defaultCode })
+    const url = `${path}/${language.translateTo}.json`
 
     try {
-      const { data } = await axios.get(`${path}/${language.translateTo}.json`)
+      const { data } = await axios.get(url)
       commit(SET_TRANSLATION, data)
 
       return data
-    } catch (e) {}
+    } catch (e) {
+      commit(SET_TRANSLATION_ERROR, { message: e.message, request: url })
+      return {}
+    }
   },
-  [CHANGE_LANGUAGE]: async ({ dispatch, commit, state }, code) => {
-    const { currentLanguage, defaultCode } = state
 
-    if (code && (currentLanguage.code === code)) {
+  [CHANGE_LANGUAGE]: async ({ dispatch, commit, state }, code) => {
+    const { currentLanguage } = state
+
+    if (code && (currentLanguage && currentLanguage.code === code)) {
       return
     }
-
-    code = code || defaultCode
 
     commit(CHANGE_LANGUAGE, code)
 

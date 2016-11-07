@@ -6,6 +6,8 @@ export const initialized = state => state.initialized
 
 export const currentLanguage = state => state.currentLanguage
 
+export const langUrlPrefix = state => state.currentLanguage.urlPrefix
+
 export const defaultCode = state => {
   const { persistent, defaultCode, storageKey } = state
   const storagedLangCode = storageHelper.getItem(storageKey)
