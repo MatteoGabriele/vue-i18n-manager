@@ -5,7 +5,6 @@
 const state = {
   persistent: true,
   currentLanguage: null,
-  initialized: false,
   pending: false,
   error: false,
   errorMessage: null,

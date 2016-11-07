@@ -2,8 +2,6 @@ import storageHelper from 'storage-helper'
 
 export const languages = state => state.languages
 
-export const initialized = state => state.initialized
-
 export const currentLanguage = state => state.currentLanguage
 
 export const langUrlPrefix = state => state.currentLanguage.urlPrefix

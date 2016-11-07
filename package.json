@@ -1,7 +1,7 @@
 {
   "name": "vue-i18n-manager",
-  "version": "0.0.1",
-  "description": "vue-i18n manager for Vue 2.0",
+  "version": "1.0.0",
+  "description": "vue-i18n manager for Vue",
   "main": "dist/vue-i18n-manager.js",
   "scripts": {
     "dev": "./node_modules/.bin/webpack -w"
