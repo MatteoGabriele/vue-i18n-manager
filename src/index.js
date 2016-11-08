@@ -1,10 +1,9 @@
 import VueI18n from 'vue-i18n'
-import map from 'lodash/map'
 import merge from 'lodash/merge'
 import find from 'lodash/find'
 import { UPDATE_I18N_STATE, CHANGE_LANGUAGE } from './store/module/events'
 import module from './store/module'
-import { log, has } from './utils'
+import { log } from './utils'
 
 class I18n {
   constructor (Vue, { store, router, config }) {
