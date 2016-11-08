@@ -111,7 +111,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    (0, _classCallCheck3.default)(this, I18n);
 	
 	    if (!store) {
-	      (0, _utils.log)('You need to add the Vuex store in the plugin options.', 'error');
+	      (0, _utils.log)('You need to add the VuexStore instance in the plugin options', 'error');
 	      return;
 	    }
 	
@@ -141,7 +141,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	        /**
 	         * In case the language is not provided or doesn't exists,
-	         * the default language will be used
+	         * the default language will be used.
+	         * This will only be fired on landing, because most of the time
+	         * the URL doesn't contain a language prefix or the user typed
+	         * a different language on purpose and we need to check it.
 	         */
 	        if (!urlLanguage && !from.name) {
 	          var _find = (0, _find3.default)(languages, { code: defaultCode });
@@ -151,7 +154,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	          return next({
 	            name: to.name,
-	            params: { lang: urlPrefix }
+	            params: {
+	              lang: urlPrefix
+	            }
 	          });
 	        }
 	
@@ -238,6 +243,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	              case 0:
 	                defaultCode = this._store.getters.defaultCode;
 	                newCode = code || defaultCode;
+	
+	                // Get translations
+	
 	                _context2.next = 4;
 	                return this._store.dispatch(_events.CHANGE_LANGUAGE, newCode);
 	
@@ -250,6 +258,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                  _this2._vue.config.lang = newCode;
 	                });
 	
+	                // Modify the URL with the new language
 	                if (replaceRoute && this._router && this._router.currentRoute) {
 	                  currentRoute = this._router.currentRoute;
 	                  urlPrefix = this._store.getters.currentLanguage.urlPrefix;
@@ -7710,6 +7719,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _storageHelper2 = _interopRequireDefault(_storageHelper);
 	
+	var _utils = __webpack_require__(263);
+	
 	var _events = __webpack_require__(192);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -7723,6 +7734,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}), (0, _defineProperty3.default)(_mutations, _events.SET_TRANSLATION_ERROR, function (state, errorMessage) {
 	  state.errorMessage = errorMessage;
 	  state.error = true;
+	
+	  // Display the error
+	  (0, _utils.log)(errorMessage, 'error');
 	}), (0, _defineProperty3.default)(_mutations, _events.UPDATE_I18N_STATE, function (state, newState) {
 	  state = (0, _assignIn2.default)(state, newState);
 	
@@ -7730,6 +7744,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    state.languages = (0, _map2.default)(state.availableLanguages, function (code) {
 	      return (0, _find2.default)(state.languages, { code: code });
 	    });
+	
+	    // Check if the default language code matches at least one of the provided languages,
+	    // otherwise the application could break.
+	    var match = (0, _find2.default)(state.languages, { code: state.defaultCode });
+	
+	    if (!match) {
+	      (0, _utils.log)('The default code must matches at least one language in the proveded list', 'error');
+	    }
 	  }
 	}), (0, _defineProperty3.default)(_mutations, _events.CHANGE_LANGUAGE, function (state, code) {
 	  var languages = state.languages;
@@ -9260,7 +9282,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var commit = _ref5.commit;
 	    var state = _ref5.state;
 	
-	    var path, languages, defaultCode, language, url, _ref6, data;
+	    var path, languages, defaultCode, language, url, _ref6, data, message;
 	
 	    return _regenerator2.default.wrap(function _callee2$(_context2) {
 	      while (1) {
@@ -9286,11 +9308,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	          case 14:
 	            _context2.prev = 14;
 	            _context2.t0 = _context2['catch'](5);
+	            message = _context2.t0.message + ' for ' + url;
 	
-	            commit(_events.SET_TRANSLATION_ERROR, { message: _context2.t0.message, request: url });
+	
+	            if (_context2.t0.response.status === 404) {
+	              message = 'Problems with the translation json file. It doesn\'t exist (' + url + ')';
+	            }
+	
+	            commit(_events.SET_TRANSLATION_ERROR, message);
 	            return _context2.abrupt('return');
 	
-	          case 18:
+	          case 20:
 	          case 'end':
 	            return _context2.stop();
 	        }
@@ -11288,6 +11316,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	exports.has = has;
 	/**
 	 * Logger for different type of messages.
 	 * @param  {String} text
@@ -11302,7 +11331,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return;
 	  }
 	
-	  var style = 'padding: 10px; font-size: 10px; line-height: 30px;';
+	  var style = 'padding: 10px; font-size: 9.5px; line-height: 30px;';
 	
 	  var normal = style + ' background: #333333; color: #f9f9f9';
 	  var success = style + ' background: #219621; color: #ffffff';
@@ -11311,9 +11340,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var types = { normal: normal, error: error, success: success, warning: warning };
 	
 	  /* eslint-disable */
-	  console.log('%c[VueI18nManager] ' + text, types[type]);
+	  console.log('%c[vue-i18n-manager] ' + text, types[type]);
 	  /* eslint-enable */
 	};
+	
+	function has(object, key) {
+	  var keys = key.split('.');
+	  var result = object;
+	
+	  keys.forEach(function (k) {
+	    if (result) {
+	      result = result[k];
+	    }
+	  });
+	
+	  return typeof result !== 'undefined';
+	}
 
 /***/ }
 /******/ ])

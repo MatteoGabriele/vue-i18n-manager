@@ -9,7 +9,7 @@ export const log = (text, type = 'normal', debug = true) => {
     return
   }
 
-  const style = 'padding: 10px; font-size: 10px; line-height: 30px;'
+  const style = 'padding: 10px; font-size: 9.5px; line-height: 30px;'
 
   const normal = `${style} background: #333333; color: #f9f9f9`
   const success = `${style} background: #219621; color: #ffffff`
@@ -18,6 +18,19 @@ export const log = (text, type = 'normal', debug = true) => {
   const types = { normal, error, success, warning }
 
   /* eslint-disable */
-  console.log(`%c[VueI18nManager] ${text}`, types[type])
+  console.log(`%c[vue-i18n-manager] ${text}`, types[type])
   /* eslint-enable */
+}
+
+export function has (object, key) {
+  let keys = key.split('.')
+  let result = object
+
+  keys.forEach((k) => {
+    if (result) {
+      result = result[k]
+    }
+  })
+
+  return typeof result !== 'undefined'
 }

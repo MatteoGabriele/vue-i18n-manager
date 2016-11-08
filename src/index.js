@@ -7,7 +7,7 @@ import { log } from './utils'
 class I18n {
   constructor (Vue, { store, router, config }) {
     if (!store) {
-      log('You need to add the Vuex store in the plugin options.', 'error')
+      log('You need to add the VuexStore instance in the plugin options', 'error')
       return
     }
 
@@ -29,14 +29,19 @@ class I18n {
 
       /**
        * In case the language is not provided or doesn't exists,
-       * the default language will be used
+       * the default language will be used.
+       * This will only be fired on landing, because most of the time
+       * the URL doesn't contain a language prefix or the user typed
+       * a different language on purpose and we need to check it.
        */
       if (!urlLanguage && !from.name) {
         const { urlPrefix } = find(languages, { code: defaultCode })
 
         return next({
           name: to.name,
-          params: { lang: urlPrefix }
+          params: {
+            lang: urlPrefix
+          }
         })
       }
 
@@ -82,6 +87,8 @@ class I18n {
   async setLanguage (code = null, replaceRoute = true) {
     const { defaultCode } = this._store.getters
     const newCode = code || defaultCode
+
+    // Get translations
     const translations = await this._store.dispatch(CHANGE_LANGUAGE, newCode)
 
     // Set vue-i18n locale configuration
@@ -89,6 +96,7 @@ class I18n {
       this._vue.config.lang = newCode
     })
 
+    // Modify the URL with the new language
     if (replaceRoute && (this._router && this._router.currentRoute)) {
       const { currentRoute } = this._router
       const { urlPrefix } = this._store.getters.currentLanguage

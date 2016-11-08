@@ -2,6 +2,7 @@ import find from 'lodash/find'
 import map from 'lodash/map'
 import assignIn from 'lodash/assignIn'
 import storageHelper from 'storage-helper'
+import { log } from '../../utils'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
   UPDATE_I18N_STATE,
@@ -24,6 +25,9 @@ const mutations = {
   [SET_TRANSLATION_ERROR] (state, errorMessage) {
     state.errorMessage = errorMessage
     state.error = true
+
+    // Display the error
+    log(errorMessage, 'error')
   },
 
   [UPDATE_I18N_STATE] (state, newState) {
@@ -33,6 +37,14 @@ const mutations = {
       state.languages = map(state.availableLanguages, (code) => {
         return find(state.languages, { code })
       })
+
+      // Check if the default language code matches at least one of the provided languages,
+      // otherwise the application could break.
+      const match = find(state.languages, { code: state.defaultCode })
+
+      if (!match) {
+        log('The default code must matches at least one language in the proveded list', 'error')
+      }
     }
   },
 

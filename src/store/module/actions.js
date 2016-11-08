@@ -46,7 +46,13 @@ export default {
 
       return data
     } catch (e) {
-      commit(SET_TRANSLATION_ERROR, { message: e.message, request: url })
+      let message = `${e.message} for ${url}`
+
+      if (e.response.status === 404) {
+        message = `Problems with the translation json file. It doesn't exist (${url})`
+      }
+
+      commit(SET_TRANSLATION_ERROR, message)
       return
     }
   },
