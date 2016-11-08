@@ -18,6 +18,14 @@ class I18n {
     this._router = router
   }
 
+  /**
+   * Applies specific functionalities to handle language redirects and URL prefixing.
+   * The application will be able to add the language urlPrefix property in its URL and
+   * to change the application language based on that specific parameter.
+   * If that urlPrefix provided via URL is not valid or it doesn't exist the application
+   * will fallback to the default language.
+   * VueRouter instance is required to unlock this feature.
+   */
   registerRouter () {
     if (!this._router) {
       return
@@ -52,8 +60,7 @@ class I18n {
        * Browser language has prioriry over the store state
        */
       if (urlLanguage && urlLanguage.urlPrefix !== currentLanguage.urlPrefix) {
-        this.setLanguage(urlLanguage.code, false).then(() => next())
-        return
+        return this.setLanguage(urlLanguage.code, false).then(() => next())
       }
 
       next()
