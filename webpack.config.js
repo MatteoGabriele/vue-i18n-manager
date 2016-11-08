@@ -1,8 +1,6 @@
 var path = require('path')
 
 module.exports = {
-  devtool: 'source-map',
-  debug: true,
   entry: [
     './src'
   ],

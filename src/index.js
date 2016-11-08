@@ -1,8 +1,10 @@
 import VueI18n from 'vue-i18n'
+import map from 'lodash/map'
+import merge from 'lodash/merge'
 import find from 'lodash/find'
 import { UPDATE_I18N_STATE, CHANGE_LANGUAGE } from './store/module/events'
 import module from './store/module'
-import { log } from './utils'
+import { log, has } from './utils'
 
 class I18n {
   constructor (Vue, { store, router, config }) {
@@ -56,6 +58,21 @@ class I18n {
       }
 
       next()
+    })
+  }
+
+  /**
+   * Includes the lang param in the route object
+   * @param  {Object} link
+   * @return {Object}
+   */
+  localizeRoute (route) {
+    const { currentLanguage } = this._store.getters
+
+    return merge(route, {
+      params: {
+        lang: currentLanguage.urlPrefix
+      }
     })
   }
 
@@ -129,15 +146,47 @@ class I18n {
 }
 
 /**
- * Expose the install function to let Vue install the plugin
+ * Route parser takes the current routes object before is injected in the VueRouter instance
+ * and it returns the necessary tree structure to enable language prefixing
+ * @param  {Array} routes
+ * @return {Array}
+ */
+export const routeParser = (routes) => {
+  return [
+    {
+      path: '/:lang',
+      name: 'root',
+      component: {
+        template: '<router-view></router-view>'
+      },
+      children: routes
+    },
+    {
+      path: '/*',
+      redirect: '/en'
+    }
+  ]
+}
+
+/**
+ * Expose the install function to let Vue install the pm plugin
  * @param  {Vue instance} Vue
  * @param  {Object} [options={}]
  */
 export default function install (Vue, options = {}) {
   const I18nInstance = new I18n(Vue, options)
 
-  Vue.use(VueI18n)
+  // Check if vue-i18n is not installed
+  if (!Vue.config.lang) {
+    Vue.use(VueI18n)
+  }
 
   Vue.$i18n = I18nInstance
-  Vue.prototype.$i18n = I18nInstance
+
+  Vue.mixin({
+    methods: {
+      $localize: I18nInstance.localizeRoute.bind(I18nInstance),
+      $setLanguage: I18nInstance.setLanguage.bind(I18nInstance)
+    }
+  })
 }
