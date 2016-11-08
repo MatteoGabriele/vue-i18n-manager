@@ -43,7 +43,7 @@ const mutations = {
       const match = find(state.languages, { code: state.defaultCode })
 
       if (!match) {
-        log('The default code must matches at least one language in the proveded list', 'error')
+        log('The default code must matches at least one language in the provided list', 'error')
       }
     }
   },
