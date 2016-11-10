@@ -1,7 +1,7 @@
 import VueI18n from 'vue-i18n'
 import merge from 'lodash/merge'
 import find from 'lodash/find'
-import { UPDATE_I18N_STATE, CHANGE_LANGUAGE } from './store/module/events'
+import { UPDATE_I18N_STATE, SET_LANGUAGE } from './store/module/events'
 import module from './store/module'
 import { log } from './utils'
 
@@ -112,7 +112,7 @@ class I18n {
     const newCode = code || defaultCode
 
     // Get translations
-    const translations = await this._store.dispatch(CHANGE_LANGUAGE, newCode)
+    const translations = await this._store.dispatch(SET_LANGUAGE, newCode)
 
     // Set vue-i18n locale configuration
     this._vue.locale(newCode, translations, () => {
