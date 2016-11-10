@@ -10,28 +10,24 @@ import {
   SET_TRANSLATION
 } from '../../src/store/module/events'
 
-/**
- * The storeState needs to be reset every time an assumption runs,
- * so to achieve that, the storeState needs to be copied in a local variable
- */
 let state
 
 const dutch = {
   code: 'nl-NL',
   urlPrefix: 'nl',
-  translateTo: 'nl-NL'
+  translateTo: 'nl_NL'
 }
 const english = {
   name: 'English',
   code: 'en-GB',
   urlPrefix: 'en',
-  translateTo: 'en-GB'
+  translateTo: 'en_GB'
 }
 const italian = {
   name: 'Italiano',
   code: 'it-IT',
   urlPrefix: 'it',
-  translateTo: 'it-IT'
+  translateTo: 'it_IT'
 }
 
 /**
@@ -41,12 +37,16 @@ beforeEach(() => {
   state = { ...storeState }
 })
 
+
+
 describe('REMOVE_LANGUAGE_PERSISTENCY', () => {
-  it ('should set the persistent parameter to false', () => {
+  it ('should remove persistency of language in the browser', () => {
     mutations[REMOVE_LANGUAGE_PERSISTENCY](state)
     expect(state.persistent).to.be.false
   })
 })
+
+
 
 describe('UPDATE_I18N_STATE', () => {
   it ('should accept parameters that are in the default state only', () => {
@@ -62,7 +62,7 @@ describe('UPDATE_I18N_STATE', () => {
     expect(state.defaultCode).to.equal(dutch.code)
   })
 
-  it ('should throw an error if the defaultCode doesn\'t match any listed languages', () => {
+  it ('should throw an error if the defaultCode doesn\'t match any language', () => {
     const newState = {
       defaultCode: dutch.code
     }
@@ -74,7 +74,7 @@ describe('UPDATE_I18N_STATE', () => {
     }
   })
 
-  it ('should a defaultCode which matches at least one of the listed languages', () => {
+  it ('should have a defaultCode that matches at least one of the available languages', () => {
     const newState = {
       defaultCode: dutch.code,
       languages: [dutch, italian, english]
@@ -86,7 +86,7 @@ describe('UPDATE_I18N_STATE', () => {
     expect(state.languages[0].code).to.equal(dutch.code)
   })
 
-  it ('should display only the availableLanguages', () => {
+  it ('should display only languages existing in the availableLanguages array', () => {
     const newState = {
       availableLanguages: [italian.code, english.code],
       languages: [dutch, english, italian]
@@ -98,6 +98,29 @@ describe('UPDATE_I18N_STATE', () => {
     expect(_.sortBy(state.languages, 'code')).to.deep.equal(_.sortBy([italian, english], 'code'))
   })
 })
+
+
+
+describe('SET_TRANSLATION', () => {
+  it ('should return the translation based on the selected language', () => {
+    const translations = {
+      [dutch.translateTo]: { hello: 'hallo' },
+      [italian.translateTo]: { hello: 'ciao' }
+    }
+
+    state = {
+      defaultCode: dutch.code,
+      languages: [ dutch, italian ]
+    }
+
+    mutations[SET_LANGUAGE](state, dutch.code)
+    mutations[SET_TRANSLATION](state, translations[state.currentLanguage.translateTo])
+
+    expect(state.translations).to.deep.equal(translations[state.currentLanguage.translateTo])
+  })
+})
+
+
 
 describe('SET_LANGUAGE', () => {
   it ('should set the currentLanguage based on a given language code', () => {
@@ -115,5 +138,21 @@ describe('SET_LANGUAGE', () => {
 
     mutations[SET_LANGUAGE](state, italian.code)
     expect(state.currentLanguage.code).to.equal(italian.code)
+  })
+
+  it ('should set the new language and retrieve its translation', () => {
+    const translations = {
+      foo: 'bar'
+    }
+
+    state = {
+      languages: [dutch, english]
+    }
+
+    mutations[SET_LANGUAGE](state, english.code)
+    mutations[SET_TRANSLATION](state, translations)
+
+    expect(state.currentLanguage.code).to.equal(english.code)
+    expect(state.translations).to.deep.equal(translations)
   })
 })
