@@ -1,5 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
+var name = require('./package.json').name
 
 module.exports = {
   entry: [
@@ -7,7 +8,7 @@ module.exports = {
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'vue-i18n-manager.js',
+    filename: name + '.js',
     libraryTarget: 'umd'
   },
   eslint: {
@@ -30,7 +31,7 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         query: {
-          plugins: ['transform-runtime', 'syntax-async-functions'],
+          plugins: ['transform-runtime'],
           presets: ['es2015', 'stage-2']
         },
         exclude: /node_modules/
