@@ -1,5 +1,6 @@
 var webpackConfig = require('../webpack.config.js');
 var isTravis = !!process.env.TRAVIS
+var webpack = require('webpack')
 
 delete webpackConfig.entry
 
@@ -12,6 +13,9 @@ module.exports = function (config) {
     files: [
         './index.js',
     ],
+    client: {
+      captureConsole: false
+    },
     plugins: [
         'karma-phantomjs-launcher',
         'karma-chai',
