@@ -10,8 +10,7 @@ import {
   REMOVE_LANGUAGE_PERSISTENCY,
   UPDATE_I18N_STATE,
   SET_LANGUAGE,
-  SET_TRANSLATION,
-  SET_TRANSLATION_ERROR
+  SET_TRANSLATION
 } from './events'
 
 const mutations = {
@@ -23,11 +22,6 @@ const mutations = {
     state.translations = translations
     state.error = false
     state.errorMessage = null
-  },
-
-  [SET_TRANSLATION_ERROR] (state, errorMessage) {
-    state.errorMessage = errorMessage
-    state.error = true
   },
 
   [UPDATE_I18N_STATE] (state, params) {

@@ -17,10 +17,6 @@ export const log = (text, type = 'normal', debug = true) => {
   const error = `${style} background: #b9090b; color: #ffffff`
   const types = { normal, error, success, warning }
 
-  if (type === 'error') {
-    throw new Error(`${name} ${text}`)
-  }
-
   /* eslint-disable */
   console.log(`%c${name} ${text}`, types[type])
   /* eslint-enable */

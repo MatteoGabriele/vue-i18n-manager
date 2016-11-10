@@ -1,11 +1,11 @@
 import find from 'lodash/find'
 import axios from 'axios'
+import { log } from '../../utils'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
   UPDATE_I18N_STATE,
   SET_LANGUAGE,
-  SET_TRANSLATION,
-  SET_TRANSLATION_ERROR
+  SET_TRANSLATION
 } from './events'
 
 export default {
@@ -40,7 +40,8 @@ export default {
         message = `Problems with the translation json file. It doesn't exist (${url})`
       }
 
-      commit(SET_TRANSLATION_ERROR, message)
+      log(message, 'error')
+
       return
     }
   },
