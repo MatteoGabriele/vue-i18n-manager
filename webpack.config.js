@@ -34,6 +34,14 @@ module.exports = {
           presets: ['es2015', 'stage-2']
         },
         exclude: /node_modules/
+      },
+      {
+        test: /\.html$/,
+        loader: 'html-loader'
+      },
+      {
+        test: /\.scss$/,
+        loaders: ['style', 'css', 'sass']
       }
     ]
   }

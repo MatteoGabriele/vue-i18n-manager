@@ -1,6 +1,7 @@
 import VueI18n from 'vue-i18n'
 import merge from 'lodash/merge'
 import find from 'lodash/find'
+import components from './components'
 import { UPDATE_I18N_STATE, SET_LANGUAGE } from './store/module/events'
 import module from './store/module'
 import { log } from './utils'
@@ -12,10 +13,10 @@ class I18n {
       return
     }
 
-    this._vue = Vue
-    this._store = store
-    this._config = config
-    this._router = router
+    this.$vue = Vue
+    this.$store = store
+    this.$config = config
+    this.$router = router
   }
 
   /**
@@ -27,12 +28,12 @@ class I18n {
    * VueRouter instance is required to unlock this feature.
    */
   registerRouter () {
-    if (!this._router) {
+    if (!this.$router) {
       return
     }
 
-    this._router.beforeEach((to, from, next) => {
-      const { availableLanguages, currentLanguage, defaultCode } = this._store.getters
+    this.$router.beforeEach((to, from, next) => {
+      const { availableLanguages, currentLanguage, defaultCode } = this.$store.getters
       const urlCode = to.params.lang
       const urlLanguage = find(availableLanguages, { urlPrefix: urlCode })
 
@@ -73,7 +74,7 @@ class I18n {
    * @return {Object}
    */
   localizeRoute (route) {
-    const { currentLanguage } = this._store.getters
+    const { currentLanguage } = this.$store.getters
 
     return merge(route, {
       params: {
@@ -87,7 +88,7 @@ class I18n {
    * when the plugin is initliazed
    */
   registerModule () {
-    this._store.registerModule('i18n', module)
+    this.$store.registerModule('i18n', module)
   }
 
   /**
@@ -95,7 +96,7 @@ class I18n {
    * Updates the module default state merging it with the plugin config options
    */
   async updatePluginState () {
-    await this._store.dispatch(UPDATE_I18N_STATE, this._config)
+    await this.$store.dispatch(UPDATE_I18N_STATE, this.$config)
   }
 
   /**
@@ -108,23 +109,28 @@ class I18n {
    * @return {Promise}
    */
   async setLanguage (code = null, replaceRoute = true) {
-    const { defaultCode } = this._store.getters
+    if (code !== null && typeof code !== 'string') {
+      log('You need to provide a code when you set a new language', 'error')
+      return
+    }
+
+    const { defaultCode } = this.$store.getters
     const newCode = code || defaultCode
 
     // Get translations
-    const translations = await this._store.dispatch(SET_LANGUAGE, newCode)
+    const translations = await this.$store.dispatch(SET_LANGUAGE, newCode)
 
     // Set vue-i18n locale configuration
-    this._vue.locale(newCode, translations, () => {
-      this._vue.config.lang = newCode
+    this.$vue.locale(newCode, translations, () => {
+      this.$vue.config.lang = newCode
     })
 
     // Modify the URL with the new language
-    if (replaceRoute && (this._router && this._router.currentRoute)) {
-      const { currentRoute } = this._router
-      const { urlPrefix } = this._store.getters.currentLanguage
+    if (replaceRoute && (this.$router && this.$router.currentRoute)) {
+      const { currentRoute } = this.$router
+      const { urlPrefix } = this.$store.getters.currentLanguage
 
-      this._router.replace({
+      this.$router.replace({
         name: currentRoute.name,
         params: {
           lang: urlPrefix
@@ -174,25 +180,23 @@ export const routeParser = (routes) => {
   ]
 }
 
+export const languageTester = components.languageTester
+
 /**
  * Expose the install function to let Vue install the pm plugin
  * @param  {Vue instance} Vue
  * @param  {Object} [options={}]
  */
 export default function install (Vue, options = {}) {
-  const I18nInstance = new I18n(Vue, options)
+  const instance = new I18n(Vue, options)
 
   // Check if vue-i18n is not installed
   if (!Vue.config.lang) {
     Vue.use(VueI18n)
   }
 
-  Vue.$i18n = I18nInstance
+  Vue.$i18n = instance
 
-  Vue.mixin({
-    methods: {
-      $localize: I18nInstance.localizeRoute.bind(I18nInstance),
-      $setLanguage: I18nInstance.setLanguage.bind(I18nInstance)
-    }
-  })
+  Vue.prototype.$localize = instance.localizeRoute.bind(instance)
+  Vue.prototype.$setLanguage = instance.setLanguage.bind(instance)
 }

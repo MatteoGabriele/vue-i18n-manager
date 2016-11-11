@@ -4,6 +4,7 @@ export const systemState = {
   error: false,
   errorMessage: null,
   translations: null,
+  forceTranslation: false,
   availableLanguages: []
 }
 

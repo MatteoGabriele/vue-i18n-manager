@@ -5,12 +5,17 @@ import {
   REMOVE_LANGUAGE_PERSISTENCY,
   UPDATE_I18N_STATE,
   SET_LANGUAGE,
-  SET_TRANSLATION
+  SET_TRANSLATION,
+  SET_FORCE_TRANSLATION
 } from './events'
 
 export default {
   [REMOVE_LANGUAGE_PERSISTENCY]: ({ commit }) => {
     commit(REMOVE_LANGUAGE_PERSISTENCY)
+  },
+
+  [SET_FORCE_TRANSLATION]: ({ commit }, payload) => {
+    commit(SET_FORCE_TRANSLATION, payload)
   },
 
   /**
@@ -23,9 +28,11 @@ export default {
     commit(UPDATE_I18N_STATE, params)
   },
 
-  [SET_TRANSLATION]: async ({ commit, state }, code) => {
-    const { path, availableLanguages, defaultCode } = state
-    const language = find(availableLanguages, { code: code || defaultCode })
+  [SET_TRANSLATION]: async ({ commit, state, getters }, newCode) => {
+    const { path, availableLanguages, languages, forceTranslation } = state
+    const languageList = forceTranslation ? languages : availableLanguages
+    const code = newCode || getters.defaultCode
+    const language = find(languageList, { code })
 
     if (!language) {
       log('The language doesn\'t exist. Is not possible to set a translation', 'warn')
@@ -62,6 +69,6 @@ export default {
 
     commit(SET_LANGUAGE, code)
 
-    return await dispatch(SET_TRANSLATION, code)
+    return dispatch(SET_TRANSLATION, code)
   }
 }

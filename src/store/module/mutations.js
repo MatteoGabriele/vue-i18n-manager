@@ -14,7 +14,8 @@ import {
   REMOVE_LANGUAGE_PERSISTENCY,
   UPDATE_I18N_STATE,
   SET_LANGUAGE,
-  SET_TRANSLATION
+  SET_TRANSLATION,
+  SET_FORCE_TRANSLATION
 } from './events'
 
 /**
@@ -61,6 +62,10 @@ const mutations = {
     state.persistent = false
   },
 
+  [SET_FORCE_TRANSLATION] (state, payload) {
+    state.forceTranslation = payload
+  },
+
   [SET_TRANSLATION] (state, translations) {
     state.translations = translations
     state.error = false
@@ -100,8 +105,9 @@ const mutations = {
   },
 
   [SET_LANGUAGE] (state, code) {
-    const { availableLanguages, persistent, storageKey } = state
-    const language = find(availableLanguages, { code })
+    const { availableLanguages, persistent, storageKey, forceTranslation, languages } = state
+    const languageList = forceTranslation ? languages : availableLanguages
+    const language = find(languageList, { code })
 
     if (!language) {
       return

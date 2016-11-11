@@ -1,0 +1,9 @@
+<div class="language-tester">
+  <button @click="toggle" class="button open">Try all languages</button>
+
+  <div v-show="visibility" class="languages">
+    <button @click="$setLanguage(language.code)" class="button language" v-for="language in languages">
+      {{ language.name }}
+    </button>
+  </div>
+</div>
