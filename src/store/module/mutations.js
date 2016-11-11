@@ -28,6 +28,8 @@ const mutations = {
     const availableKeys = keys(state)
     const newKeys = params
 
+    state.availableLanguages = params.languages || state.languages
+
     if (size(newKeys) === 0) {
       return
     }
@@ -36,15 +38,15 @@ const mutations = {
 
     state = assignIn(state, parsedParams)
 
-    if (state.availableLanguages.length) {
-      state.languages = map(state.availableLanguages, (code) => {
-        return find(state.languages, { code })
+    if (state.languageFilter.length > 0) {
+      state.availableLanguages = map(state.languageFilter, (code) => {
+        return find(state.availableLanguages, { code })
       })
     }
 
     // Check if the default language code matches at least one of the provided languages,
     // otherwise the application could break.
-    const match = find(state.languages, { code: state.defaultCode })
+    const match = find(state.availableLanguages, { code: state.defaultCode })
 
     if (!match) {
       const message = 'The default code must matches at least one language in the provided list'
@@ -57,8 +59,8 @@ const mutations = {
   },
 
   [SET_LANGUAGE] (state, code) {
-    const { languages, persistent, storageKey } = state
-    const language = find(languages, { code })
+    const { availableLanguages, persistent, storageKey } = state
+    const language = find(availableLanguages, { code })
 
     if (!language) {
       return

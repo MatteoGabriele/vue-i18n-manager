@@ -32,9 +32,9 @@ class I18n {
     }
 
     this._router.beforeEach((to, from, next) => {
-      const { languages, currentLanguage, defaultCode } = this._store.getters
+      const { availableLanguages, currentLanguage, defaultCode } = this._store.getters
       const urlCode = to.params.lang
-      const urlLanguage = find(languages, { urlPrefix: urlCode })
+      const urlLanguage = find(availableLanguages, { urlPrefix: urlCode })
 
       /**
        * In case the language is not provided or doesn't exists,
@@ -44,7 +44,7 @@ class I18n {
        * a different language on purpose and we need to check it.
        */
       if (!urlLanguage && !from.name) {
-        const { urlPrefix } = find(languages, { code: defaultCode })
+        const { urlPrefix } = find(availableLanguages, { code: defaultCode })
 
         return next({
           name: to.name,

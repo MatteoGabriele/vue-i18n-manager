@@ -57,7 +57,7 @@ describe('Mutations', () => {
       expect(state.defaultCode).to.equal(dutch.code)
     })
 
-    it ('should throw an error if the defaultCode doesn\'t match any language', () => {
+    it ('should log a message if the defaultCode doesn\'t match any language', () => {
       const newState = {
         defaultCode: dutch.code
       }
@@ -78,19 +78,20 @@ describe('Mutations', () => {
       mutations[UPDATE_I18N_STATE](state, newState)
 
       expect(state.defaultCode).to.equal(dutch.code)
-      expect(state.languages[0].code).to.equal(dutch.code)
+
+      expect(_.find(state.availableLanguages, { code: dutch.code })).to.deep.equal(dutch)
     })
 
     it ('should display only languages existing in the availableLanguages array', () => {
       const newState = {
-        availableLanguages: [italian.code, english.code],
+        languageFilter: [italian.code, english.code],
         languages: [dutch, english, italian]
       }
 
       mutations[UPDATE_I18N_STATE](state, newState)
 
-      expect(state.languages.length).to.equal(2)
-      expect(_.sortBy(state.languages, 'code')).to.deep.equal(_.sortBy([italian, english], 'code'))
+      expect(state.availableLanguages.length).to.equal(2)
+      expect(_.sortBy(state.availableLanguages, 'code')).to.deep.equal(_.sortBy([italian, english], 'code'))
     })
   })
 
@@ -101,10 +102,12 @@ describe('Mutations', () => {
         [italian.translateTo]: { hello: 'ciao' }
       }
 
-      state = {
+      const newState = {
         defaultCode: dutch.code,
         languages: [ dutch, italian ]
       }
+
+      mutations[UPDATE_I18N_STATE](state, newState)
 
       mutations[SET_LANGUAGE](state, dutch.code)
 
@@ -119,14 +122,24 @@ describe('Mutations', () => {
 
   describe('SET_LANGUAGE', () => {
     it ('should set the currentLanguage based on a given language code', () => {
+      const newState = {
+        defaultCode: english.code,
+        languages: [english]
+      }
+
+      mutations[UPDATE_I18N_STATE](state, newState)
+
       mutations[SET_LANGUAGE](state, english.code)
+
       expect(state.currentLanguage.code).to.equal(english.code)
     })
 
     it ('should update the currentLanguage with a new one', () => {
-      state = {
+      const newState = {
         languages: [dutch, english, italian]
       }
+
+      mutations[UPDATE_I18N_STATE](state, newState)
 
       mutations[SET_LANGUAGE](state, english.code)
       expect(state.currentLanguage.code).to.equal(english.code)
@@ -139,12 +152,14 @@ describe('Mutations', () => {
       const translations = {
         foo: 'bar'
       }
-
-      state = {
+      const newState = {
         languages: [dutch, english]
       }
 
+      mutations[UPDATE_I18N_STATE](state, newState)
+
       mutations[SET_LANGUAGE](state, english.code)
+
       mutations[SET_TRANSLATION](state, translations)
 
       expect(state.currentLanguage.code).to.equal(english.code)

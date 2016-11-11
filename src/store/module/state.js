@@ -12,6 +12,7 @@ const state = {
   storageKey: 'language_key',
   path: 'static/i18n',
   defaultCode: 'en-GB',
+  languageFilter: [],
   availableLanguages: [],
   languages: [
     {
