@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/MatteoGabriele/vue-i18n-manager.svg?branch=master)](https://travis-ci.org/MatteoGabriele/vue-i18n-manager) [![npm version](https://badge.fury.io/js/vue-i18n-manager.svg)](https://badge.fury.io/js/vue-i18n-manager) [![npm](https://img.shields.io/npm/dt/storage-helper.svg)](https://github.com/MatteoGabriele/storage-helper)
+[![Build Status](https://travis-ci.org/MatteoGabriele/vue-i18n-manager.svg?branch=master)](https://travis-ci.org/MatteoGabriele/vue-i18n-manager) [![npm version](https://badge.fury.io/js/vue-i18n-manager.svg)](https://badge.fury.io/js/vue-i18n-manager) [![npm](https://img.shields.io/npm/dt/vue-i18n-manager.svg)](https://www.npmjs.com/package/vue-i18n-manager)
 
 # vue-i18n-manager 
 It will help you dealing with multi-language application using [vue-18n](https://github.com/kazupon/vue-i18n) plugin.
