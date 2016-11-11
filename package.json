@@ -5,7 +5,8 @@
   "main": "dist/vue-i18n-manager.js",
   "scripts": {
     "dev": "./node_modules/.bin/webpack -w",
-    "build": "./node_modules/.bin/webpack -p",
+    "build": "./node_modules/.bin/webpack -p --warnings=false",
+    "test:single": "./node_modules/.bin/karma start ./test/karma.config.js --singleRun",
     "test": "./node_modules/.bin/karma start ./test/karma.config.js"
   },
   "repository": {

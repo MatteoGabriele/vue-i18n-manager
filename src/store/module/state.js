@@ -1,6 +1,7 @@
 /**
  * Default store state
  * @type {Object}
+ *
  */
 const state = {
   persistent: true,
