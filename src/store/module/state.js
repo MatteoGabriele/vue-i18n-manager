@@ -1,20 +1,24 @@
+export const systemState = {
+  currentLanguage: null,
+  pending: false,
+  error: false,
+  errorMessage: null,
+  translations: null,
+  availableLanguages: []
+}
+
 /**
  * Default store state
  * @type {Object}
  *
  */
 const state = {
+  ...systemState,
   persistent: true,
-  currentLanguage: null,
-  pending: false,
-  error: false,
-  errorMessage: null,
-  translations: null,
   storageKey: 'language_key',
   path: 'static/i18n',
   defaultCode: 'en-GB',
   languageFilter: [],
-  availableLanguages: [],
   languages: [
     {
       name: 'English',
@@ -24,5 +28,16 @@ const state = {
     }
   ]
 }
+
+/**
+ * Deprecated keys holder
+ * @type {Array}
+ */
+export const deprecatedKeys = [
+  {
+    old: 'availableLanguages',
+    new: 'languageFilter'
+  }
+]
 
 export default state

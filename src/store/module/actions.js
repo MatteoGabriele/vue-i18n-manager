@@ -24,8 +24,14 @@ export default {
   },
 
   [SET_TRANSLATION]: async ({ commit, state }, code) => {
-    const { path, languages, defaultCode } = state
-    const language = find(languages, { code: code || defaultCode })
+    const { path, availableLanguages, defaultCode } = state
+    const language = find(availableLanguages, { code: code || defaultCode })
+
+    if (!language) {
+      log('The language doesn\'t exist. Is not possible to set a translation', 'warn')
+      return
+    }
+
     const url = `${path}/${language.translateTo}.json`
 
     try {
@@ -36,11 +42,12 @@ export default {
     } catch (e) {
       let message = `${e.message} for ${url}`
 
+      // Usually file path is wrong, but you never know boy!
       if (e.response.status === 404) {
-        message = `Problems with the translation json file. It doesn't exist (${url})`
+        message = `Problems with the provided json file for translations. Check the url again`
       }
 
-      log(message, 'error')
+      log(message, 'warn')
 
       return
     }
