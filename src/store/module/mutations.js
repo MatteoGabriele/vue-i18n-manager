@@ -1,12 +1,13 @@
 import find from 'lodash/find'
 import map from 'lodash/map'
 import pick from 'lodash/pick'
-import difference from 'lodash/difference'
 import each from 'lodash/each'
 import keys from 'lodash/keys'
 import size from 'lodash/size'
 import assignIn from 'lodash/assignIn'
+import difference from 'lodash/difference'
 import storageHelper from 'storage-helper'
+
 import { systemState, deprecatedKeys } from './state'
 import { log } from '../../utils'
 import {

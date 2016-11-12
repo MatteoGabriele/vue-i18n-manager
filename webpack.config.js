@@ -1,11 +1,9 @@
 var path = require('path')
-var webpack = require('webpack')
 var name = require('./package.json').name
 
 module.exports = {
-  entry: [
-    './src'
-  ],
+  devtool: 'source-map',
+  entry: './src',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: name + '.js',
@@ -31,6 +29,7 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         query: {
+          retainLines: true,
           plugins: ['transform-runtime'],
           presets: ['es2015', 'stage-2']
         },

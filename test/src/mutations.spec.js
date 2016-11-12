@@ -1,4 +1,5 @@
 import { expect } from 'chai'
+
 import _ from 'lodash'
 import VueI18nManager, { routeParser } from '../../dist/vue-i18n-manager'
 import mutations from '../../src/store/module/mutations'
@@ -11,6 +12,7 @@ import {
 } from '../../src/store/module/events'
 
 let state
+let sandbox
 
 const dutch = {
   code: 'nl-NL',
@@ -33,7 +35,15 @@ const italian = {
 describe('Mutations', () => {
 
   beforeEach(() => {
+    sandbox = sinon.sandbox.create()
+    sandbox.stub(window.console, 'warn');
+    sandbox.stub(window.console, 'error');
+
     state = { ...storeState }
+  })
+
+  afterEach(() => {
+    sandbox.restore()
   })
 
   describe('REMOVE_LANGUAGE_PERSISTENCY', () => {
@@ -57,19 +67,27 @@ describe('Mutations', () => {
       expect(state.defaultCode).to.equal(dutch.code)
     })
 
+    it ('should log a message if an invalid parameters is passed', () => {
+      const newState = {
+        foo: 'bar'
+      }
+
+      mutations[UPDATE_I18N_STATE](state, newState)
+
+      sinon.assert.calledOnce(console.warn)
+    })
+
     it ('should log a message if the defaultCode doesn\'t match any language', () => {
       const newState = {
         defaultCode: dutch.code
       }
 
-      try {
-        mutations[UPDATE_I18N_STATE](state, newState)
-      } catch (error) {
-        expect(state.error).to.be.true
-      }
+      mutations[UPDATE_I18N_STATE](state, newState)
+
+      sinon.assert.calledOnce(console.warn);
     })
 
-    it ('should have a defaultCode that matches at least one of the available languages', () => {
+    it ('should have a defaultCode that matches at least one available languages', () => {
       const newState = {
         defaultCode: dutch.code,
         languages: [dutch, italian, english]
@@ -92,6 +110,16 @@ describe('Mutations', () => {
 
       expect(state.availableLanguages.length).to.equal(2)
       expect(_.sortBy(state.availableLanguages, 'code')).to.deep.equal(_.sortBy([italian, english], 'code'))
+    })
+
+    it ('should log a message for depracated parameter usage', () => {
+      const newState = {
+        availableLanguages: [italian.code, english.code]
+      }
+
+      mutations[UPDATE_I18N_STATE](state, newState)
+
+      sinon.assert.calledOnce(console.warn)
     })
   })
 
@@ -166,5 +194,4 @@ describe('Mutations', () => {
       expect(state.translations).to.deep.equal(translations)
     })
   })
-
 })

@@ -8,8 +8,11 @@ module.exports = function (config) {
   config.set({
     browsers: ['PhantomJS'],
     singleRun: isTravis,
-    frameworks: ['mocha', 'chai'],
+    frameworks: ['mocha', 'chai', 'sinon'],
     reporters: ['mocha'],
+    // mochaReporter: {
+    //   output: 'autowatch'
+    // },
     files: [
         './index.js',
     ],
@@ -21,6 +24,7 @@ module.exports = function (config) {
         'karma-chai',
         'karma-mocha',
         'karma-webpack',
+        'karma-sinon',
         'karma-mocha-reporter',
         'karma-chrome-launcher',
         'karma-sourcemap-loader'
@@ -38,9 +42,14 @@ module.exports = function (config) {
       module: {
         loaders: [
           {
+            test: /sinon.js$/,
+            loader: "imports?define=>false"
+          },
+          {
             test: /\.js$/,
             loader: 'babel',
             query: {
+              compact: false,
               presets: ['es2015', 'stage-2']
             },
             exclude: /node_modules/
