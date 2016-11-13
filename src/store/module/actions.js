@@ -28,35 +28,30 @@ export default {
     commit(UPDATE_I18N_STATE, params)
   },
 
-  [SET_TRANSLATION]: async ({ commit, state, getters }, newCode) => {
-    const { path, availableLanguages, languages, forceTranslation } = state
-    const languageList = forceTranslation ? languages : availableLanguages
-    const code = newCode || getters.defaultCode
-    const language = find(languageList, { code })
+  [SET_TRANSLATION]: async ({ commit, state, getters }, code) => {
+    const { availableLanguages } = getters
+    const language = find(availableLanguages, { code })
 
     if (!language) {
-      log('The language doesn\'t exist. Is not possible to set a translation', 'warn')
+      log(`A language with code "${code}" doesn't exist`, 'warn')
       return
     }
 
-    const url = `${path}/${language.translateTo}.json`
+    const requestURL = `${state.path}/${language.translateTo}.json`
 
     try {
-      const { data } = await axios.get(url)
+      const { data } = await axios.get(requestURL)
       commit(SET_TRANSLATION, data)
 
       return data
     } catch (e) {
-      let message = `${e.message} for ${url}`
-
-      // Usually file path is wrong, but you never know boy!
       if (e.response.status === 404) {
-        message = `Problems with the provided json file for translations. Check the url again`
+        log('Problems with the translation file. Check if the url is correct', 'warn')
+      } else {
+        log(`${e.message} for ${requestURL}`, 'warn')
       }
 
-      log(message, 'warn')
-
-      return
+      return null
     }
   },
 

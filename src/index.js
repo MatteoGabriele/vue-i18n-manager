@@ -44,7 +44,7 @@ class I18n {
        * the URL doesn't contain a language prefix or the user typed
        * a different language on purpose and we need to check it.
        */
-      if (!urlLanguage && !from.name) {
+      if (!urlLanguage && (!from.name || urlCode)) {
         const { urlPrefix } = find(availableLanguages, { code: defaultCode })
 
         return next({
@@ -104,36 +104,25 @@ class I18n {
    * It sets the new requested language, replaces the url prefix in the url
    * and returns translations which are then applyed using vue-i18n.
    * If no language is passed, the language will be the one choosen as default
-   * @param {String} [code=null]
+   * @param {String} [code=defaultCode]
    * @param {Boolean} [replaceRoute=true]
    * @return {Promise}
    */
-  async setLanguage (code = null, replaceRoute = true) {
-    if (code !== null && typeof code !== 'string') {
-      log('You need to provide a code when you set a new language', 'error')
-      return
-    }
-
-    const { defaultCode } = this.$store.getters
-    const newCode = code || defaultCode
-
-    // Get translations
-    const translations = await this.$store.dispatch(SET_LANGUAGE, newCode)
+  async setLanguage (code = this.$store.getters.defaultCode, replaceRoute = true) {
+    const translations = await this.$store.dispatch(SET_LANGUAGE, code)
+    const { currentRoute } = this.$router
 
     // Set vue-i18n locale configuration
-    this.$vue.locale(newCode, translations, () => {
-      this.$vue.config.lang = newCode
+    this.$vue.locale(code, translations, () => {
+      this.$vue.config.lang = code
     })
 
     // Modify the URL with the new language
-    if (replaceRoute && (this.$router && this.$router.currentRoute)) {
-      const { currentRoute } = this.$router
-      const { urlPrefix } = this.$store.getters.currentLanguage
-
+    if (replaceRoute && (this.$router && currentRoute)) {
       this.$router.replace({
         name: currentRoute.name,
         params: {
-          lang: urlPrefix
+          lang: this.$store.getters.langUrlPrefix
         }
       })
     }

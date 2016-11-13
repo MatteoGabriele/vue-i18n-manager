@@ -1,7 +1,10 @@
 import storageHelper from 'storage-helper'
 import find from 'lodash/find'
 
-export const availableLanguages = state => state.availableLanguages
+export const availableLanguages = state => {
+  const { forceTranslation, availableLanguages, languages } = state
+  return forceTranslation ? languages : availableLanguages
+}
 
 export const languages = state => state.languages
 

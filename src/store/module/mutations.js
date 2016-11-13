@@ -7,7 +7,6 @@ import size from 'lodash/size'
 import assignIn from 'lodash/assignIn'
 import difference from 'lodash/difference'
 import storageHelper from 'storage-helper'
-
 import { systemState, deprecatedKeys } from './state'
 import { log } from '../../utils'
 import {
@@ -19,11 +18,11 @@ import {
 } from './events'
 
 /**
- * Check if the default language code matches at least one of the provided languages,
+ * Warns if the default language code matches at least one of the provided languages,
  * otherwise the application could break.
  * @param  {Object} state
  */
-const checkUnmatchedDefaultCode = (state) => {
+const warnUnmatchedDefaultCode = (state) => {
   const langauge = find(state.availableLanguages, { code: state.defaultCode })
 
   if (langauge) {
@@ -34,11 +33,11 @@ const checkUnmatchedDefaultCode = (state) => {
 }
 
 /**
- * Check invalid or deprecated keys
+ * Warns invalid or deprecated keys
  * @param  {Object} state
  * @param  {Object} newParams
  */
-const checkInvalidKeys = (state, params) => {
+const warnInvalidKeys = (state, params) => {
   const invalidKeyes = difference(keys(params), state)
 
   if (!invalidKeyes.length) {
@@ -75,21 +74,20 @@ const mutations = {
   /**
    * To update the state is necessary to pass only existing keys, but also
    * only keys that are not related to the mutation state of the store module.
-   * So in order to do that, it's necessary to create a brand new object that refers
-   * to the actual state and than it needs to be filtered by the systemState keys, which are
-   * all keys that the plugin itself can't mutate.
+   * So in order to do that, it's necessary to remove all systemState keys from the
+   * array of available keys
    * The filtered keys are compared with the plugin options keys and applied to the state.
    */
-  [UPDATE_I18N_STATE] (state, newParams) {
-    const systemStateKeys = keys(systemState)
-    const availableStateKeys = keys({...state})
-    const allowedKeys = difference(availableStateKeys, systemStateKeys)
-
+  [UPDATE_I18N_STATE] (state, newParams, a) {
     state.availableLanguages = newParams.languages || state.languages
 
     if (size(newParams) === 0) {
       return
     }
+
+    const systemStateKeys = keys(systemState)
+    const stateKeys = keys(state)
+    const allowedKeys = difference(stateKeys, systemStateKeys)
 
     // Let's merge the new parameters with the state
     state = assignIn(state, pick(newParams, allowedKeys))
@@ -100,12 +98,12 @@ const mutations = {
       })
     }
 
-    checkUnmatchedDefaultCode(state)
-    checkInvalidKeys(allowedKeys, newParams)
+    warnUnmatchedDefaultCode(state)
+    warnInvalidKeys(allowedKeys, newParams)
   },
 
   [SET_LANGUAGE] (state, code) {
-    const { availableLanguages, persistent, storageKey, forceTranslation, languages } = state
+    const { persistent, storageKey, forceTranslation, languages, availableLanguages } = state
     const languageList = forceTranslation ? languages : availableLanguages
     const language = find(languageList, { code })
 
