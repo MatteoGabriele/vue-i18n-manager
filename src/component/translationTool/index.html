@@ -1,0 +1,13 @@
+<div class="translation-tool">
+  <button @click="toggle" class="button open">Try all languages</button>
+
+  <div v-show="visibility" class="languages">
+    <button
+      v-for="language in languages"
+      @click="$setLanguage(language.code)"
+      class="button language"
+      :class="{ 'active': isActive(language.code) }">
+        <span>{{ language.name }}</span>
+    </button>
+  </div>
+</div>

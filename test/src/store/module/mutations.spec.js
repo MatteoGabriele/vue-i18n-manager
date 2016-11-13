@@ -1,15 +1,15 @@
 import { expect } from 'chai'
 
 import _ from 'lodash'
-import VueI18nManager, { routeParser } from '../../dist/vue-i18n-manager'
-import mutations from '../../src/store/module/mutations'
-import storeState from '../../src/store/module/state'
+import VueI18nManager, { routeParser } from '../../../../dist/vue-i18n-manager'
+import mutations from '../../../../src/store/module/mutations'
+import storeState from '../../../../src/store/module/state'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
   UPDATE_I18N_STATE,
   SET_LANGUAGE,
   SET_TRANSLATION
-} from '../../src/store/module/events'
+} from '../../../../src/store/module/events'
 
 let state
 let sandbox

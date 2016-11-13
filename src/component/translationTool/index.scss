@@ -1,4 +1,4 @@
-.language-tester {
+.translation-tool {
   position: fixed;
   top: 0;
   left: 0;
@@ -43,6 +43,10 @@
       background: white;
       padding: 10px 20px;
       margin: 5px;
+      opacity: 0.5;
+      &.active {
+        opacity: 1;
+      }
     }
   }
 }

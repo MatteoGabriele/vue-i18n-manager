@@ -29,7 +29,21 @@ class RouterHandler {
     }
 
     this.$router.beforeEach((to, from, next) => {
-      const { availableLanguages, currentLanguage, defaultCode } = this.$store.getters
+      const {
+        availableLanguages,
+        currentLanguage,
+        defaultCode,
+        forceTranslation
+      } = this.$store.getters
+
+      /**
+       * Don't change url if the translation-tool is running, there's no need
+       * to stress the url just to check some copy
+       */
+      if (forceTranslation) {
+        return next()
+      }
+
       const urlCode = to.params.lang
       const urlLanguage = find(availableLanguages, { urlPrefix: urlCode })
 
@@ -84,12 +98,13 @@ class RouterHandler {
 
   updateURL () {
     const { currentRoute } = this.$router
+    const { langUrlPrefix, forceTranslation } = this.$store.getters
 
-    if (this.$router && currentRoute) {
+    if (this.$router && currentRoute && !forceTranslation) {
       this.$router.replace({
         name: currentRoute.name,
         params: {
-          lang: this.$store.getters.langUrlPrefix
+          lang: langUrlPrefix
         }
       })
     }

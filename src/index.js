@@ -1,4 +1,4 @@
-import languageTester from './component/languageTester'
+import translationTool from './component/translationTool'
 import { UPDATE_I18N_STATE, SET_LANGUAGE } from './store/module/events'
 
 import routerHandler, { routeParser } from './router'
@@ -68,7 +68,7 @@ class I18n {
  */
 export {
   routeParser,
-  languageTester
+  translationTool
 }
 
 /**

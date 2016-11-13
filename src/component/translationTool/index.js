@@ -3,7 +3,7 @@ import { SET_FORCE_TRANSLATION } from '../../store/module/events'
 import './index.scss'
 
 export default {
-  name: 'language-tester',
+  name: 'translation-tool',
 
   template,
 
@@ -28,6 +28,9 @@ export default {
   },
 
   methods: {
+    isActive (code) {
+      return this.$store.getters.currentLanguage.code === code
+    },
     toggle () {
       this.visibility = !this.visibility
     }

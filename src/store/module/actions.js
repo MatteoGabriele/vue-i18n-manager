@@ -29,8 +29,9 @@ export default {
   },
 
   [SET_TRANSLATION]: async ({ commit, state, getters }, code) => {
-    const { availableLanguages } = getters
-    const language = find(availableLanguages, { code })
+    const { forceTranslation, availableLanguages, languages } = state
+    const languageList = forceTranslation ? languages : availableLanguages
+    const language = find(languageList, { code })
 
     if (!language) {
       log(`A language with code "${code}" doesn't exist`, 'warn')
