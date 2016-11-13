@@ -32,7 +32,7 @@ const italian = {
   translateTo: 'it_IT'
 }
 
-describe('Language tester', () => {
+describe('<translation-tool />', () => {
 
   beforeEach(() => {
     storageHelper.clear()
@@ -48,7 +48,7 @@ describe('Language tester', () => {
     sandbox.restore()
   })
 
-  it ('should allow the component to use all languages', () => {
+  it ('should be able to translate hidden languages', () => {
     const newState = {
       languageFilter: [dutch.code],
       languages: [dutch, english, italian],
@@ -63,24 +63,5 @@ describe('Language tester', () => {
     mutations[SET_LANGUAGE](state, english.code)
 
     expect(state.currentLanguage.code).to.equal(english.code)
-  })
-
-  it ('should be able to switch to all languages', () => {
-    const newState = {
-      languageFilter: [dutch.code],
-      languages: [dutch, english, italian],
-      defaultCode: italian.code
-    }
-
-    mutations[UPDATE_I18N_STATE](state, newState)
-
-    mutations[SET_LANGUAGE](state, english.code)
-    expect(state.currentLanguage.code).to.equal(english.code)
-
-    mutations[SET_LANGUAGE](state, dutch.code)
-    expect(state.currentLanguage.code).to.equal(dutch.code)
-
-    mutations[SET_LANGUAGE](state, italian.code)
-    expect(state.currentLanguage.code).to.equal(italian.code)
   })
 })
