@@ -37,8 +37,8 @@ const warnUnmatchedDefaultCode = (state) => {
  * @param  {Object} state
  * @param  {Object} newParams
  */
-const warnInvalidKeys = (state, params) => {
-  const invalidKeyes = difference(keys(params), state)
+const warnInvalidKeys = (allowedKeys, paramsKeys) => {
+  const invalidKeyes = difference(paramsKeys, allowedKeys)
 
   if (!invalidKeyes.length) {
     return
@@ -99,7 +99,7 @@ const mutations = {
     }
 
     warnUnmatchedDefaultCode(state)
-    warnInvalidKeys(allowedKeys, newParams)
+    warnInvalidKeys(allowedKeys, keys(newParams))
   },
 
   [SET_LANGUAGE] (state, code) {

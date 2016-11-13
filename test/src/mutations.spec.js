@@ -46,6 +46,11 @@ describe('Mutations', () => {
     sandbox.restore()
   })
 
+  /**
+   * ======================================
+   * REMOVE_LANGUAGE_PERSISTENCY tests
+   * ======================================
+   */
   describe('REMOVE_LANGUAGE_PERSISTENCY', () => {
     it ('should remove persistency of language in the browser', () => {
       mutations[REMOVE_LANGUAGE_PERSISTENCY](state)
@@ -53,6 +58,11 @@ describe('Mutations', () => {
     })
   })
 
+  /**
+   * ======================================
+   * UPDATE_I18N_STATE tests
+   * ======================================
+   */
   describe('UPDATE_I18N_STATE', () => {
     it ('should accept parameters that are in the default state only', () => {
       const newState = {
@@ -123,6 +133,11 @@ describe('Mutations', () => {
     })
   })
 
+  /**
+   * ======================================
+   * SET_TRANSLATION tests
+   * ======================================
+   */
   describe('SET_TRANSLATION', () => {
     it ('should return the translation based on the selected language', () => {
       const translations = {
@@ -148,6 +163,11 @@ describe('Mutations', () => {
     })
   })
 
+  /**
+   * ======================================
+   * SET_LANGUAGE tests
+   * ======================================
+   */
   describe('SET_LANGUAGE', () => {
     it ('should set the currentLanguage based on a given language code', () => {
       const newState = {
