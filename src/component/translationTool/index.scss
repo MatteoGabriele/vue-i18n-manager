@@ -8,13 +8,6 @@
   pointer-events: none;
   z-index: 99999999;
 
-  .languages {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-
   .button {
     cursor: pointer;
     pointer-events: all;
@@ -31,7 +24,6 @@
       background: black;
       color: white;
       padding: 10px 20px;
-      box-shadow: 0 2px 10px 0px rgba(0, 0, 0, 0.5);
       border-top: 4px solid #3AB882;
     }
 
@@ -42,11 +34,32 @@
     &.language {
       background: white;
       padding: 10px 20px;
-      margin: 5px;
+      margin: 2px;
+      border: 1px solid #444444;
       opacity: 0.5;
+
       &.active {
         opacity: 1;
       }
+    }
+  }
+
+  .languages {
+    position: 100vw;
+    min-width: 300px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #e7e7e7;
+    padding: 40px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    .language {
+      width: 20%;
+      flex: 1;
     }
   }
 }
