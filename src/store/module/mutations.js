@@ -1,5 +1,6 @@
 import find from 'lodash/find'
-import map from 'lodash/map'
+import filter from 'lodash/filter'
+import includes from 'lodash/includes'
 import pick from 'lodash/pick'
 import each from 'lodash/each'
 import keys from 'lodash/keys'
@@ -93,8 +94,8 @@ const mutations = {
     state = assignIn(state, pick(newParams, allowedKeys))
 
     if (state.languageFilter.length > 0) {
-      state.availableLanguages = map(state.languageFilter, (code) => {
-        return find(state.availableLanguages, { code })
+      state.availableLanguages = filter(state.availableLanguages, (language) => {
+        return includes(state.languageFilter, language.code)
       })
     }
 
