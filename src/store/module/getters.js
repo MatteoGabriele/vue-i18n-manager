@@ -7,7 +7,7 @@ export const languages = state => state.languages
 
 export const currentLanguage = state => state.currentLanguage
 
-export const langUrlPrefix = state => state.currentLanguage.urlPrefix
+export const urlPrefix = state => state.currentLanguage.urlPrefix
 
 export const forceTranslation = state => state.forceTranslation
 

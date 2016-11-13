@@ -29,12 +29,7 @@ class RouterHandler {
     }
 
     this.$router.beforeEach((to, from, next) => {
-      const {
-        availableLanguages,
-        currentLanguage,
-        defaultCode,
-        forceTranslation
-      } = this.$store.getters
+      const { availableLanguages, currentLanguage, forceTranslation } = this.$store.getters
 
       /**
        * Don't change url if the translation-tool is running, there's no need
@@ -44,8 +39,8 @@ class RouterHandler {
         return next()
       }
 
-      const urlCode = to.params.lang
-      const urlLanguage = find(availableLanguages, { urlPrefix: urlCode })
+      const urlPrefix = to.params.lang
+      const urlLanguage = find(availableLanguages, { urlPrefix })
 
       /**
        * In case the language is not provided or doesn't exists,
@@ -54,15 +49,8 @@ class RouterHandler {
        * the URL doesn't contain a language prefix or the user typed
        * a different language on purpose and we need to check it.
        */
-      if (!urlLanguage && (!from.name || urlCode)) {
-        const { urlPrefix } = find(availableLanguages, { code: defaultCode })
-
-        return next({
-          name: to.name,
-          params: {
-            lang: urlPrefix
-          }
-        })
+      if (!urlLanguage && (!from.name || urlPrefix)) {
+        return next(this.localize({ name: to.name }))
       }
 
       /**
@@ -82,31 +70,26 @@ class RouterHandler {
   }
 
   /**
-   * Includes the lang param in the route object
-   * @param  {Object} link
+   * Includes language in the route
+   * @param  {Object} route
    * @return {Object}
    */
   localize (route) {
-    const { currentLanguage } = this.$store.getters
+    const { urlPrefix, defaultCode } = this.$store.getters
 
     return merge(route, {
       params: {
-        lang: currentLanguage.urlPrefix
+        lang: urlPrefix || defaultCode
       }
     })
   }
 
   updateURL () {
     const { currentRoute } = this.$router
-    const { langUrlPrefix, forceTranslation } = this.$store.getters
+    const { forceTranslation } = this.$store.getters
 
     if (this.$router && currentRoute && !forceTranslation) {
-      this.$router.replace({
-        name: currentRoute.name,
-        params: {
-          lang: langUrlPrefix
-        }
-      })
+      this.$router.replace(this.localize({ name: currentRoute.name }))
     }
   }
 }
