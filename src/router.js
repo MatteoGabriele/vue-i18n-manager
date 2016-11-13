@@ -2,13 +2,17 @@ import find from 'lodash/find'
 import merge from 'lodash/merge'
 
 import { SET_LANGUAGE } from './store/module/events'
-import locale from './locale'
+import localeHandler from './locale'
+
+let instance
 
 class RouterHandler {
   constructor (Vue, router, store) {
     this.$router = router
     this.$store = store
     this.$vue = Vue
+
+    this.$localeHandler = localeHandler(Vue)
   }
 
   /**
@@ -54,7 +58,7 @@ class RouterHandler {
        */
       if (urlLanguage && urlLanguage.urlPrefix !== currentLanguage.urlPrefix) {
         return this.$store.dispatch(SET_LANGUAGE, urlLanguage.code).then((translations) => {
-          locale(this.$vue, urlLanguage.code, translations)
+          this.$localeHandler.update(urlLanguage.code, translations)
           next()
         })
       }
@@ -93,7 +97,9 @@ class RouterHandler {
 }
 
 export default function (Vue, router, store) {
-  const instance = new RouterHandler(Vue, router, store)
+  if (!instance) {
+    instance = new RouterHandler(Vue, router, store)
+  }
 
   Vue.prototype.$localize = instance.localize.bind(instance)
 

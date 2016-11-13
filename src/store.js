@@ -1,6 +1,8 @@
 import module from './store/module'
 import { log } from './utils'
 
+let instance
+
 class StoreHandler {
   constructor (store) {
     if (!store) {
@@ -21,5 +23,9 @@ class StoreHandler {
 }
 
 export default function (store) {
-  return new StoreHandler(store)
+  if (!instance) {
+    instance = new StoreHandler(store)
+  }
+
+  return instance
 }

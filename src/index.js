@@ -1,9 +1,9 @@
-import VueI18n from 'vue-i18n'
 import languageTester from './component/languageTester'
 import { UPDATE_I18N_STATE, SET_LANGUAGE } from './store/module/events'
+
 import routerHandler, { routeParser } from './router'
 import storeHandler from './store'
-import locale from './locale'
+import localeHandler from './locale'
 
 class I18n {
   constructor (Vue, { store, router, config }) {
@@ -12,6 +12,7 @@ class I18n {
     this.$store = store
 
     this.$storeHandler = storeHandler(store)
+    this.$localeHandler = localeHandler(Vue)
     this.$routerHandler = routerHandler(Vue, router, store)
   }
 
@@ -35,7 +36,7 @@ class I18n {
   async setLanguage (code = this.$store.getters.defaultCode, replaceRoute = true) {
     const translations = await this.$store.dispatch(SET_LANGUAGE, code)
 
-    locale(this.$vue, code, translations)
+    this.$localeHandler.update(code, translations)
 
     if (!replaceRoute) {
       return
@@ -77,11 +78,6 @@ export {
  */
 export default function install (Vue, options = {}) {
   const instance = new I18n(Vue, options)
-
-  // Check if vue-i18n is not installed
-  if (!Vue.config.lang) {
-    Vue.use(VueI18n)
-  }
 
   Vue.$i18n = instance
 
