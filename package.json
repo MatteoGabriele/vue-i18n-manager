@@ -4,10 +4,10 @@
   "description": "vue-i18n manager for Vue",
   "main": "dist/vue-i18n-manager.js",
   "scripts": {
-    "dev": "./node_modules/.bin/webpack -w",
-    "build": "./node_modules/.bin/webpack -p --warnings=false",
-    "test:single": "./node_modules/.bin/karma start ./test/karma.config.js --singleRun",
-    "test": "./node_modules/.bin/karma start ./test/karma.config.js"
+    "dev": "NODE_ENV=development webpack -w",
+    "build": "webpack -p -o --warnings=false",
+    "test:single": "karma start ./test/karma.config.js --singleRun",
+    "test": "karma start ./test/karma.config.js"
   },
   "repository": {
     "type": "git",
@@ -65,10 +65,11 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.8.0",
     "mocha": "^3.1.2",
-    "sinon": "^1.17.6",
     "node-sass": "^3.11.2",
     "sass-loader": "^4.0.2",
+    "sinon": "^1.17.6",
     "style-loader": "^0.13.1",
+    "vue": "^2.0.5",
     "webpack": "^1.13.2"
   }
 }
