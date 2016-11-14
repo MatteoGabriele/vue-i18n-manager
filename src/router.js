@@ -29,18 +29,15 @@ class RouterHandler {
     }
 
     this.$router.beforeEach((to, from, next) => {
-      const { availableLanguages, currentLanguage, forceTranslation } = this.$store.getters
-
-      /**
-       * Don't change url if the translation-tool is running, there's no need
-       * to stress the url just to check some copy
-       */
-      if (forceTranslation) {
-        return next()
-      }
-
+      const {
+        availableLanguages,
+        currentLanguage,
+        forceTranslation,
+        languages
+      } = this.$store.getters
       const urlPrefix = to.params.lang
-      const urlLanguage = find(availableLanguages, { urlPrefix })
+      const languageList = forceTranslation ? languages : availableLanguages
+      const urlLanguage = find(languageList, { urlPrefix })
 
       /**
        * In case the language is not provided or doesn't exists,
@@ -58,7 +55,9 @@ class RouterHandler {
        * translated language, otherwise it needs to be updated.
        * Browser language has prioriry over the store state
        */
-      if (urlLanguage && urlLanguage.urlPrefix !== currentLanguage.urlPrefix) {
+      const isDiff = urlLanguage && urlLanguage.urlPrefix !== currentLanguage.urlPrefix
+
+      if (isDiff) {
         return this.$store.dispatch(SET_LANGUAGE, urlLanguage.code).then((translations) => {
           this.$localeHandler.update(urlLanguage.code, translations)
           next()
@@ -86,9 +85,8 @@ class RouterHandler {
 
   updateURL () {
     const { currentRoute } = this.$router
-    const { forceTranslation } = this.$store.getters
 
-    if (this.$router && currentRoute && !forceTranslation) {
+    if (this.$router && currentRoute) {
       this.$router.replace(this.localize({ name: currentRoute.name }))
     }
   }
