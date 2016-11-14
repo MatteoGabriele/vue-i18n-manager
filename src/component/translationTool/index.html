@@ -1,13 +1,15 @@
 <div class="translation-tool">
   <button @click="toggle" class="button open">Traslation Tool</button>
 
-  <div v-show="visibility" class="languages">
-    <button
-      v-for="language in languages"
-      @click="$setLanguage(language.code)"
-      class="button language"
-      :class="{ 'active': isActive(language.code) }">
-        <span>{{ getLabel(language) }}</span>
-    </button>
+  <div v-show="visibility" class="languages-wrapper">
+    <div class="languages">
+      <button
+        v-for="language in languages"
+        @click="setLanguage(language.code)"
+        class="button language"
+        :class="{ 'active': isActive(language.code), 'disabled': isDisabled }">
+          <span>{{ getLabel(language) }}</span>
+      </button>
+    </div>
   </div>
 </div>

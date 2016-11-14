@@ -7,9 +7,21 @@ export default {
   name: 'translation-tool',
 
   props: {
+    /**
+     * Name of the property needs to be displayed in the language list
+     */
     label: {
       type: String,
       default: 'name'
+    },
+
+    /**
+     * Enable it to click & close the translation-tool directly
+     * everytime a language is selected for testing
+     */
+    closeOnClick: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -25,17 +37,32 @@ export default {
 
   data () {
     return {
-      visibility: false
+      visibility: false,
+      buttonEnabled: true
     }
   },
 
   computed: {
+    isDisabled () {
+      return !this.buttonEnabled && this.closeOnClick
+    },
     languages () {
       return this.$store.getters.languages
     }
   },
 
   methods: {
+    setLanguage (code) {
+      this.buttonEnabled = false
+
+      this.$setLanguage(code).then(() => {
+        if (this.closeOnClick) {
+          this.visibility = false
+        }
+
+        this.buttonEnabled = true
+      })
+    },
     getLabel (language) {
       const label = language[this.label]
 
