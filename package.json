@@ -4,8 +4,8 @@
   "description": "vue-i18n manager for Vue",
   "main": "dist/vue-i18n-manager.js",
   "scripts": {
-    "dev": "NODE_ENV=development webpack -w",
-    "build": "webpack -p -o --warnings=false",
+    "dev": "webpack --config webpack/dev/webpack.config.js -w",
+    "build": "webpack --config webpack/prod/webpack.config.js",
     "test:single": "karma start ./test/karma.config.js --singleRun",
     "test": "karma start ./test/karma.config.js"
   },
@@ -70,6 +70,9 @@
     "sinon": "^1.17.6",
     "style-loader": "^0.13.1",
     "vue": "^2.0.5",
-    "webpack": "^1.13.2"
+    "progress-bar-webpack-plugin": "^1.9.0",
+    "sinon": "^1.17.6",
+    "webpack": "^1.13.2",
+    "webpack-merge": "^0.16.0"
   }
 }
