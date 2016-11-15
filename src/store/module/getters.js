@@ -1,5 +1,6 @@
 import storageHelper from 'storage-helper'
 import find from 'lodash/find'
+import { log } from '../../utils'
 
 export const availableLanguages = state => state.availableLanguages
 
@@ -8,6 +9,10 @@ export const languages = state => state.languages
 export const currentLanguage = state => state.currentLanguage
 
 export const urlPrefix = state => state.currentLanguage.urlPrefix
+export const langUrlPrefix = state => {
+  log('"langUrlPrefix" will be deprecated soon. Please use "urlPrefix"', 'warn')
+  return state.currentLanguage.urlPrefix
+}
 
 export const forceTranslation = state => state.forceTranslation
 
