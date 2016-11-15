@@ -1,4 +1,35 @@
 .translation-tool {
+  $mainColor: #3AB882;
+  $darkGray: #333333;
+
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  width: 100%;
+  z-index: 99999999;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  .language-container {
+    max-height: 50vh;
+    width: 100%;
+    overflow-y: auto;
+
+    &.closed {
+      .active {
+        transition: all 100ms ease-out;
+        padding: 5px 20px;
+        font-size: 12px;
+        pointer-events: none;
+        border-top: 1px solid $mainColor;
+
+        .selected-text {
+          display: inline-block;
+        }
+      }
+    }
+  }
 
   .button {
     cursor: pointer;
@@ -8,66 +39,75 @@
     padding: 0;
     margin: 0;
     outline: none;
+    font-size: 16px;
+    transition: color 300ms ease-out;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
 
     &.open {
-      position: fixed;
-      bottom: 10px;
-      left: 10px;
-      z-index: 99999999;
-      background: black;
+      background: $darkGray;
       color: white;
-      padding: 10px 20px;
-      border-top: 4px solid #3AB882;
-    }
-
-    &.close {
-
+      padding: 20px 20px;
+      width: 100%;
     }
 
     &.language {
       background: white;
-      padding: 10px 20px;
-      margin: 2px;
-      opacity: 0.5;
+      padding: 20px;
+      width: 100%;
+      border-bottom: 1px solid #888;
+
+      .selected-text {
+        display: none;
+      }
+
+      .label {
+        transition: color 300ms ease-out;
+        color: $darkGray;
+      }
 
       &.active {
-        opacity: 1;
+        background: $mainColor;
+        border-right: 1px solid $mainColor;
+        border-left: 1px solid $mainColor;
+
+        &:first-child {
+          border-top: 1px solid $mainColor;
+        }
+
+        .label {
+          color: white;
+        }
       }
     }
 
     &.disabled {
-      pointer-events: none;
+      pointer-events: none !important;
       opacity: 0.3 !important;
     }
   }
 
-  .languages-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 99999998;
-    background: rgba(0, 0, 0, 0.5);
-  }
+  // Desktop
+  @media (min-width: 500px) {
+    bottom: 10px;
+    left: 10px;
+    max-width: 400px;
 
-  .languages {
-    position: 0;
-    width: 80vw;
-    max-width: 800px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #e7e7e7;
-    padding: 40px;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
+    .button {
+      font-size: 12px;
 
-    .language {
-      width: 20%;
-      flex: 1;
+      &.open {
+        border-top: none;
+      }
+
+      &.language {
+        border: 1px solid #e7e7e7;
+        border-bottom: none;
+        padding: 10px;
+
+        &:last-child {
+          border-bottom: 1px solid #e7e7e7;
+        }
+      }
     }
   }
 }

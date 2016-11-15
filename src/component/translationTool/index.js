@@ -46,12 +46,17 @@ export default {
     isDisabled () {
       return !this.buttonEnabled && this.closeOnClick
     },
+
     languages () {
       return this.$store.getters.languages
     }
   },
 
   methods: {
+    close () {
+      this.visibility = false
+    },
+
     setLanguage (code) {
       this.buttonEnabled = false
 
@@ -63,6 +68,7 @@ export default {
         this.buttonEnabled = true
       })
     },
+
     getLabel (language) {
       const label = language[this.label]
 
@@ -73,9 +79,15 @@ export default {
 
       return label
     },
+
     isActive (code) {
       return this.$store.getters.currentLanguage.code === code
     },
+
+    isVisible (code) {
+      return this.$store.getters.currentLanguage.code === code || this.visibility
+    },
+
     toggle () {
       this.visibility = !this.visibility
       this.$store.dispatch(SET_FORCE_TRANSLATION, this.visibility)
