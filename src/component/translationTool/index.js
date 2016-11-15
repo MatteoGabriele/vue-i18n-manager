@@ -8,6 +8,14 @@ export default {
 
   props: {
     /**
+     * Remove css style to customize the component more easily
+     */
+    applyStyle: {
+      type: Boolean,
+      default: true
+    },
+
+    /**
      * Name of the property needs to be displayed in the language list
      */
     label: {
