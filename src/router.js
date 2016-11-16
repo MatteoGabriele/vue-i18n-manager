@@ -46,7 +46,7 @@ class RouterHandler {
        * the URL doesn't contain a language prefix or the user typed
        * a different language on purpose and we need to check it.
        */
-      if (!urlLanguage && (!from.name || urlPrefix)) {
+      if (!urlLanguage && !from.name) {
         return next(this.localize({ name: to.name }))
       }
 
