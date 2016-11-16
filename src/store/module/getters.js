@@ -9,8 +9,11 @@ export const languages = state => state.languages
 export const currentLanguage = state => state.currentLanguage
 
 export const urlPrefix = state => state.currentLanguage.urlPrefix
+
+export const filteredLanguages = state => state.languageFilter
+
 export const langUrlPrefix = state => {
-  log('"langUrlPrefix" will be deprecated soon. Please use "urlPrefix"', 'warn')
+  log('"langUrlPrefix" will be deprecated soon. Please use "urlPrefix" instead', 'warn')
   return state.currentLanguage.urlPrefix
 }
 
