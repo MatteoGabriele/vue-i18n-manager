@@ -6,6 +6,9 @@ var ProgressBarPlugin = require('progress-bar-webpack-plugin');
 var plugins = [
   new ProgressBarPlugin(),
   new webpack.optimize.UglifyJsPlugin({
+    output: {
+      comments: false
+    },
     compress: {
       warnings: false
     }
