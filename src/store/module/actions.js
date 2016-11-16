@@ -1,5 +1,4 @@
 import find from 'lodash/find'
-import axios from 'axios'
 import { log } from '../../utils'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
@@ -41,18 +40,29 @@ export default {
     const requestURL = `${state.path}/${language.translateTo}.json`
 
     try {
-      const { data } = await axios.get(requestURL)
-      commit(SET_TRANSLATION, data)
+      const request = new window.Request(requestURL, {
+        method: 'GET',
+        mode: 'cors',
+        headers: new window.Headers({
+          'Content-Type': 'application/json'
+        })
+      })
 
-      return data
+      const data = await window.fetch(request)
+      const translation = await data.json()
+
+      commit(SET_TRANSLATION, translation)
+
+      return translation
     } catch (e) {
       if (e.response.status === 404) {
         log('Problems with the translation file. Check if the url is correct', 'warn')
-      } else {
-        log(`${e.message} for ${requestURL}`, 'warn')
+        return
       }
 
-      return null
+      log(`${e.message} for ${requestURL}`, 'warn')
+
+      return
     }
   },
 
