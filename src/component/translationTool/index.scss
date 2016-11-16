@@ -28,6 +28,12 @@
           display: inline-block;
         }
       }
+
+      &.forced {
+        .label {
+          animation: pulse 1.8s ease-out infinite
+        }
+      }
     }
   }
 
@@ -109,5 +115,11 @@
         }
       }
     }
+  }
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
   }
 }

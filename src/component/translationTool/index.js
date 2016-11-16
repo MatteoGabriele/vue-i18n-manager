@@ -46,7 +46,8 @@ export default {
   data () {
     return {
       visibility: false,
-      buttonEnabled: true
+      buttonEnabled: true,
+      selected: null
     }
   },
 
@@ -55,8 +56,29 @@ export default {
       return !this.buttonEnabled && this.closeOnClick
     },
 
+    currentLanguage () {
+      return this.$store.getters.currentLanguage
+    },
+
+    isForced () {
+      if (!this.selected) {
+        return
+      }
+      return this.$store.getters.filteredLanguages.indexOf(this.selected) === -1
+    },
+
     languages () {
       return this.$store.getters.languages
+    }
+  },
+
+  watch: {
+    currentLanguage (value) {
+      if (!value) {
+        return
+      }
+
+      this.selected = value.code
     }
   },
 
