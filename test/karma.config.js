@@ -1,4 +1,4 @@
-var webpackConfig = require('../webpack.config.js');
+var webpackConfig = require('../webpack/dev/webpack.config');
 var isTravis = !!process.env.TRAVIS
 var webpack = require('webpack')
 
