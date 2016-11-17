@@ -5,7 +5,10 @@ var preLoaders = require('./preLoaders');
 var plugins = require('./plugins');
 
 module.exports = {
-  entry: './src',
+  entry: [
+    'whatwg-fetch',
+    './src'
+  ],
   output: {
     path: path.resolve(__dirname, './../dist'),
     filename: name + '.js',
