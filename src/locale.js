@@ -25,10 +25,13 @@ class LocaleHandler {
    * @param  {Object} translations
    */
   update (code, translations) {
+    /**
+     * If vue-i18n plugin is not installed, then function
+     * will prevent the app to throw an error
+     */
     if (!this.$vue.config.lang) {
       log('You need to install vue-i18n plugin https://www.npmjs.com/package/vue-i18n', 'warn')
-      // if vue-i18n plugin is not installed, then function
-      // will prevent the app to throw an error
+
       this.$vue.prototype.$t = (label, a) => {
         return label
       }
