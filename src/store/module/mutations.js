@@ -1,21 +1,69 @@
 import find from 'lodash/find'
-import map from 'lodash/map'
+import filter from 'lodash/filter'
+import includes from 'lodash/includes'
 import pick from 'lodash/pick'
+import each from 'lodash/each'
 import keys from 'lodash/keys'
 import size from 'lodash/size'
 import assignIn from 'lodash/assignIn'
+import difference from 'lodash/difference'
 import storageHelper from 'storage-helper'
+import { systemState, deprecatedKeys } from './state'
 import { log } from '../../utils'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
   UPDATE_I18N_STATE,
   SET_LANGUAGE,
-  SET_TRANSLATION
+  SET_TRANSLATION,
+  SET_FORCE_TRANSLATION
 } from './events'
+
+/**
+ * Warns if the default language code matches at least one of the provided languages,
+ * otherwise the application could break.
+ * @param  {Object} state
+ */
+const warnUnmatchedDefaultCode = (state) => {
+  const langauge = find(state.availableLanguages, { code: state.defaultCode })
+
+  if (langauge) {
+    return
+  }
+
+  log('The default code must matches at least one language in the provided list', 'warn')
+}
+
+/**
+ * Warns invalid or deprecated keys
+ * @param  {Object} state
+ * @param  {Object} newParams
+ */
+const warnInvalidKeys = (allowedKeys, paramsKeys) => {
+  const invalidKeyes = difference(paramsKeys, allowedKeys)
+
+  if (!invalidKeyes.length) {
+    return
+  }
+
+  each(invalidKeyes, key => {
+    const deprecated = find(deprecatedKeys, { old: key })
+
+    if (deprecated) {
+      log(`"${key}" is a deprecated parameter. Please use "${deprecated.new}"`, 'warn')
+      return
+    }
+
+    log(`"${key}" is not a valid parameter to pass in the config object`, 'warn')
+  })
+}
 
 const mutations = {
   [REMOVE_LANGUAGE_PERSISTENCY] (state) {
     state.persistent = false
+  },
+
+  [SET_FORCE_TRANSLATION] (state, payload) {
+    state.forceTranslation = payload
   },
 
   [SET_TRANSLATION] (state, translations) {
@@ -24,41 +72,41 @@ const mutations = {
     state.errorMessage = null
   },
 
-  [UPDATE_I18N_STATE] (state, params) {
-    const availableKeys = keys(state)
-    const newKeys = params
+  /**
+   * To update the state is necessary to pass only existing keys, but also
+   * only keys that are not related to the mutation state of the store module.
+   * So in order to do that, it's necessary to remove all systemState keys from the
+   * array of available keys
+   * The filtered keys are compared with the plugin options keys and applied to the state.
+   */
+  [UPDATE_I18N_STATE] (state, newParams, a) {
+    state.availableLanguages = newParams.languages || state.languages
 
-    if (size(newKeys) === 0) {
+    if (size(newParams) === 0) {
       return
     }
 
-    const parsedParams = pick(newKeys, availableKeys)
+    const systemStateKeys = keys(systemState)
+    const stateKeys = keys(state)
+    const allowedKeys = difference(stateKeys, systemStateKeys)
 
-    state = assignIn(state, parsedParams)
+    // Let's merge the new parameters with the state
+    state = assignIn(state, pick(newParams, allowedKeys))
 
-    if (state.availableLanguages.length) {
-      state.languages = map(state.availableLanguages, (code) => {
-        return find(state.languages, { code })
+    if (state.languageFilter.length > 0) {
+      state.availableLanguages = filter(state.availableLanguages, (language) => {
+        return includes(state.languageFilter, language.code)
       })
     }
 
-    // Check if the default language code matches at least one of the provided languages,
-    // otherwise the application could break.
-    const match = find(state.languages, { code: state.defaultCode })
-
-    if (!match) {
-      const message = 'The default code must matches at least one language in the provided list'
-
-      state.errorMessage = message
-      state.error = true
-
-      log(message, 'error')
-    }
+    warnUnmatchedDefaultCode(state)
+    warnInvalidKeys(allowedKeys, keys(newParams))
   },
 
   [SET_LANGUAGE] (state, code) {
-    const { languages, persistent, storageKey } = state
-    const language = find(languages, { code })
+    const { persistent, storageKey, forceTranslation, languages, availableLanguages } = state
+    const languageList = forceTranslation ? languages : availableLanguages
+    const language = find(languageList, { code })
 
     if (!language) {
       return

@@ -1,16 +1,20 @@
 import find from 'lodash/find'
-import axios from 'axios'
 import { log } from '../../utils'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
   UPDATE_I18N_STATE,
   SET_LANGUAGE,
-  SET_TRANSLATION
+  SET_TRANSLATION,
+  SET_FORCE_TRANSLATION
 } from './events'
 
 export default {
   [REMOVE_LANGUAGE_PERSISTENCY]: ({ commit }) => {
     commit(REMOVE_LANGUAGE_PERSISTENCY)
+  },
+
+  [SET_FORCE_TRANSLATION]: ({ commit }, payload) => {
+    commit(SET_FORCE_TRANSLATION, payload)
   },
 
   /**
@@ -23,24 +27,40 @@ export default {
     commit(UPDATE_I18N_STATE, params)
   },
 
-  [SET_TRANSLATION]: async ({ commit, state }, code) => {
-    const { path, languages, defaultCode } = state
-    const language = find(languages, { code: code || defaultCode })
-    const url = `${path}/${language.translateTo}.json`
+  [SET_TRANSLATION]: async ({ commit, state, getters }, code) => {
+    const { forceTranslation, availableLanguages, languages } = state
+    const languageList = forceTranslation ? languages : availableLanguages
+    const language = find(languageList, { code })
+
+    if (!language) {
+      log(`A language with code "${code}" doesn't exist`, 'warn')
+      return
+    }
+
+    const requestURL = `${state.path}/${language.translateTo}.json`
 
     try {
-      const { data } = await axios.get(url)
-      commit(SET_TRANSLATION, data)
+      const request = new window.Request(requestURL, {
+        method: 'GET',
+        mode: 'cors',
+        headers: new window.Headers({
+          'Content-Type': 'application/json'
+        })
+      })
 
-      return data
+      const data = await window.fetch(request)
+      const translation = await data.json()
+
+      commit(SET_TRANSLATION, translation)
+
+      return translation
     } catch (e) {
-      let message = `${e.message} for ${url}`
-
       if (e.response.status === 404) {
-        message = `Problems with the translation json file. It doesn't exist (${url})`
+        log('Problems with the translation file. Check if the url is correct', 'warn')
+        return
       }
 
-      log(message, 'error')
+      log(`${e.message} for ${requestURL}`, 'warn')
 
       return
     }
@@ -55,6 +75,6 @@ export default {
 
     commit(SET_LANGUAGE, code)
 
-    return await dispatch(SET_TRANSLATION, code)
+    return dispatch(SET_TRANSLATION, code)
   }
 }

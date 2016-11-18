@@ -1,18 +1,25 @@
-/**
- * Default store state
- * @type {Object}
- */
-const state = {
-  persistent: true,
+export const systemState = {
   currentLanguage: null,
   pending: false,
   error: false,
   errorMessage: null,
   translations: null,
+  forceTranslation: false,
+  availableLanguages: []
+}
+
+/**
+ * Default store state
+ * @type {Object}
+ *
+ */
+const state = {
+  ...systemState,
+  persistent: true,
   storageKey: 'language_key',
   path: 'static/i18n',
   defaultCode: 'en-GB',
-  availableLanguages: [],
+  languageFilter: [],
   languages: [
     {
       name: 'English',
@@ -22,5 +29,16 @@ const state = {
     }
   ]
 }
+
+/**
+ * Deprecated keys holder
+ * @type {Array}
+ */
+export const deprecatedKeys = [
+  {
+    old: 'availableLanguages',
+    new: 'languageFilter'
+  }
+]
 
 export default state
