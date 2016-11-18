@@ -1,9 +1,19 @@
 [![npm version](https://badge.fury.io/js/vue-i18n-manager.svg)](https://badge.fury.io/js/vue-i18n-manager) [![Build Status](https://travis-ci.org/MatteoGabriele/vue-i18n-manager.svg?branch=master)](https://travis-ci.org/MatteoGabriele/vue-i18n-manager)
 
-# vue-i18n-manager 
-It will help you dealing with multi-language application using [vue-18n](https://github.com/kazupon/vue-i18n) plugin.
+# vue-i18n-manager
+Helper plugin that would make your life easier dealing with multi-language application using [vue-18n](https://github.com/kazupon/vue-i18n) plugin
 >**Vue 2.0 and Vuex are required**
 
+## Features
+- URL prefixing
+- Language redirects
+- Language translations with vue-i18n
+- Language switcher function
+- Localize method for your routes
+- Routes parser helper to manage your route structure
+- Possibility to add and filter languages
+- A Translation Tool to manage all languages without changing filters or environment
+- Vuex integration
 
 ## How to install it
 ```bash
@@ -46,7 +56,7 @@ or use it programmatically, taking advantage of the Promise that the method retu
 ```
 
 ## Page transitions
-The language needs to be defined as a parameter of the route, to avoid typing it everytime, which you can still do using the **langUrlPrefix** computed value in the VuexStore getters, is possible to wrap the route object in the **$localize** method like so
+The language needs to be defined as a parameter of the route, to avoid typing it every time, which you can still do using the **langUrlPrefix** computed value in the VuexStore getters, is possible to wrap the route object in the **$localize** method like so
 ```js
 <router-link :to="$localize({ name: 'home' })"></router-link>
 ```
@@ -93,12 +103,46 @@ import router from './router' // import your VueRouter instance
 Vue.use(VueI18nManager, { store, router })
 ```
 
+## Translation Tool
+The translation tool it's a component that force the application to handle all languages without any filters.
+The application will still maintain the same logic and look & feel, but will be possible to check all other languages that we can't actually see because we are maybe restricting that via server.
+The component will also show the current selected language and the language label will start fading in and out just to remember you that the language is forced by the tool.
+
+```js
+// my-component.js
+
+import { translationTool } from 'vue-i18n-manager'
+
+export default {
+    components: {
+        translationTool
+    }
+}
+```
+
+```html
+// my-component.html
+
+<translation-tool />   
+```
+The translation tool accept 3 attributes:
+#### applyStyle
+Set it to false to remove all style associated with the component. Default is true.
+
+#### label
+A the name of the property in the language object you want to show in the translation tool. Default is the `code`.
+
+#### closeOnClick
+Set to true and the tool will collapse every time a language is selected. Default is false.
+
 ## Options
 
 #### Configurations
-Is possible also to pass a **config** object in the options object, which will merge existing values in the default state of the store module.
+It's possible also to pass a **config** object in the options object, which will merge existing values in the default state of the store module.
+Important to know is that the **config** object can be also a Promise which has to return a plain object with its properties.
 Is not possible to add properties, only the following are allowed:
 * **languages**
+* **languageFilter**
 * **availableLanguages**
 * **persistent**
 * **storageKey**
@@ -119,7 +163,7 @@ const config = {
         translateTo: 'en-GB'
       }
     ],
-    availableLanguages: [],
+    languageFilter: [],
     persistent: true,
     storageKey: 'language_key',
     path: 'static/i18n',
@@ -130,9 +174,11 @@ Vue.use(VueI18nManager, { store, config })
 ```
 
 ##### languages
-Is possible to add languages passing them as an array in the **languages** property. The basic mandatory shape of a language item needs to have a **code**, **urlPrefix** and a **translateTo** property
+Is possible to add languages passing them as an array in the **languages** property. The basic mandatory shape of a language item needs to have a **code**, **urlPrefix** and a **translateTo** property, but then it can hold every kind of information you need to store.
 ```js
 {
+    name: 'English',
+    currency: 'britich pound',
     code: 'en-GB',
     urlPrefix: 'en-gb',
     translateTo: 'en-GB'
@@ -142,7 +188,7 @@ Is possible to add languages passing them as an array in the **languages** prope
 * **urlPrefix** is displayed in the URL.
 * **translateTo** is the actual translation that will be applied with this language and needs to match the actual .json file for the translation
 
-##### availableLanguages
+##### languageFilter
 It is also possible to filter all languages passing an array of codes in the availableLanguages array like so
 ```js
 const config = {
@@ -166,7 +212,7 @@ const config = {
         translateTo: 'it-IT'
       }
     ],
-    availableLanguages: ['nl-NL', 'it-IT']
+    languageFilter: ['nl-NL', 'it-IT']
 }
 ```
 In this case only Dutch and Italian will be available by the application.
@@ -190,13 +236,6 @@ The defaultCode is the code of the language that will be displayed in case of a 
 >**The default code needs to match at least one item in the languages array**
 
 ## Getters
-List of available getters that come with the module.
-
-* languages
-* currentLanguage
-* langUrlPrefix
-* defaultCode
-
 ```js
 import { mapGetters } from 'vuex'
 
@@ -208,3 +247,26 @@ export default {
     }
 }
 ```
+A list of all available getters
+
+##### languages
+Array of all languages. **_No filter applied_**
+
+##### languageFilter
+Array of filtered languages code.
+
+##### availableLanguages
+Array of all available languages which can be filtered via the _languageFilter_ property.
+
+##### currentLanguage
+The current selected language object
+
+##### urlPrefix
+The url prefix of the current language
+
+
+##### forceTranslation
+It returns a Boolean that checks if the application is in "force translation mode" due to the TranslationTool functionalities that allows us to view all languages without changing the current application logic.
+
+##### defaultCode
+The default language code of the application
