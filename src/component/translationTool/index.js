@@ -64,7 +64,7 @@ export default {
       if (!this.selected) {
         return
       }
-      return this.$store.getters.filteredLanguages.indexOf(this.selected) === -1
+      return this.$store.getters.languageFilter.indexOf(this.selected) === -1
     },
 
     languages () {

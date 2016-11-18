@@ -1,5 +1,7 @@
 <div :class="{ 'translation-tool': applyStyle }">
-  <button @click="toggle" class="button open">Translation Tool</button>
+  <button @click="toggle" class="button toggler" :class="{ 'open': visibility }">
+    Translation Tool <span class="arrow"></span>
+  </button>
   <div :class="{ 'closed': !visibility, 'forced': isForced }" class="language-container">
     <button
       v-show="isVisible(language.code)"
