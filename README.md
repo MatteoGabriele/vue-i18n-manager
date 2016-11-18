@@ -1,7 +1,7 @@
 [![npm version](https://badge.fury.io/js/vue-i18n-manager.svg)](https://badge.fury.io/js/vue-i18n-manager) [![Build Status](https://travis-ci.org/MatteoGabriele/vue-i18n-manager.svg?branch=master)](https://travis-ci.org/MatteoGabriele/vue-i18n-manager)
 
 # vue-i18n-manager
-Helper plugin that would make your life easier dealing with multi-language application using [vue-18n](https://github.com/kazupon/vue-i18n) plugin
+Plugin that would make your life easier dealing with multi-language application using [vue-18n](https://github.com/kazupon/vue-i18n)
 >**Vue 2.0 and Vuex are required**
 
 ## Features
