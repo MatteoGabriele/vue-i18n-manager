@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "webpack --config webpack/dev/webpack.config.js -w",
     "build": "webpack --config webpack/prod/webpack.config.js",
-    "test:single": "karma start ./test/karma.config.js --singleRun",
-    "test": "karma start ./test/karma.config.js"
+    "test": "karma start ./test/karma.config.js --singleRun",
+    "test:watch": "karma start ./test/karma.config.js"
   },
   "repository": {
     "type": "git",
