@@ -1,4 +1,5 @@
 import find from 'lodash/find'
+// import each from 'lodash/each'
 import { log } from '../../utils'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
@@ -39,31 +40,32 @@ export default {
 
     const requestURL = `${state.path}/${language.translateTo}.json`
 
-    try {
-      const request = new window.Request(requestURL, {
-        method: 'GET',
-        mode: 'cors',
-        headers: new window.Headers({
-          'Content-Type': 'application/json'
-        })
+    const request = new window.Request(requestURL, {
+      method: 'GET',
+      mode: 'cors',
+      headers: new window.Headers({
+        'Content-Type': 'application/json'
       })
+    })
 
-      const data = await window.fetch(request)
-      const translation = await data.json()
+    const response = await window.fetch(request)
 
-      commit(SET_TRANSLATION, translation)
-
-      return translation
-    } catch (e) {
-      if (e.response.status === 404) {
-        log('Problems with the translation file. Check if the url is correct', 'warn')
+    if (!response.ok) {
+      if (response.status === 404) {
+        log('Translation error. Check if the file exists and the url is correct', 'warn')
         return
       }
 
-      log(`${e.message} for ${requestURL}`, 'warn')
+      log(`${response.statusText} for ${requestURL}`, 'warn')
 
       return
     }
+
+    const translation = await response.json()
+
+    commit(SET_TRANSLATION, translation)
+
+    return translation
   },
 
   [SET_LANGUAGE]: async ({ dispatch, commit, state }, code) => {
