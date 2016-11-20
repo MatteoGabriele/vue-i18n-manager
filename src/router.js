@@ -58,10 +58,7 @@ class RouterHandler {
       const isDiff = urlLanguage && urlLanguage.urlPrefix !== currentLanguage.urlPrefix
 
       if (isDiff) {
-        return this.$store.dispatch(SET_LANGUAGE, urlLanguage.code).then((translations) => {
-          this.$localeHandler.update(urlLanguage.code, translations)
-          next()
-        })
+        return this.$store.dispatch(SET_LANGUAGE, urlLanguage.code).then(() => next())
       }
 
       next()

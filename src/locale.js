@@ -1,53 +1,72 @@
-import VueI18n from 'vue-i18n'
+import each from 'lodash/each'
+import map from 'lodash/map'
+import replace from 'lodash/replace'
+import keys from 'lodash/keys'
 import { log } from './utils'
 
 let instance
 
 class LocaleHandler {
-  constructor (Vue) {
+  constructor (Vue, store) {
     this.$vue = Vue
-
-    this.installVueI18n()
+    this.$store = store
   }
 
-  installVueI18n () {
-    if (this.$vue.config.lang) {
-      return
+  interpolate (string, params) {
+    if (!params) {
+      return string
     }
 
-    this.$vue.use(VueI18n)
-  }
+    let originalString = string
+    let propErrors = []
 
-  /**
-   * It updates vue-i18n plugin configurations
-   * @param  {Vue instance} Vue
-   * @param  {String} code
-   * @param  {Object} translations
-   */
-  update (code, translations) {
-    /**
-     * If vue-i18n plugin is not installed, then function
-     * will prevent the app to throw an error
-     */
-    if (!this.$vue.config.lang) {
-      log('You need to install vue-i18n plugin https://www.npmjs.com/package/vue-i18n', 'warn')
+    const betweenCurlyBracesRegEx = new RegExp(/\{.*?}s?/g)
+    const matchedParams = string.match(betweenCurlyBracesRegEx)
+    const paramsKeys = keys(params)
 
-      this.$vue.prototype.$t = (label, a) => {
-        return label
+    each(matchedParams, (match, i) => {
+      const prop = match.slice(1, -1)
+      const value = params[prop]
+      const paramKey = paramsKeys[i]
+
+      if (!value && paramKey) {
+        propErrors.push(paramKey)
+        return
       }
-      return
+
+      string = replace(string, match, value)
+    })
+
+    /**
+     * To better manage errors and typos, every errors will be logged in the console
+     * with the current translated value
+     */
+    if (propErrors.length > 0) {
+      propErrors = map(propErrors, error => `"${error}"`)
+
+      log(`No match found for ${propErrors.join(', ')} in "${originalString}"`, 'warn')
     }
 
-    this.$vue.locale(code, translations, () => {
-      this.$vue.config.lang = code
-    })
+    return string
+  }
+
+  translate (label, params) {
+    const { translations } = this.$store.getters
+
+    if (!translations || !translations[label]) {
+      return label
+    }
+
+    return this.interpolate(translations[label], params)
   }
 }
 
-export default function (Vue) {
+export default function (Vue, store) {
   if (!instance) {
-    instance = new LocaleHandler(Vue)
+    instance = new LocaleHandler(Vue, store)
   }
+
+  Vue.prototype.$t = instance.translate.bind(instance)
 
   return instance
 }

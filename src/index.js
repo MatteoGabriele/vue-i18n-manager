@@ -12,7 +12,7 @@ class I18n {
     this.$store = store
 
     this.$storeHandler = storeHandler(store)
-    this.$localeHandler = localeHandler(Vue)
+    this.$localeHandler = localeHandler(Vue, store)
     this.$routerHandler = routerHandler(Vue, router, store)
   }
 
@@ -34,9 +34,7 @@ class I18n {
    * @return {Promise}
    */
   async setLanguage (code = this.$store.getters.defaultCode, replaceRoute = true) {
-    const translations = await this.$store.dispatch(SET_LANGUAGE, code)
-
-    this.$localeHandler.update(code, translations)
+    await this.$store.dispatch(SET_LANGUAGE, code)
 
     if (!replaceRoute) {
       return

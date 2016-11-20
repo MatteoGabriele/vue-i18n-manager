@@ -1730,7 +1730,7 @@ es6-map@^0.1.3:
     es6-symbol "~3.1.0"
     event-emitter "~0.3.4"
 
-es6-promise, es6-promise@~4.0.3:
+es6-promise@~4.0.3:
   version "4.0.5"
   resolved "https://registry.yarnpkg.com/es6-promise/-/es6-promise-4.0.5.tgz#7882f30adde5b240ccfa7f7d78c548330951ae42"
 
@@ -2727,10 +2727,6 @@ jodid25519@^1.0.0:
 js-base64@^2.1.9:
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.1.9.tgz#f0e80ae039a4bd654b5f281fc93f04a914a7fcce"
-
-js-cookie@^2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-2.1.3.tgz#48071625217ac9ecfab8c343a13d42ec09ff0526"
 
 js-tokens@^2.0.0:
   version "2.0.0"
@@ -4770,10 +4766,8 @@ sshpk@^1.7.0:
   resolved "https://registry.yarnpkg.com/statuses/-/statuses-1.3.1.tgz#faf51b9eb74aaef3b3acf4ad5f61abf24cb7b93e"
 
 storage-helper:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/storage-helper/-/storage-helper-1.3.1.tgz#6e560a528f94afd18ec80dd2f7723fe7d4445ed1"
-  dependencies:
-    js-cookie "^2.1.3"
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/storage-helper/-/storage-helper-1.3.2.tgz#211364446d6c57ad9a759a2b637a992f9198d05a"
 
 stream-browserify@^1.0.0:
   version "1.0.0"

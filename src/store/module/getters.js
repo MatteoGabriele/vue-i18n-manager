@@ -11,6 +11,8 @@ export const urlPrefix = state => state.currentLanguage.urlPrefix
 
 export const languageFilter = state => state.languageFilter
 
+export const translations = state => state.translations
+
 export const forceTranslation = state => state.forceTranslation
 
 export const defaultCode = state => {
