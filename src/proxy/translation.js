@@ -6,7 +6,7 @@ import { warn } from '../utils'
  * @param  {Object}  state
  * @return {Promise}
  */
-export const getTranslation = async (language, state) => {
+export const getTranslation = async (state, language) => {
   const requestURL = `${state.path}/${language.translateTo}.json`
 
   const request = new Request(requestURL, {

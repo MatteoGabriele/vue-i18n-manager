@@ -18,11 +18,6 @@ export default {
     commit(SET_FORCE_TRANSLATION, payload)
   },
 
-  /**
-   * This action will merge all parameter that are passed to the plugin with existing
-   * parameter in the default state of the store.
-   * No new parameters are allowed: they will simply be ignored.
-   */
   [UPDATE_I18N_STATE]: async ({ commit, state }, payload = {}) => {
     const params = (payload && payload.then) ? await payload : payload
     commit(UPDATE_I18N_STATE, params)
@@ -38,7 +33,7 @@ export default {
       return
     }
 
-    const translation = await getTranslation(language, state)
+    const translation = await getTranslation(state, language)
 
     commit(SET_TRANSLATION, translation)
 
