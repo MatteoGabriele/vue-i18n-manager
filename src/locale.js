@@ -15,7 +15,7 @@ const warnPropertyError = (errors, context) => {
   if (errors.length > 0) {
     errors = map(errors, error => `"${error}"`)
 
-    warn(`No match found for ${errors.join(', ')} in "${context}"`, 'warn')
+    warn(`No match found for ${errors.join(', ')} in "${context}"`)
   }
 }
 
