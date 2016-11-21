@@ -82,7 +82,7 @@ const setLanguage = (router, store) => {
  * @param  {Object} params - translation dynamic properties
  * @return {String}
  */
-const translate = (store) => {
+export const translate = (store) => {
   return function (label, params) {
     const { translations } = store.getters
     const value = translations[label]
