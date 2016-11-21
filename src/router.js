@@ -16,6 +16,11 @@ const localize = (route, urlPrefix) => {
   })
 }
 
+/**
+ * Update URL prefix
+ * @param  {VueRouter} router
+ * @param  {String} urlPrefix
+ */
 export const updateURLPrefix = (router, urlPrefix) => {
   const { currentRoute } = router
 
@@ -76,6 +81,7 @@ const registerRouter = (router, store) => {
  * Route parser takes the current routes object before is injected in the VueRouter instance
  * and it returns the necessary tree structure to enable language prefixing
  * @param  {Array} routes
+ * @param  {String} [defaultCode='en'] - language redirect
  * @return {Array}
  */
 export const routeParser = (routes, defaultCode = 'en') => {

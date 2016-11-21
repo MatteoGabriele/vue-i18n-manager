@@ -1,4 +1,5 @@
 import find from 'lodash/find'
+import { getTranslation } from '../../proxy/translation'
 import { warn } from '../../utils'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
@@ -33,34 +34,11 @@ export default {
     const language = find(languageList, { code })
 
     if (!language) {
-      warn(`A language with code "${code}" doesn't exist or it's maybe filtered`)
+      warn(`A language with code "${code}" doesn't exist or it's filtered`)
       return
     }
 
-    const requestURL = `${state.path}/${language.translateTo}.json`
-
-    const request = new Request(requestURL, {
-      method: 'GET',
-      mode: 'cors',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      })
-    })
-
-    const response = await fetch(request)
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        warn('Translation error. Check if the file exists and the url is correct')
-        return
-      }
-
-      warn(`${response.statusText} for ${requestURL}`)
-
-      return
-    }
-
-    const translation = await response.json()
+    const translation = await getTranslation(language, state)
 
     commit(SET_TRANSLATION, translation)
 
