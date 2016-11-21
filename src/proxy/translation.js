@@ -22,12 +22,11 @@ export const getTranslation = async (language, state) => {
   if (!response.ok) {
     if (response.status === 404) {
       warn('Translation error. Check if the file exists and the url is correct')
-      return {}
+    } else {
+      warn(`${response.statusText} for ${requestURL}`)
     }
 
-    warn(`${response.statusText} for ${requestURL}`)
-
-    return
+    return {}
   }
 
   return await response.json()
