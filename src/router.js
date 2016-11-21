@@ -2,101 +2,74 @@ import find from 'lodash/find'
 import merge from 'lodash/merge'
 
 import { SET_LANGUAGE } from './store/module/events'
-import localeHandler from './locale'
 
-let instance
-
-class RouterHandler {
-  constructor (Vue, router, store) {
-    this.$router = router
-    this.$store = store
-    this.$vue = Vue
-
-    this.$localeHandler = localeHandler(Vue)
-  }
-
-  /**
-   * Applies specific functionalities to handle language redirects and URL prefixing.
-   * The application will be able to add the language urlPrefix property in its URL and
-   * to change the application language based on that specific parameter.
-   * If that urlPrefix provided via URL is not valid or it doesn't exist the application
-   * will fallback to the default language.
-   * VueRouter instance is required to unlock this feature.
-   */
-  register () {
-    if (!this.$router) {
-      return
+/**
+ * Includes language in the route
+ * @param  {Object} route
+ * @return {Object}
+ */
+const localize = (route, urlPrefix) => {
+  return merge(route, {
+    params: {
+      lang: urlPrefix
     }
+  })
+}
 
-    this.$router.beforeEach((to, from, next) => {
-      const {
-        availableLanguages,
-        currentLanguage,
-        forceTranslation,
-        languages
-      } = this.$store.getters
-      const urlPrefix = to.params.lang
-      const languageList = forceTranslation ? languages : availableLanguages
-      const urlLanguage = find(languageList, { urlPrefix })
+export const updateURLPrefix = (router, urlPrefix) => {
+  const { currentRoute } = router
 
-      /**
-       * In case the language is not provided or doesn't exists,
-       * the default language will be used.
-       * This will only be fired on landing, because most of the time
-       * the URL doesn't contain a language prefix or the user typed
-       * a different language on purpose and we need to check it.
-       */
-      if (!urlLanguage && !from.name) {
-        return next(this.localize({ name: to.name }))
-      }
-
-      /**
-       * Check if the detected language in the URL is also the current
-       * translated language, otherwise it needs to be updated.
-       * Browser language has prioriry over the store state
-       */
-      const isDiff = urlLanguage && urlLanguage.urlPrefix !== currentLanguage.urlPrefix
-
-      if (isDiff) {
-        return this.$store.dispatch(SET_LANGUAGE, urlLanguage.code).then(() => next())
-      }
-
-      next()
-    })
-  }
-
-  /**
-   * Includes language in the route
-   * @param  {Object} route
-   * @return {Object}
-   */
-  localize (route) {
-    const { urlPrefix, defaultCode } = this.$store.getters
-
-    return merge(route, {
-      params: {
-        lang: urlPrefix || defaultCode
-      }
-    })
-  }
-
-  updateURL () {
-    const { currentRoute } = this.$router
-
-    if (this.$router && currentRoute) {
-      this.$router.replace(this.localize({ name: currentRoute.name }))
-    }
+  if (router && currentRoute) {
+    router.replace(localize({ name: currentRoute.name }, urlPrefix))
   }
 }
 
-export default function (Vue, router, store) {
-  if (!instance) {
-    instance = new RouterHandler(Vue, router, store)
+/**
+ * Applies specific functionalities to handle language redirects and URL prefixing.
+ * The application will be able to add the language urlPrefix property in its URL and
+ * to change the application language based on that specific parameter.
+ * If that urlPrefix provided via URL is not valid or it doesn't exist the application
+ * will fallback to the default language.
+ * VueRouter instance is required to unlock this feature.
+ */
+const registerRouter = (router, store) => {
+  if (!router) {
+    return
   }
 
-  Vue.prototype.$localize = instance.localize.bind(instance)
+  // First time the router is registered, the route needs to be synced with the current language
+  updateURLPrefix(router, store.getters.currentLanguage.urlPrefix)
 
-  return instance
+  router.beforeEach((to, from, next) => {
+    const { availableLanguages, currentLanguage, forceTranslation, languages } = store.getters
+    const urlPrefix = to.params.lang
+    const languageList = forceTranslation ? languages : availableLanguages
+    const urlLanguage = find(languageList, { urlPrefix })
+
+    /**
+     * In case the language is not provided or doesn't exists,
+     * the default language will be used.
+     * This will only be fired on landing, because most of the time
+     * the URL doesn't contain a language prefix or the user typed
+     * a different language on purpose and we need to check it.
+     */
+    if (!urlLanguage || !from.name) {
+      return next(localize({ name: to.name }, currentLanguage.urlPrefix))
+    }
+
+    /**
+     * Check if the detected language in the URL is also the current
+     * translated language, otherwise it needs to be updated.
+     * Browser language has prioriry over the store state
+     */
+    const isDiff = urlLanguage && urlLanguage.urlPrefix !== currentLanguage.urlPrefix
+
+    if (isDiff) {
+      return store.dispatch(SET_LANGUAGE, urlLanguage.code).then(() => next())
+    }
+
+    next()
+  })
 }
 
 /**
@@ -105,7 +78,7 @@ export default function (Vue, router, store) {
  * @param  {Array} routes
  * @return {Array}
  */
-export const routeParser = (routes) => {
+export const routeParser = (routes, defaultCode = 'en') => {
   return [
     {
       path: '/:lang',
@@ -117,7 +90,15 @@ export const routeParser = (routes) => {
     },
     {
       path: '/*',
-      redirect: '/en'
+      redirect: `/${defaultCode}`
     }
   ]
+}
+
+export default function (Vue, router, store) {
+  registerRouter(router, store)
+
+  Vue.prototype.$localize = (route) => {
+    return localize(route, store.getters.currentLanguage.urlPrefix)
+  }
 }

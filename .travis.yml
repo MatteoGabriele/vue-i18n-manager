@@ -9,5 +9,5 @@ cache:
 node_js:
   - "6.4.0"
 script:
-  - npm run test:single
+  - npm run test
   - npm run build

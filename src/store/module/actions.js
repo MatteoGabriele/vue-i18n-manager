@@ -1,6 +1,5 @@
 import find from 'lodash/find'
-// import each from 'lodash/each'
-import { log } from '../../utils'
+import { warn } from '../../utils'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
   UPDATE_I18N_STATE,
@@ -23,7 +22,7 @@ export default {
    * parameter in the default state of the store.
    * No new parameters are allowed: they will simply be ignored.
    */
-  [UPDATE_I18N_STATE]: async ({ commit, state }, payload) => {
+  [UPDATE_I18N_STATE]: async ({ commit, state }, payload = {}) => {
     const params = (payload && payload.then) ? await payload : payload
     commit(UPDATE_I18N_STATE, params)
   },
@@ -34,29 +33,29 @@ export default {
     const language = find(languageList, { code })
 
     if (!language) {
-      log(`A language with code "${code}" doesn't exist`, 'warn')
+      warn(`A language with code "${code}" doesn't exist or it's maybe filtered`)
       return
     }
 
     const requestURL = `${state.path}/${language.translateTo}.json`
 
-    const request = new window.Request(requestURL, {
+    const request = new Request(requestURL, {
       method: 'GET',
       mode: 'cors',
-      headers: new window.Headers({
+      headers: new Headers({
         'Content-Type': 'application/json'
       })
     })
 
-    const response = await window.fetch(request)
+    const response = await fetch(request)
 
     if (!response.ok) {
       if (response.status === 404) {
-        log('Translation error. Check if the file exists and the url is correct', 'warn')
+        warn('Translation error. Check if the file exists and the url is correct')
         return
       }
 
-      log(`${response.statusText} for ${requestURL}`, 'warn')
+      warn(`${response.statusText} for ${requestURL}`)
 
       return
     }

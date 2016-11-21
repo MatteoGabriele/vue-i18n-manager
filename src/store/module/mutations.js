@@ -9,7 +9,7 @@ import assignIn from 'lodash/assignIn'
 import difference from 'lodash/difference'
 import storageHelper from 'storage-helper'
 import { systemState, deprecatedKeys } from './state'
-import { log } from '../../utils'
+import { warn } from '../../utils'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
   UPDATE_I18N_STATE,
@@ -30,7 +30,7 @@ const warnUnmatchedDefaultCode = (state) => {
     return
   }
 
-  log('The default code must matches at least one language in the provided list', 'warn')
+  warn('The default code must matches at least one language in the provided list')
 }
 
 /**
@@ -49,11 +49,11 @@ const warnInvalidKeys = (allowedKeys, paramsKeys) => {
     const deprecated = find(deprecatedKeys, { old: key })
 
     if (deprecated) {
-      log(`"${key}" is a deprecated parameter. Please use "${deprecated.new}"`, 'warn')
+      warn(`"${key}" is a deprecated parameter. Please use "${deprecated.new}"`)
       return
     }
 
-    log(`"${key}" is not a valid parameter to pass in the config object`, 'warn')
+    warn(`"${key}" is not a valid parameter to pass in the config object`)
   })
 }
 
@@ -79,7 +79,7 @@ const mutations = {
    * array of available keys
    * The filtered keys are compared with the plugin options keys and applied to the state.
    */
-  [UPDATE_I18N_STATE] (state, newParams, a) {
+  [UPDATE_I18N_STATE] (state, newParams) {
     state.availableLanguages = newParams.languages || state.languages
 
     if (size(newParams) === 0) {
