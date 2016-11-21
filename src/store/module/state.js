@@ -1,8 +1,9 @@
+/**
+ * A private portion of the state
+ * @type {Object}
+ */
 export const systemState = {
   currentLanguage: null,
-  pending: false,
-  error: false,
-  errorMessage: null,
   translations: null,
   forceTranslation: false,
   availableLanguages: []

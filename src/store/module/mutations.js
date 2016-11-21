@@ -68,8 +68,6 @@ const mutations = {
 
   [SET_TRANSLATION] (state, translations) {
     state.translations = translations
-    state.error = false
-    state.errorMessage = null
   },
 
   /**
