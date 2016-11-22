@@ -1,37 +1,38 @@
 [![Build Status](https://travis-ci.org/MatteoGabriele/vue-i18n-manager.svg?branch=master)](https://travis-ci.org/MatteoGabriele/vue-i18n-manager) [![npm version](https://badge.fury.io/js/vue-i18n-manager.svg)](https://badge.fury.io/js/vue-i18n-manager) [![npm](https://img.shields.io/npm/dt/vue-i18n-manager.svg)](https://www.npmjs.com/package/vue-i18n-manager)
 
 # vue-i18n-manager
-Helper plugin that would make your life easier dealing with multi-language application using [vue-18n](https://github.com/kazupon/vue-i18n) plugin
+Multi-language manager for Vue
 >**Vue 2.0 and Vuex are required**
 
 ## Features
 - URL prefixing
 - Language redirects
-- Language translations with vue-i18n
+- Language translations handler
 - Language switcher function
-- Localize method for your routes
-- Routes parser helper to manage your route structure
+- Localize method for routes
+- Route parser helper to manage your route structure
 - Possibility to add and filter languages
 - A Translation Tool to manage all languages without changing filters or environment
 - Vuex integration
 
 ## How to install it
+
 ```bash
 npm install vue-i18n-manager
 ```
 
 ## How to use it
 You only need to install the plugin, pass your VuexStore instance in the options object and you're good to go!
-The plugin already installs the **vue-i18n**, so you don't need to!
+
 ```js
 import Vue from 'vue'
 import VueI18nManager from 'vue-i18n-manager'
-import store from './store' // import your VuexStore instance
+import store from './store'
 
 Vue.use(VueI18nManager, { store })
 
-// Initialize the plugin using the init method of the Vue.$i18n class
-Vue.$i18n.init().then(() => {
+// Initialize the plugin and wait the resolved promise before mount the application
+Vue.initI18nManager().then(() => {
     new Vue(App).$mount('#app')
 })
 ```
@@ -39,10 +40,12 @@ Vue.$i18n.init().then(() => {
 
 ## Switch language
 Is possible to use the built-in **$setLanguage** method directly in the HTML, passing the language code
+
 ```html
 <button v-for="language in languages" @click="$setLanguage(language.code)">{{ language.name }}</button>
 ```
 or use it programmatically, taking advantage of the Promise that the method returns, which is resolved when the new language is applied.
+
 ```js
 {
   methods: {
@@ -55,19 +58,25 @@ or use it programmatically, taking advantage of the Promise that the method retu
 }
 ```
 
-## Page transitions
-The language needs to be defined as a parameter of the route, to avoid typing it every time, which you can still do using the **langUrlPrefix** computed value in the VuexStore getters, is possible to wrap the route object in the **$localize** method like so
+## Localize routes
+The language needs to be defined as a parameter of the route, to avoid typing it every time, which you can still do using the **urlPrefix** computed value in the VuexStore getters, is possible to wrap the route object in the **$localize** method like so
+
 ```js
 <router-link :to="$localize({ name: 'home' })"></router-link>
 ```
+
 which will be parsed to
+
 ```js
 <router-link :to="{ name: 'home', params: { lang: 'en-gb' } })"></router-link>
 ```
 
 
-## Routing
+## Routing and scaffold
 Is not mandatory, but is possible to add the VueRouter instance passing a **router** object, to let the plugin handle language behaviors in the URL
+
+The plugin will manage URL redirects and prefixing, the ```routeParser``` helper instead transforms your route tree in a children of a main route with a base language, necessary to handle the URL prefix.
+
 ```js
 // router.js
 import Vue from 'vue'
@@ -92,6 +101,7 @@ const router = new Router({
 
 export default router
 ```
+
 ```js
 // bootstrap.js
 
@@ -103,37 +113,47 @@ import router from './router' // import your VueRouter instance
 Vue.use(VueI18nManager, { store, router })
 ```
 
-## Translation Tool
-The translation tool it's a component that force the application to handle all languages without any filters.
+## Components
+
+The plugin comes with few components already registered in the application. _No needs of import_.
+
+### Translation Tool
+The Translation Tool it's a component that force the application to handle all languages without any filters.
+
 The application will still maintain the same logic and look & feel, but will be possible to check all other languages that we can't actually see because we are maybe restricting that via server.
-The component will also show the current selected language and the language label will start fading in and out just to remember you that the language is forced by the tool.
 
-```js
-// my-component.js
-
-import { translationTool } from 'vue-i18n-manager'
-
-export default {
-    components: {
-        translationTool
-    }
-}
-```
+The component will also show the current selected language and the language label will start blinking just to remember you that the language is forced by the tool.
 
 ```html
-// my-component.html
-
-<translation-tool />   
+<translation-tool />
 ```
+
 The translation tool accept 3 attributes:
 #### applyStyle
 Set it to false to remove all style associated with the component. Default is true.
 
 #### label
-A the name of the property in the language object you want to show in the translation tool. Default is the `code`.
+The name of the property in the language object you want to show. Default is the `code`.
 
 #### closeOnClick
 Set to true and the tool will collapse every time a language is selected. Default is false.
+
+--
+
+### Language Switcher
+The Language Switcher is a simple list of buttons of available languages which already works out of the box. 
+
+There's no style applyed. You can either use it or make your own based on your needs. 
+But for quick checks, this just works!
+
+```html
+<language-switcher />
+```
+
+The language switcher accept 1 attribute:
+
+#### label
+The name of the property in the language object you want to show. Default is the `code`.
 
 ## Options
 
@@ -141,6 +161,7 @@ Set to true and the tool will collapse every time a language is selected. Defaul
 It's possible also to pass a **config** object in the options object, which will merge existing values in the default state of the store module.
 Important to know is that the **config** object can be also a Promise which has to return a plain object with its properties.
 Is not possible to add properties, only the following are allowed:
+
 * **languages**
 * **languageFilter**
 * **availableLanguages**
@@ -148,6 +169,7 @@ Is not possible to add properties, only the following are allowed:
 * **storageKey**
 * **path**
 * **defaultCode**
+
 ```js
 import Vue from 'vue'
 import VueI18nManager from 'vue-i18n-manager'
@@ -175,6 +197,7 @@ Vue.use(VueI18nManager, { store, config })
 
 ##### languages
 Is possible to add languages passing them as an array in the **languages** property. The basic mandatory shape of a language item needs to have a **code**, **urlPrefix** and a **translateTo** property, but then it can hold every kind of information you need to store.
+
 ```js
 {
     name: 'English',
@@ -190,6 +213,7 @@ Is possible to add languages passing them as an array in the **languages** prope
 
 ##### languageFilter
 It is also possible to filter all languages passing an array of codes in the availableLanguages array like so
+
 ```js
 const config = {
     languages: [
@@ -219,6 +243,7 @@ In this case only Dutch and Italian will be available by the application.
 
 ##### persistent
 The plugin also stores the current selected language in the browser memory as default, but it is possible to turn it off
+
 ```js
 const config = {
     persistent: false
@@ -236,6 +261,7 @@ The defaultCode is the code of the language that will be displayed in case of a 
 >**The default code needs to match at least one item in the languages array**
 
 ## Getters
+
 ```js
 import { mapGetters } from 'vuex'
 
