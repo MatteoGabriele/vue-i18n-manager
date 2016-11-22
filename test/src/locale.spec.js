@@ -1,7 +1,4 @@
 import { expect } from 'chai'
-
-import Vue from 'vue'
-import Vuex from 'vuex'
 import _ from 'lodash'
 import { translate } from '../../src/locale'
 
