@@ -8,6 +8,9 @@
   "settings": {
     "import/resolver": "webpack",
   },
+  "env": {
+    "browser": true
+  },
   "rules": {
     "no-console": 1,
     "no-unused-vars": 1,

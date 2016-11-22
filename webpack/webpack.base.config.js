@@ -16,8 +16,9 @@ module.exports = {
   },
   resolve: {
     extensions: ['', '.js'],
-    component: path.resolve(__dirname, './src/component'),
-    module: path.resolve(__dirname, './src/store/module')
+    component: path.resolve(__dirname, '../src/component'),
+    module: path.resolve(__dirname, '../src/store/module'),
+    events: path.resolve(__dirname, '../src/store/module/events')
   },
   eslint: {
     configFile: './.eslintrc',
