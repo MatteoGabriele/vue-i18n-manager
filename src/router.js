@@ -96,7 +96,13 @@ export const routeParser = (routes, defaultCode = 'en') => {
     },
     {
       path: '/*',
-      redirect: `/${defaultCode}`
+      name: 'redirect',
+      redirect: {
+        name: 'root',
+        params: {
+          lang: defaultCode
+        }
+      }
     }
   ]
 }
