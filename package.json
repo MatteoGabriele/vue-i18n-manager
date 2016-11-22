@@ -27,9 +27,7 @@
     "url": "https://github.com/MatteoGabriele/vue-i18n-manager/issues"
   },
   "homepage": "https://github.com/MatteoGabriele/vue-i18n-manager#readme",
-  "dependencies": {
-    "vue-i18n": "^4.7.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.17.0",
     "babel-eslint": "^7.0.0",

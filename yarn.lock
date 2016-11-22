@@ -5121,10 +5121,6 @@ void-elements@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/void-elements/-/void-elements-2.0.1.tgz#c066afb582bb1cb4128d60ea92392e94d5e9dbec"
 
-vue-i18n:
-  version "4.7.1"
-  resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-4.7.1.tgz#2ea8e2528274c4d389bc918a0cf8c601fae77929"
-
 vue@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.0.5.tgz#b99dc7180a802d1148a508db3d84b52c09b5ca8e"
