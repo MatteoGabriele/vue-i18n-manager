@@ -34,17 +34,17 @@ export default function (Vue) {
       }
     },
 
-    beforeDestroy () {
-      if (!this.visibility) {
-        return
-      }
+    mounted () {
+      this.$store.dispatch(SET_FORCE_TRANSLATION, true)
+    },
 
+    beforeDestroy () {
       this.$store.dispatch(SET_FORCE_TRANSLATION, false)
     },
 
     data () {
       return {
-        visibility: false,
+        isOpen: false,
         buttonEnabled: true,
         selected: null
       }
@@ -83,7 +83,7 @@ export default function (Vue) {
 
     methods: {
       close () {
-        this.visibility = false
+        this.isOpen = false
       },
 
       setLanguage (code) {
@@ -91,7 +91,7 @@ export default function (Vue) {
 
         this.$setLanguage(code).then(() => {
           if (this.closeOnClick) {
-            this.visibility = false
+            this.isOpen = false
           }
 
           this.buttonEnabled = true
@@ -114,12 +114,11 @@ export default function (Vue) {
       },
 
       isVisible (code) {
-        return this.$store.getters.currentLanguage.code === code || this.visibility
+        return this.$store.getters.currentLanguage.code === code || this.isOpen
       },
 
       toggle () {
-        this.visibility = !this.visibility
-        this.$store.dispatch(SET_FORCE_TRANSLATION, this.visibility)
+        this.isOpen = !this.isOpen
       }
     }
   }

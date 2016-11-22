@@ -1,15 +1,15 @@
 <div :class="{ 'translation-tool': applyStyle }">
-  <button @click="toggle" class="button toggler" :class="{ 'open': visibility }">
+  <button @click="toggle" class="button toggler" :class="{ 'open': isOpen }">
     Translation Tool <span class="arrow"></span>
   </button>
-  <div :class="{ 'closed': !visibility, 'forced': isForced }" class="language-container">
+  <div :class="{ 'closed': !isOpen, 'forced': isForced }" class="language-container">
     <button
       v-show="isVisible(language.code)"
       v-for="language in languages"
       @click="setLanguage(language.code)"
       class="button language"
       :class="{ 'active': isActive(language.code), 'disabled': isDisabled }">
-        <span v-show="!visibility" class="selected-text">Selected language: </span> <span class="label">{{ getLabel(language) }}</span>
+        <span v-show="!isOpen" class="selected-text">Selected language: </span> <span class="label">{{ getLabel(language) }}</span>
     </button>
   </div>
 </div>
