@@ -6,3 +6,8 @@ Multi-language manager for Vue
 
 ### Documentation
 Docs are available [here](https://matteogabriele.gitbooks.io/vue-i18n-manager/content/)
+
+### Install
+```bash
+$ npm install vue-i18n-manager
+```
