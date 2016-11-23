@@ -21,7 +21,7 @@ export default function (Vue) {
        */
       label: {
         type: String,
-        default: 'name'
+        default: 'code'
       },
 
       /**
