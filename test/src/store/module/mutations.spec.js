@@ -7,7 +7,8 @@ import {
   REMOVE_LANGUAGE_PERSISTENCY,
   UPDATE_I18N_CONFIG,
   SET_LANGUAGE,
-  SET_TRANSLATION
+  SET_TRANSLATION,
+  GET_TRANSLATION
 } from '../../../../src/store/module/events'
 
 let state
@@ -63,6 +64,19 @@ describe('Mutations', () => {
    * ======================================
    */
   describe('UPDATE_I18N_CONFIG', () => {
+    it ('should work without sending any configurations', () => {
+      const newState = {}
+
+      mutations[UPDATE_I18N_CONFIG](state, newState)
+      mutations[SET_LANGUAGE](state, state.defaultCode)
+      mutations[SET_TRANSLATION](state, { message: 'hello world' })
+
+      const { currentLanguage, translations } = state
+      expect(currentLanguage).to.be.defined
+      expect(_.size(translations)).to.equal(1)
+      expect(translations[currentLanguage.translateTo].message).to.equal('hello world')
+    })
+
     it ('should accept parameters that are in the default state only', () => {
       const newState = {
         foo: 'bar',
@@ -209,9 +223,9 @@ describe('Mutations', () => {
 
       mutations[SET_TRANSLATION](state, translations)
 
-      const { code, id } = state.currentLanguage
+      const { code, translateTo } = state.currentLanguage
       expect(code).to.equal(english.code)
-      expect(state.translations[id]).to.deep.equal(translations)
+      expect(state.translations[translateTo]).to.deep.equal(translations)
     })
   })
 })
