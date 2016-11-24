@@ -4,7 +4,8 @@
  */
 export const systemState = {
   currentLanguage: null,
-  translations: null,
+  translation: {},
+  translations: {},
   forceTranslation: false,
   availableLanguages: []
 }
@@ -19,14 +20,14 @@ const state = {
   persistent: true,
   storageKey: 'language_key',
   path: 'static/i18n',
-  defaultCode: 'en-GB',
+  defaultCode: 'en_GB',
   languageFilter: [],
   languages: [
     {
       name: 'English',
-      code: 'en-GB',
+      code: 'en_GB',
       urlPrefix: 'en',
-      translateTo: 'en-GB'
+      translateTo: 'en_GB'
     }
   ]
 }
