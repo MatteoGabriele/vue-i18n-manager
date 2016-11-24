@@ -63,6 +63,7 @@ export default function (Vue) {
         if (!this.selected) {
           return
         }
+
         return this.$store.getters.languageFilter.indexOf(this.selected) === -1
       },
 

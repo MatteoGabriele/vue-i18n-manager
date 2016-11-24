@@ -15,7 +15,7 @@ module.exports = {
     libraryTarget: 'umd'
   },
   resolve: {
-    extensions: ['', '.js'],
+    extensions: ['', '.js', '.json'],
     component: path.resolve(__dirname, '../src/component'),
     module: path.resolve(__dirname, '../src/store/module'),
     events: path.resolve(__dirname, '../src/store/module/events')

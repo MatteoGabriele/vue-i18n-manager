@@ -5,7 +5,7 @@ import mutations from '../../../../src/store/module/mutations'
 import storeState from '../../../../src/store/module/state'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
-  UPDATE_I18N_STATE,
+  UPDATE_I18N_CONFIG,
   SET_LANGUAGE,
   SET_TRANSLATION
 } from '../../../../src/store/module/events'
@@ -59,10 +59,10 @@ describe('Mutations', () => {
 
   /**
    * ======================================
-   * UPDATE_I18N_STATE tests
+   * UPDATE_I18N_CONFIG tests
    * ======================================
    */
-  describe('UPDATE_I18N_STATE', () => {
+  describe('UPDATE_I18N_CONFIG', () => {
     it ('should accept parameters that are in the default state only', () => {
       const newState = {
         foo: 'bar',
@@ -70,7 +70,7 @@ describe('Mutations', () => {
         languages: [dutch]
       }
 
-      mutations[UPDATE_I18N_STATE](state, newState)
+      mutations[UPDATE_I18N_CONFIG](state, newState)
 
       expect(state.foo).to.be.undefined
       expect(state.defaultCode).to.equal(dutch.code)
@@ -81,7 +81,7 @@ describe('Mutations', () => {
         foo: 'bar'
       }
 
-      mutations[UPDATE_I18N_STATE](state, newState)
+      mutations[UPDATE_I18N_CONFIG](state, newState)
 
       sinon.assert.calledOnce(console.warn)
     })
@@ -91,7 +91,7 @@ describe('Mutations', () => {
         defaultCode: dutch.code
       }
 
-      mutations[UPDATE_I18N_STATE](state, newState)
+      mutations[UPDATE_I18N_CONFIG](state, newState)
 
       sinon.assert.calledOnce(console.warn);
     })
@@ -102,7 +102,7 @@ describe('Mutations', () => {
         languages: [dutch, italian, english]
       }
 
-      mutations[UPDATE_I18N_STATE](state, newState)
+      mutations[UPDATE_I18N_CONFIG](state, newState)
 
       expect(state.defaultCode).to.equal(dutch.code)
 
@@ -115,7 +115,7 @@ describe('Mutations', () => {
         languages: [dutch, english, italian]
       }
 
-      mutations[UPDATE_I18N_STATE](state, newState)
+      mutations[UPDATE_I18N_CONFIG](state, newState)
 
       expect(state.availableLanguages.length).to.equal(2)
       expect(_.sortBy(state.availableLanguages, 'code')).to.deep.equal(_.sortBy([italian, english], 'code'))
@@ -126,7 +126,7 @@ describe('Mutations', () => {
         availableLanguages: [italian.code, english.code]
       }
 
-      mutations[UPDATE_I18N_STATE](state, newState)
+      mutations[UPDATE_I18N_CONFIG](state, newState)
 
       sinon.assert.calledOnce(console.warn)
     })
@@ -149,7 +149,7 @@ describe('Mutations', () => {
         languages: [ dutch, italian ]
       }
 
-      mutations[UPDATE_I18N_STATE](state, newState)
+      mutations[UPDATE_I18N_CONFIG](state, newState)
 
       mutations[SET_LANGUAGE](state, dutch.code)
 
@@ -158,7 +158,7 @@ describe('Mutations', () => {
 
       mutations[SET_TRANSLATION](state, translation)
 
-      expect(state.translations).to.deep.equal(translation)
+      expect(state.translations[translateTo]).to.deep.equal(translation)
     })
   })
 
@@ -174,7 +174,7 @@ describe('Mutations', () => {
         languages: [english]
       }
 
-      mutations[UPDATE_I18N_STATE](state, newState)
+      mutations[UPDATE_I18N_CONFIG](state, newState)
 
       mutations[SET_LANGUAGE](state, english.code)
 
@@ -186,7 +186,7 @@ describe('Mutations', () => {
         languages: [dutch, english, italian]
       }
 
-      mutations[UPDATE_I18N_STATE](state, newState)
+      mutations[UPDATE_I18N_CONFIG](state, newState)
 
       mutations[SET_LANGUAGE](state, english.code)
       expect(state.currentLanguage.code).to.equal(english.code)
@@ -203,14 +203,15 @@ describe('Mutations', () => {
         languages: [dutch, english]
       }
 
-      mutations[UPDATE_I18N_STATE](state, newState)
+      mutations[UPDATE_I18N_CONFIG](state, newState)
 
       mutations[SET_LANGUAGE](state, english.code)
 
       mutations[SET_TRANSLATION](state, translations)
 
-      expect(state.currentLanguage.code).to.equal(english.code)
-      expect(state.translations).to.deep.equal(translations)
+      const { code, translateTo } = state.currentLanguage
+      expect(code).to.equal(english.code)
+      expect(state.translations[translateTo]).to.deep.equal(translations)
     })
   })
 })

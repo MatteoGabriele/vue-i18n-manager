@@ -84,10 +84,10 @@ const setLanguage = (router, store) => {
  */
 export const translate = (store) => {
   return function (label, params) {
-    const { translations } = store.getters
-    const value = translations[label]
+    const { translation } = store.getters
+    const value = translation[label]
 
-    if (!translations || !value) {
+    if (!translation || !value) {
       return label
     }
 

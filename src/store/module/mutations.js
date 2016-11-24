@@ -8,11 +8,12 @@ import size from 'lodash/size'
 import assignIn from 'lodash/assignIn'
 import difference from 'lodash/difference'
 import storageHelper from 'storage-helper'
+import { v4 } from 'node-uuid'
 import { systemState, deprecatedKeys } from './state'
 import { warn } from '../../utils'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
-  UPDATE_I18N_STATE,
+  UPDATE_I18N_CONFIG,
   SET_LANGUAGE,
   SET_TRANSLATION,
   SET_FORCE_TRANSLATION
@@ -66,8 +67,11 @@ const mutations = {
     state.forceTranslation = payload
   },
 
-  [SET_TRANSLATION] (state, translations) {
-    state.translations = translations
+  [SET_TRANSLATION] (state, translation) {
+    const { id } = state.currentLanguage
+
+    state.translations = { ...state.translations, [id]: translation }
+    state.translation = translation
   },
 
   /**
@@ -77,8 +81,13 @@ const mutations = {
    * array of available keys
    * The filtered keys are compared with the plugin options keys and applied to the state.
    */
-  [UPDATE_I18N_STATE] (state, newParams) {
-    state.availableLanguages = newParams.languages || state.languages
+  [UPDATE_I18N_CONFIG] (state, newParams) {
+    let languages = newParams.languages || state.languages
+    each(languages, item => {
+      item.id = v4()
+    })
+
+    state.availableLanguages = languages
 
     if (size(newParams) === 0) {
       return

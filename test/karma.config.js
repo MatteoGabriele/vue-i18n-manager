@@ -53,6 +53,10 @@ module.exports = function (config) {
               presets: ['es2015', 'stage-2']
             },
             exclude: /node_modules/
+          },
+          {
+            test: /\.json$/,
+            loader: 'json-loader'
           }
         ]
       }

@@ -1,4 +1,5 @@
 import { expect } from 'chai'
+
 import _ from 'lodash'
 import { translate } from '../../src/locale'
 
@@ -19,7 +20,7 @@ describe('Locale', () => {
   it ('should interpolate a variable in the string', () => {
     let store = { getters: {} }
 
-    Object.defineProperty(store.getters, 'translations', {
+    Object.defineProperty(store.getters, 'translation', {
       get () {
         return {
           message: 'foo is equal to {foo}'
@@ -35,7 +36,7 @@ describe('Locale', () => {
   it ('should return a string', () => {
     let store = { getters: {} }
 
-    Object.defineProperty(store.getters, 'translations', {
+    Object.defineProperty(store.getters, 'translation', {
       get () {
         return {
           message: 'hello world'
@@ -52,7 +53,7 @@ describe('Locale', () => {
   it ('should warn when a wrong property is interpolated', () => {
     let store = { getters: {} }
 
-    Object.defineProperty(store.getters, 'translations', {
+    Object.defineProperty(store.getters, 'translation', {
       get () {
         return {
           message: 'hello {context}'
