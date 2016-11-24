@@ -6,7 +6,7 @@ import mutations from '../../../src/store/module/mutations'
 import storeState from '../../../src/store/module/state'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
-  UPDATE_I18N_STATE,
+  UPDATE_I18N_CONFIG,
   SET_LANGUAGE,
   SET_TRANSLATION
 } from '../../../src/store/module/events'
@@ -55,7 +55,7 @@ describe('<translation-tool />', () => {
       defaultCode: dutch.code
     }
 
-    mutations[UPDATE_I18N_STATE](state, newState)
+    mutations[UPDATE_I18N_CONFIG](state, newState)
 
     expect(state.availableLanguages).to.lengthOf(1)
 
