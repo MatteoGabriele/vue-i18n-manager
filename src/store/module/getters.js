@@ -13,14 +13,13 @@ export const languageFilter = state => state.languageFilter
 
 export const translation = state => {
   const { translation, translations, currentLanguage } = state
-  const { id } = currentLanguage
-  let result = translations[id]
+  let newTranslation = translations[currentLanguage.translateTo]
 
-  if (!result) {
-    result = translation
+  if (!newTranslation) {
+    return translation
   }
 
-  return result
+  return newTranslation
 }
 
 export const forceTranslation = state => state.forceTranslation

@@ -9,3 +9,7 @@ export default function (store) {
 
   store.registerModule(pluginName, module)
 }
+
+export const defineLanguage = (language) => {
+  return language
+}
