@@ -1,5 +1,5 @@
 import module from './module'
-import { warn } from '../utils'
+import { warn, pluginName } from '../utils'
 
 export default function (store) {
   if (!store) {
@@ -7,5 +7,5 @@ export default function (store) {
     return
   }
 
-  store.registerModule('i18n', module)
+  store.registerModule(pluginName, module)
 }

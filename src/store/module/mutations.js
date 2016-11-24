@@ -8,7 +8,6 @@ import size from 'lodash/size'
 import assignIn from 'lodash/assignIn'
 import difference from 'lodash/difference'
 import storageHelper from 'storage-helper'
-import { v4 } from 'node-uuid'
 import { systemState, deprecatedKeys } from './state'
 import { warn } from '../../utils'
 import {
@@ -83,8 +82,8 @@ const mutations = {
    */
   [UPDATE_I18N_CONFIG] (state, newParams) {
     let languages = newParams.languages || state.languages
-    each(languages, item => {
-      item.id = v4()
+    each(languages, (item, index) => {
+      item.id = index
     })
 
     state.availableLanguages = languages
