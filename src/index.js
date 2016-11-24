@@ -1,7 +1,7 @@
 import keys from 'lodash/keys'
 import each from 'lodash/each'
 
-import { UPDATE_I18N_CONFIG, SET_LANGUAGE } from './store/module/events'
+import * as events from './store/module/events'
 
 import Store from './store'
 import Locale from './locale'
@@ -34,8 +34,8 @@ const initializePlugin = (Vue, { store, router, config }) => {
     Locale(Vue, router, store)
     installComponents(Vue)
 
-    await store.dispatch(UPDATE_I18N_CONFIG, config)
-    await store.dispatch(SET_LANGUAGE, store.getters.defaultCode)
+    await store.dispatch(events.UPDATE_I18N_CONFIG, config)
+    await store.dispatch(events.SET_LANGUAGE, store.getters.defaultCode)
 
     Router(Vue, router, store)
   }
@@ -53,4 +53,4 @@ export default function install (Vue, options = {}) {
 /**
  * Export helpers
  */
-export { routeParser }
+export { routeParser, events }
