@@ -3540,7 +3540,7 @@ node-sass@^3.11.2:
     request "^2.61.0"
     sass-graph "^2.1.1"
 
-node-uuid@~1.4.7:
+node-uuid, node-uuid@~1.4.7:
   version "1.4.7"
   resolved "https://registry.yarnpkg.com/node-uuid/-/node-uuid-1.4.7.tgz#6da5a17668c4b3dd59623bda11cf7fa4c1f60a6f"
 
@@ -5124,10 +5124,6 @@ void-elements@^2.0.0:
 vue-i18n:
   version "4.7.1"
   resolved "https://registry.yarnpkg.com/vue-i18n/-/vue-i18n-4.7.1.tgz#2ea8e2528274c4d389bc918a0cf8c601fae77929"
-
-vue@^2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.0.5.tgz#b99dc7180a802d1148a508db3d84b52c09b5ca8e"
 
 watchpack@^0.2.1:
   version "0.2.9"

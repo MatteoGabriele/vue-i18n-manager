@@ -11,7 +11,17 @@ export const urlPrefix = state => state.currentLanguage.urlPrefix
 
 export const languageFilter = state => state.languageFilter
 
-export const translations = state => state.translations
+export const translation = state => {
+  const { translation, translations, currentLanguage } = state
+  const { id } = currentLanguage
+  let result = translations[id]
+
+  if (!result) {
+    result = translation
+  }
+
+  return result
+}
 
 export const forceTranslation = state => state.forceTranslation
 

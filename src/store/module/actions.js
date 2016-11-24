@@ -3,9 +3,10 @@ import { getTranslation } from '../../proxy/translation'
 import { warn } from '../../utils'
 import {
   REMOVE_LANGUAGE_PERSISTENCY,
-  UPDATE_I18N_STATE,
+  UPDATE_I18N_CONFIG,
   SET_LANGUAGE,
   SET_TRANSLATION,
+  GET_TRANSLATION,
   SET_FORCE_TRANSLATION
 } from './events'
 
@@ -18,25 +19,42 @@ export default {
     commit(SET_FORCE_TRANSLATION, payload)
   },
 
-  [UPDATE_I18N_STATE]: async ({ commit, state }, payload = {}) => {
-    const params = (payload && payload.then) ? await payload : payload
-    commit(UPDATE_I18N_STATE, params)
+  [UPDATE_I18N_CONFIG]: async ({ commit, state }, config = {}) => {
+    const params = (config && config.then) ? await config : config
+    commit(UPDATE_I18N_CONFIG, params)
   },
 
-  [SET_TRANSLATION]: async ({ commit, state, getters }, code) => {
-    const { forceTranslation, availableLanguages, languages } = state
+  [GET_TRANSLATION]: async ({ dispatch, commit, state }, code) => {
+    const {
+      forceTranslation,
+      availableLanguages,
+      languages,
+      currentLanguage,
+      translations
+    } = state
     const languageList = forceTranslation ? languages : availableLanguages
     const language = find(languageList, { code })
+    const { id } = currentLanguage
+    const cached = translations[id]
 
     if (!language) {
       warn(`A language with code "${code}" doesn't exist or it's filtered`)
       return
     }
 
+    if (cached) {
+      return cached
+    }
+
     const translation = await getTranslation(state, language)
 
-    commit(SET_TRANSLATION, translation)
+    dispatch(SET_TRANSLATION, translation)
 
+    return translation
+  },
+
+  [SET_TRANSLATION]: ({ commit }, translation) => {
+    commit(SET_TRANSLATION, translation)
     return translation
   },
 
@@ -49,6 +67,6 @@ export default {
 
     commit(SET_LANGUAGE, code)
 
-    return dispatch(SET_TRANSLATION, code)
+    return dispatch(GET_TRANSLATION, code)
   }
 }
