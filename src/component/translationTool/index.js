@@ -1,5 +1,5 @@
 import template from './index.html'
-import { log } from '../../utils'
+import { warn } from '../../utils'
 import { SET_FORCE_TRANSLATION } from '../../store/module/events'
 import './index.scss'
 
@@ -63,6 +63,7 @@ export default function (Vue) {
         if (!this.selected) {
           return
         }
+
         return this.$store.getters.languageFilter.indexOf(this.selected) === -1
       },
 
@@ -102,7 +103,7 @@ export default function (Vue) {
         const label = language[this.label]
 
         if (!label) {
-          log(`"${this.label}" doesn't exist in the language with code "${language.code}"`, 'warn')
+          warn(`"${this.label}" doesn't exist in the language with code "${language.code}"`)
           return language.code
         }
 
