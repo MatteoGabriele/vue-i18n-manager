@@ -153,12 +153,12 @@ describe('Mutations', () => {
 
       mutations[SET_LANGUAGE](state, dutch.code)
 
-      const { translateTo } = state.currentLanguage
-      const translation = translations[translateTo]
+      const { id } = state.currentLanguage
+      const translation = translations[id]
 
       mutations[SET_TRANSLATION](state, translation)
 
-      expect(state.translations[translateTo]).to.deep.equal(translation)
+      expect(state.translations[id]).to.deep.equal(translation)
     })
   })
 
@@ -209,9 +209,9 @@ describe('Mutations', () => {
 
       mutations[SET_TRANSLATION](state, translations)
 
-      const { code, translateTo } = state.currentLanguage
+      const { code, id } = state.currentLanguage
       expect(code).to.equal(english.code)
-      expect(state.translations[translateTo]).to.deep.equal(translations)
+      expect(state.translations[id]).to.deep.equal(translations)
     })
   })
 })
