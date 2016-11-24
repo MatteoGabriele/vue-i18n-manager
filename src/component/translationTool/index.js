@@ -103,7 +103,7 @@ export default function (Vue) {
         const label = language[this.label]
 
         if (!label) {
-          warn(`"${this.label}" doesn't exist in the language with code "${language.code}"`)
+          warn(`Label "${this.label}" doesn't exist in the language with code "${language.code}"`)
           return language.code
         }
 
