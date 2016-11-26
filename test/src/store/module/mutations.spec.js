@@ -130,16 +130,6 @@ describe('Mutations', () => {
       expect(state.availableLanguages.length).to.equal(2)
       expect(_.sortBy(state.availableLanguages, 'code')).to.deep.equal(_.sortBy([italian, english], 'code'))
     })
-
-    it ('should log a message for depracated parameter usage', () => {
-      const newState = {
-        availableLanguages: [italian.code, english.code]
-      }
-
-      mutations[events.UPDATE_CONFIGURATION](state, newState)
-
-      sinon.assert.calledOnce(console.warn)
-    })
   })
 
   /**
