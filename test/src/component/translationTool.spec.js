@@ -4,12 +4,7 @@ import _ from 'lodash'
 import VueI18nManager, { routeParser } from '../../../dist/vue-i18n-manager'
 import mutations from '../../../src/store/module/mutations'
 import storeState from '../../../src/store/module/state'
-import {
-  REMOVE_LANGUAGE_PERSISTENCY,
-  UPDATE_I18N_CONFIG,
-  SET_LANGUAGE,
-  SET_TRANSLATION
-} from '../../../src/store/module/events'
+import events from '../../../src/store/module/events'
 
 let state
 let sandbox
@@ -55,12 +50,12 @@ describe('<translation-tool />', () => {
       defaultCode: dutch.code
     }
 
-    mutations[UPDATE_I18N_CONFIG](state, newState)
+    mutations[events.UPDATE_CONFIGURATION](state, newState)
 
     expect(state.availableLanguages).to.lengthOf(1)
 
-    mutations[SET_LANGUAGE](state, dutch.code)
-    mutations[SET_LANGUAGE](state, english.code)
+    mutations[events.SET_LANGUAGE](state, dutch.code)
+    mutations[events.SET_LANGUAGE](state, english.code)
 
     expect(state.currentLanguage.code).to.equal(english.code)
   })

@@ -2,7 +2,7 @@ import find from 'lodash/find'
 import { getTranslation } from '../../proxy/translation'
 import { warn } from '../../utils'
 import { defineLanguage } from '../../format'
-import * as events from './events'
+import events from './events'
 
 export default {
   [events.REMOVE_LANGUAGE_PERSISTENCY]: ({ commit }) => {
@@ -13,9 +13,9 @@ export default {
     commit(events.SET_FORCE_TRANSLATION, payload)
   },
 
-  [events.UPDATE_I18N_CONFIG]: async ({ commit, state }, config = {}) => {
+  [events.UPDATE_CONFIGURATION]: async ({ commit, state }, config = {}) => {
     const params = (config && config.then) ? await config : config
-    commit(events.UPDATE_I18N_CONFIG, params)
+    commit(events.UPDATE_CONFIGURATION, params)
   },
 
   [events.GET_TRANSLATION]: async ({ dispatch, commit, state }, code) => {
@@ -34,13 +34,17 @@ export default {
     }
 
     const translation = await getTranslation(state, language)
-    dispatch(events.SET_TRANSLATION, translation)
+    dispatch(events.SET_TRANSLATION, { translation, code })
 
     return translation
   },
 
-  [events.SET_TRANSLATION]: ({ commit }, translation) => {
-    commit(events.SET_TRANSLATION, translation)
+  [events.SET_TRANSLATION]: ({ commit }, payload) => {
+    commit(events.SET_TRANSLATION, payload)
+  },
+
+  [events.ADD_TRANSLATION]: ({ commit }, payload) => {
+    commit(events.ADD_TRANSLATION, payload)
   },
 
   [events.ADD_LANGUAGE]: ({ dispatch, commit }, language) => {
@@ -48,9 +52,7 @@ export default {
       return
     }
 
-    commit(events.UPDATE_I18N_CONFIG, {
-      languages: [language]
-    })
+    commit(events.ADD_LANGUAGE, language)
   },
 
   [events.SET_LANGUAGE]: async ({ dispatch, commit, state }, code) => {

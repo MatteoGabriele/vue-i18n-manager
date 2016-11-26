@@ -3,7 +3,7 @@ import map from 'lodash/map'
 import replace from 'lodash/replace'
 import keys from 'lodash/keys'
 
-import { SET_LANGUAGE } from './store/module/events'
+import events from './store/module/events'
 import { updateURLPrefix } from './router'
 import { warn } from './utils'
 
@@ -66,7 +66,7 @@ const interpolate = (string, params) => {
  */
 const setLanguage = (router, store) => {
   return async function (code = store.getters.defaultCode, replaceRoute = true) {
-    await store.dispatch(SET_LANGUAGE, code)
+    await store.dispatch(events.SET_LANGUAGE, code)
 
     if (!replaceRoute || !router) {
       return

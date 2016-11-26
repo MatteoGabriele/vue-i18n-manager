@@ -1,6 +1,6 @@
 import template from './index.html'
 import { warn } from '../../utils'
-import { SET_FORCE_TRANSLATION } from '../../store/module/events'
+import events from '../../store/module/events'
 import './index.scss'
 
 export default function (Vue) {
@@ -35,11 +35,11 @@ export default function (Vue) {
     },
 
     mounted () {
-      this.$store.dispatch(SET_FORCE_TRANSLATION, true)
+      this.$store.dispatch(events.SET_FORCE_TRANSLATION, true)
     },
 
     beforeDestroy () {
-      this.$store.dispatch(SET_FORCE_TRANSLATION, false)
+      this.$store.dispatch(events.SET_FORCE_TRANSLATION, false)
     },
 
     data () {

@@ -1,7 +1,7 @@
 import find from 'lodash/find'
 import merge from 'lodash/merge'
 
-import { SET_LANGUAGE } from './store/module/events'
+import events from './store/module/events'
 
 /**
  * Includes language in the route
@@ -70,7 +70,7 @@ const registerRouter = (router, store) => {
     const isDiff = urlLanguage && urlLanguage.urlPrefix !== currentLanguage.urlPrefix
 
     if (isDiff) {
-      return store.dispatch(SET_LANGUAGE, urlLanguage.code).then(() => next())
+      return store.dispatch(events.SET_LANGUAGE, urlLanguage.code).then(() => next())
     }
 
     next()

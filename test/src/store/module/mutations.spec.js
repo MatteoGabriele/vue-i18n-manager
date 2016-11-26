@@ -3,13 +3,7 @@ import { expect } from 'chai'
 import _ from 'lodash'
 import mutations from '../../../../src/store/module/mutations'
 import storeState from '../../../../src/store/module/state'
-import {
-  REMOVE_LANGUAGE_PERSISTENCY,
-  UPDATE_I18N_CONFIG,
-  SET_LANGUAGE,
-  SET_TRANSLATION,
-  GET_TRANSLATION
-} from '../../../../src/store/module/events'
+import events from '../../../../src/store/module/events'
 
 let state
 let sandbox
@@ -53,23 +47,25 @@ describe('Mutations', () => {
    */
   describe('REMOVE_LANGUAGE_PERSISTENCY', () => {
     it ('should remove persistency of language in the browser', () => {
-      mutations[REMOVE_LANGUAGE_PERSISTENCY](state)
+      mutations[events.REMOVE_LANGUAGE_PERSISTENCY](state)
       expect(state.persistent).to.be.false
     })
   })
 
   /**
    * ======================================
-   * UPDATE_I18N_CONFIG tests
+   * UPDATE_CONFIGURATION tests
    * ======================================
    */
-  describe('UPDATE_I18N_CONFIG', () => {
+  describe('UPDATE_CONFIGURATION', () => {
     it ('should work without sending any configurations', () => {
       const newState = {}
+      const translation = { message: 'hello world' }
+      const code = dutch.code
 
-      mutations[UPDATE_I18N_CONFIG](state, newState)
-      mutations[SET_LANGUAGE](state, state.defaultCode)
-      mutations[SET_TRANSLATION](state, { message: 'hello world' })
+      mutations[events.UPDATE_CONFIGURATION](state, newState)
+      mutations[events.SET_LANGUAGE](state, state.defaultCode)
+      mutations[events.SET_TRANSLATION](state, { translation, code })
 
       const { currentLanguage, translations } = state
       expect(currentLanguage).to.be.defined
@@ -84,7 +80,7 @@ describe('Mutations', () => {
         languages: [dutch]
       }
 
-      mutations[UPDATE_I18N_CONFIG](state, newState)
+      mutations[events.UPDATE_CONFIGURATION](state, newState)
 
       expect(state.foo).to.be.undefined
       expect(state.defaultCode).to.equal(dutch.code)
@@ -95,7 +91,7 @@ describe('Mutations', () => {
         foo: 'bar'
       }
 
-      mutations[UPDATE_I18N_CONFIG](state, newState)
+      mutations[events.UPDATE_CONFIGURATION](state, newState)
 
       sinon.assert.calledOnce(console.warn)
     })
@@ -105,7 +101,7 @@ describe('Mutations', () => {
         defaultCode: dutch.code
       }
 
-      mutations[UPDATE_I18N_CONFIG](state, newState)
+      mutations[events.UPDATE_CONFIGURATION](state, newState)
 
       sinon.assert.calledOnce(console.warn);
     })
@@ -116,7 +112,7 @@ describe('Mutations', () => {
         languages: [dutch, italian, english]
       }
 
-      mutations[UPDATE_I18N_CONFIG](state, newState)
+      mutations[events.UPDATE_CONFIGURATION](state, newState)
 
       expect(state.defaultCode).to.equal(dutch.code)
 
@@ -129,7 +125,7 @@ describe('Mutations', () => {
         languages: [dutch, english, italian]
       }
 
-      mutations[UPDATE_I18N_CONFIG](state, newState)
+      mutations[events.UPDATE_CONFIGURATION](state, newState)
 
       expect(state.availableLanguages.length).to.equal(2)
       expect(_.sortBy(state.availableLanguages, 'code')).to.deep.equal(_.sortBy([italian, english], 'code'))
@@ -140,7 +136,7 @@ describe('Mutations', () => {
         availableLanguages: [italian.code, english.code]
       }
 
-      mutations[UPDATE_I18N_CONFIG](state, newState)
+      mutations[events.UPDATE_CONFIGURATION](state, newState)
 
       sinon.assert.calledOnce(console.warn)
     })
@@ -163,14 +159,14 @@ describe('Mutations', () => {
         languages: [ dutch, italian ]
       }
 
-      mutations[UPDATE_I18N_CONFIG](state, newState)
+      mutations[events.UPDATE_CONFIGURATION](state, newState)
 
-      mutations[SET_LANGUAGE](state, dutch.code)
+      mutations[events.SET_LANGUAGE](state, dutch.code)
 
       const { id } = state.currentLanguage
       const translation = translations[id]
 
-      mutations[SET_TRANSLATION](state, translation)
+      mutations[events.SET_TRANSLATION](state, { translation, code: dutch.code })
 
       expect(state.translations[id]).to.deep.equal(translation)
     })
@@ -188,9 +184,9 @@ describe('Mutations', () => {
         languages: [english]
       }
 
-      mutations[UPDATE_I18N_CONFIG](state, newState)
+      mutations[events.UPDATE_CONFIGURATION](state, newState)
 
-      mutations[SET_LANGUAGE](state, english.code)
+      mutations[events.SET_LANGUAGE](state, english.code)
 
       expect(state.currentLanguage.code).to.equal(english.code)
     })
@@ -200,32 +196,32 @@ describe('Mutations', () => {
         languages: [dutch, english, italian]
       }
 
-      mutations[UPDATE_I18N_CONFIG](state, newState)
+      mutations[events.UPDATE_CONFIGURATION](state, newState)
 
-      mutations[SET_LANGUAGE](state, english.code)
+      mutations[events.SET_LANGUAGE](state, english.code)
       expect(state.currentLanguage.code).to.equal(english.code)
 
-      mutations[SET_LANGUAGE](state, italian.code)
+      mutations[events.SET_LANGUAGE](state, italian.code)
       expect(state.currentLanguage.code).to.equal(italian.code)
     })
 
     it ('should set the new language and retrieve its translation', () => {
-      const translations = {
+      const translation = {
         foo: 'bar'
       }
       const newState = {
         languages: [dutch, english]
       }
 
-      mutations[UPDATE_I18N_CONFIG](state, newState)
+      mutations[events.UPDATE_CONFIGURATION](state, newState)
 
-      mutations[SET_LANGUAGE](state, english.code)
+      mutations[events.SET_LANGUAGE](state, english.code)
 
-      mutations[SET_TRANSLATION](state, translations)
+      mutations[events.SET_TRANSLATION](state, { translation, code: english.code })
 
       const { code, translateTo } = state.currentLanguage
       expect(code).to.equal(english.code)
-      expect(state.translations[translateTo]).to.deep.equal(translations)
+      expect(state.translations[translateTo]).to.deep.equal(translation)
     })
   })
 })

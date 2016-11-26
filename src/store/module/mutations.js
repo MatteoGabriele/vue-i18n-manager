@@ -3,14 +3,11 @@ import filter from 'lodash/filter'
 import includes from 'lodash/includes'
 import pick from 'lodash/pick'
 import keys from 'lodash/keys'
-import size from 'lodash/size'
 import assignIn from 'lodash/assignIn'
-import difference from 'lodash/difference'
 import storageHelper from 'storage-helper'
 
-import { systemState } from './state'
-import { defineKeys, defineLanguages } from '../../format'
-import * as events from './events'
+import { defineKeys, defineLanguages, defineUniqueLanguage } from '../../format'
+import events from './events'
 
 const mutations = {
   [events.REMOVE_LANGUAGE_PERSISTENCY] (state) {
@@ -21,25 +18,42 @@ const mutations = {
     state.forceTranslation = payload
   },
 
-  [events.SET_TRANSLATION] (state, translation) {
-    const { translateTo } = state.currentLanguage
+  [events.SET_TRANSLATION] (state, { translation, code }) {
+    const { translateTo, languages } = state.currentLanguage
+    const language = find(languages, { code })
 
-    state.translations = { ...state.translations, [translateTo]: translation }
+    /**
+     * The index of the cached translation.
+     * Normally we want the translation of the current langauge only,
+     * but if we need to inject a new language which is not yet set
+     * as the current one, we can still retrieve its translation
+     * @type {String}
+     */
+    const index = language && language.translateTo || translateTo
+
+    // It creates a new observable item in the array of translations
+    state.translations = { ...state.translations, [index]: translation }
+
+    // We need to cast the current translation just in case we can't retrieve
+    // immediatly a new translation in the getters
     state.translation = translation
   },
 
-  [events.UPDATE_I18N_CONFIG] (state, newParams) {
-    const isNewStateDefined = size(newParams)
+  [events.ADD_TRANSLATION] (state, { translation, code }) {
+    const { languages } = state
+    const language = find(languages, { code })
 
-    if (!isNewStateDefined) {
+    if (!language) {
       return
     }
 
+    state.translations = { ...state.translations, [language.translateTo]: translation }
+  },
+
+  [events.UPDATE_CONFIGURATION] (state, newParams) {
     const newParamsKeys = keys(newParams)
-    const systemStateKeys = keys(systemState)
     const stateKeys = keys(state)
-    const allowedKeys = difference(stateKeys, systemStateKeys)
-    const newState = pick(newParams, allowedKeys)
+    const newState = pick(newParams, stateKeys)
 
     state = assignIn(state, newState)
     state.availableLanguages = state.languages
@@ -51,12 +65,15 @@ const mutations = {
       })
     }
 
-    defineKeys(newParamsKeys, allowedKeys, 'config')
+    defineKeys(newParamsKeys, stateKeys, 'config')
     defineLanguages(state.availableLanguages, state.defaultCode)
   },
 
   [events.ADD_LANGUAGE] (state, language) {
-
+    if (!defineUniqueLanguage(state.languages, language)) {
+      return
+    }
+    state.languages.push(language)
   },
 
   [events.SET_LANGUAGE] (state, code) {

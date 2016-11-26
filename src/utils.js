@@ -1,5 +1,10 @@
 export const pluginName = 'vue-i18n-manager'
 
+/**
+ * Guess what!?
+ * @param  {String}  text
+ * @param  {Boolean} [debug=true]
+ */
 export const warn = (text, debug = true) => {
   if (!debug) {
     return
@@ -10,6 +15,11 @@ export const warn = (text, debug = true) => {
   /* eslint-enable */
 }
 
-export const getNamespace = (string) => {
-  return `${pluginName}/${string}`
+/**
+ * Returns the namespace of the plugin
+ * @param  {String} text
+ * @return {String}
+ */
+export const getNamespace = (text) => {
+  return `${pluginName}/${text}`
 }

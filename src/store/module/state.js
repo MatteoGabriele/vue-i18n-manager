@@ -10,34 +10,22 @@ const defaultLanguage = {
 }
 
 /**
- * A private portion of the state
- * @type {Object}
- */
-export const systemState = {
-  currentLanguage: null,
-  translation: {},
-  translations: {},
-  forceTranslation: false,
-  availableLanguages: [
-    defaultLanguage
-  ]
-}
-
-/**
  * Default store state
  * @type {Object}
  *
  */
 const state = {
-  ...systemState,
+  currentLanguage: null,
+  translation: {},
+  translations: {},
+  forceTranslation: false,
   persistent: true,
   storageKey: 'language_key',
   path: 'static/i18n',
   defaultCode: defaultLanguage.code,
-  languageFilter: [],
-  languages: [
-    defaultLanguage
-  ]
+  availableLanguages: [defaultLanguage],
+  languages: [defaultLanguage],
+  languageFilter: []
 }
 
 export default state

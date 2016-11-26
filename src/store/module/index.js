@@ -1,6 +1,6 @@
 import mutations from './mutations'
 import state from './state'
-import * as getters from './getters'
+import getters from './getters'
 import actions from './actions'
 
 /**
