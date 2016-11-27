@@ -1,5 +1,6 @@
 import find from 'lodash/find'
 import merge from 'lodash/merge'
+import each from 'lodash/each'
 
 import events from './store/module/events'
 
@@ -85,23 +86,18 @@ const registerRouter = (router, store) => {
  * @return {Array<Object>}
  */
 export const routeParser = (routes, defaultCode = 'en') => {
+  each(routes, route => {
+    const { path } = route
+    route.path = `/:lang${path}`
+  })
+
   return [
-    {
-      path: '/:lang',
-      name: 'root',
-      component: {
-        template: '<router-view></router-view>'
-      },
-      children: routes
-    },
+    ...routes,
     {
       path: '/*',
       name: 'redirect',
       redirect: {
-        name: 'root',
-        params: {
-          lang: defaultCode
-        }
+        path: `/${defaultCode}`
       }
     }
   ]
