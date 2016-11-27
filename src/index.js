@@ -29,10 +29,6 @@ const installComponents = (Vue) => {
  */
 const initializePlugin = (Vue, { store, router, config }) => {
   return async function () {
-    Store(store)
-    Locale(Vue, router, store)
-    installComponents(Vue)
-
     await store.dispatch(events.UPDATE_CONFIGURATION, config)
     await store.dispatch(events.SET_LANGUAGE, store.getters.defaultCode)
 
@@ -46,6 +42,12 @@ const initializePlugin = (Vue, { store, router, config }) => {
  * @param  {Object} [options={}] - plugin options
  */
 export default function install (Vue, options = {}) {
+  const { router, store } = options
+
+  Store(store)
+  Locale(Vue, router, store)
+  installComponents(Vue)
+
   Vue.initI18nManager = initializePlugin(Vue, options)
 }
 
