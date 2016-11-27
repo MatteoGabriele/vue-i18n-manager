@@ -23,15 +23,12 @@ const mutations = {
     const language = find(languages, { code })
 
     /**
-     * The index of the cached translation.
-     * Normally we want the translation of the current langauge only,
-     * but if we need to inject a new language which is not yet set
-     * as the current one, we can still retrieve its translation
+     * The index of the translation we want to inject or update.
+     * If the language doesn't exist, it falls back to the current language
      * @type {String}
      */
     const index = language && language.translateTo || translateTo
 
-    // It creates a new observable item in the array of translations
     state.translations = { ...state.translations, [index]: translation }
 
     // We need to cast the current translation just in case we can't retrieve
@@ -53,6 +50,8 @@ const mutations = {
   [events.UPDATE_CONFIGURATION] (state, newParams) {
     const newParamsKeys = keys(newParams)
     const stateKeys = keys(state)
+
+    // Only the properties in the store module are taken
     const newState = pick(newParams, stateKeys)
 
     state = assignIn(state, newState)
