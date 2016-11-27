@@ -43,7 +43,7 @@ export const mapGetters = (getters) => {
   let res = {}
   getters.forEach(key => {
     res[key] = function () {
-      if (!this.$store.getters[key]) {
+      if (typeof this.$store.getters[key] === 'undefined') {
         warn(`Unknown getter: "${key}"`)
       }
       return this.$store.getters[key]
