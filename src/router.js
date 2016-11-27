@@ -80,9 +80,9 @@ const registerRouter = (router, store) => {
 /**
  * Route parser takes the current routes object before is injected in the VueRouter instance
  * and it returns the necessary tree structure to enable language prefixing
- * @param  {Array} routes
+ * @param  {Array<Object>} routes
  * @param  {String} [defaultCode='en'] - language redirect
- * @return {Array}
+ * @return {Array<Object>}
  */
 export const routeParser = (routes, defaultCode = 'en') => {
   return [

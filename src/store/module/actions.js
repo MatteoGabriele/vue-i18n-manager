@@ -5,10 +5,17 @@ import { defineLanguage } from '../../format'
 import events from './events'
 
 export default {
+  /**
+   * Removes the possibility to save data in the browser
+   */
   [events.REMOVE_LANGUAGE_PERSISTENCY]: ({ commit }) => {
     commit(events.REMOVE_LANGUAGE_PERSISTENCY)
   },
 
+  /**
+   * Enables the force translation mode, which allows us to view all languages
+   * without any filter.
+   */
   [events.SET_FORCE_TRANSLATION]: ({ commit }, payload) => {
     commit(events.SET_FORCE_TRANSLATION, payload)
   },
@@ -18,6 +25,12 @@ export default {
     commit(events.UPDATE_CONFIGURATION, params)
   },
 
+  /**
+   * It takes a language code as payload, which will then matches with one of the listed languages.
+   * Then language object will be passed to the proxy which will retrieve a translation object.
+   * If the translation already exists in our "translations" array, the proxy is skipped and
+   * we dispatch the translation directly.
+   */
   [events.GET_TRANSLATION]: async ({ dispatch, commit, state }, code) => {
     const { forceTranslation, availableLanguages, languages, currentLanguage, translations } = state
     const languageList = forceTranslation ? languages : availableLanguages
@@ -55,6 +68,9 @@ export default {
     commit(events.ADD_LANGUAGE, language)
   },
 
+  /**
+   * It sets the language and also dispatch the events to get the associeated translation
+   */
   [events.SET_LANGUAGE]: async ({ dispatch, commit, state }, code) => {
     const { currentLanguage } = state
 

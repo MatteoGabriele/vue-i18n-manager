@@ -1,5 +1,5 @@
 import template from './index.html'
-import { warn } from '../../utils'
+import { warn, mapGetters } from '../../utils'
 import events from '../../store/module/events'
 import './index.scss'
 
@@ -17,7 +17,9 @@ export default function (Vue) {
       },
 
       /**
-       * Name of the property needs to be displayed in the language list
+       * Name of the property needs to be displayed in the language list.
+       * It needs to match one of the property of the "language" object or
+       * will fallback to the "code" property
        */
       label: {
         type: String,
@@ -25,7 +27,7 @@ export default function (Vue) {
       },
 
       /**
-       * Enable it to click & close the translation-tool directly
+       * Enable it to click & close the translation-tool
        * everytime a language is selected for testing
        */
       closeOnClick: {
@@ -51,12 +53,13 @@ export default function (Vue) {
     },
 
     computed: {
+      ...mapGetters([
+        'currentLanguage',
+        'languageFilter',
+        'languages'
+      ]),
       isDisabled () {
         return !this.buttonEnabled && this.closeOnClick
-      },
-
-      currentLanguage () {
-        return this.$store.getters.currentLanguage
       },
 
       isForced () {
@@ -64,11 +67,7 @@ export default function (Vue) {
           return
         }
 
-        return this.$store.getters.languageFilter.indexOf(this.selected) === -1
-      },
-
-      languages () {
-        return this.$store.getters.languages
+        return this.languageFilter.indexOf(this.selected) === -1
       }
     },
 
@@ -111,11 +110,11 @@ export default function (Vue) {
       },
 
       isActive (code) {
-        return this.$store.getters.currentLanguage.code === code
+        return this.currentLanguage.code === code
       },
 
       isVisible (code) {
-        return this.$store.getters.currentLanguage.code === code || this.isOpen
+        return this.currentLanguage.code === code || this.isOpen
       },
 
       toggle () {

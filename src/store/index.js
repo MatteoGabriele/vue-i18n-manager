@@ -1,6 +1,10 @@
 import module from './module'
 import { warn, pluginName } from '../utils'
 
+/**
+ * Module registration
+ * @param {VuexStore} store
+ */
 export default function (store) {
   if (!store) {
     warn('You need to add the VuexStore instance in the plugin options')
@@ -8,8 +12,4 @@ export default function (store) {
   }
 
   store.registerModule(pluginName, module)
-}
-
-export const defineLanguage = (language) => {
-  return language
 }
