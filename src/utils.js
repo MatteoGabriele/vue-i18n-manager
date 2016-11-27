@@ -15,6 +15,16 @@ export const warn = (text, debug = true) => {
   /* eslint-enable */
 }
 
+export const error = (text, debug = true) => {
+  if (!debug) {
+    return
+  }
+
+  /* eslint-disable */
+  console.error(`[${pluginName}] ${text}`)
+  /* eslint-enable */
+}
+
 /**
  * Returns the namespace of the plugin
  * @param  {String} text
@@ -22,4 +32,22 @@ export const warn = (text, debug = true) => {
  */
 export const getNamespace = (text) => {
   return `${pluginName}/${text}`
+}
+
+/**
+ * Helper function that maps getters available in the store module
+ * @param  {Array<String>} getters
+ * @return {Object}
+ */
+export const mapGetters = (getters) => {
+  let res = {}
+  getters.forEach(key => {
+    res[key] = function () {
+      if (!this.$store.getters[key]) {
+        warn(`Unknown getter: "${key}"`)
+      }
+      return this.$store.getters[key]
+    }
+  })
+  return res
 }
