@@ -110,11 +110,11 @@ export default function (Vue) {
       },
 
       isActive (code) {
-        return this.currentLanguage.code === code
+        return this.currentLanguage && this.currentLanguage.code === code
       },
 
       isVisible (code) {
-        return this.currentLanguage.code === code || this.isOpen
+        return (this.currentLanguage && this.currentLanguage.code === code) || this.isOpen
       },
 
       toggle () {

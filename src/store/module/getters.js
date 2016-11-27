@@ -39,7 +39,12 @@ export default {
 
   translation: state => {
     const { translation, translations, currentLanguage } = state
-    let newTranslation = translations[currentLanguage.translateTo]
+
+    if (!currentLanguage) {
+      return {}
+    }
+
+    const newTranslation = translations[currentLanguage.translateTo]
 
     if (!newTranslation) {
       return translation
