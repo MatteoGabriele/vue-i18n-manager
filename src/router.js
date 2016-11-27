@@ -38,7 +38,7 @@ export const updateURLPrefix = (router, urlPrefix) => {
  * will fallback to the default language.
  * VueRouter instance is required to unlock this feature.
  */
-const registerRouter = (router, store) => {
+export const registerRouter = (router, store) => {
   if (!router) {
     return
   }
@@ -104,8 +104,6 @@ export const routeParser = (routes, defaultCode = 'en') => {
 }
 
 export default function (Vue, router, store) {
-  registerRouter(router, store)
-
   Vue.prototype.$localize = (route) => {
     return localize(route, store.getters.currentLanguage.urlPrefix)
   }

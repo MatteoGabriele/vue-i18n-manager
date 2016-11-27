@@ -68,13 +68,8 @@ export default {
     commit(events.ADD_LANGUAGE, language)
   },
 
-  /**
-   * It sets the language and also dispatch the events to get the associeated translation
-   */
   [events.SET_LANGUAGE]: async ({ dispatch, commit, state }, code) => {
-    const { currentLanguage } = state
-
-    if (code && (currentLanguage && currentLanguage.code === code)) {
+    if (!code) {
       return
     }
 

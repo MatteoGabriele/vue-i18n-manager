@@ -15,7 +15,7 @@ const defaultLanguage = {
  *
  */
 const state = {
-  currentLanguage: null,
+  currentLanguage: defaultLanguage,
   translation: {},
   translations: {},
   forceTranslation: false,
