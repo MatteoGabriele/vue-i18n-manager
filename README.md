@@ -12,6 +12,6 @@ Docs are available [here](https://matteogabriele.gitbooks.io/vue-i18n-manager/co
 $ npm install vue-i18n-manager
 ```
 ### Issues and features requests
-Please drop an issue, if you find something that doesn't work, or suggest a feature request at [https://github.com/MatteoGabriele/vue-i18n-manager/issues](https://github.com/MatteoGabriele/vue-i18n-manager/issues)
+Please drop an issue, if you find something that doesn't work, or a feature request at [https://github.com/MatteoGabriele/vue-i18n-manager/issues](https://github.com/MatteoGabriele/vue-i18n-manager/issues)
 
 Follow me on twitter [@matteo_gabriele](https://twitter.com/matteo_gabriele)
