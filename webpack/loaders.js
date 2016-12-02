@@ -1,3 +1,5 @@
+var path = require('path')
+
 module.exports = [
   {
     test: /\.js$/,
@@ -7,6 +9,7 @@ module.exports = [
       plugins: ['transform-runtime'],
       presets: ['es2015', 'stage-2']
     },
+    include: path.resolve(__dirname, '../src'),
     exclude: /node_modules/
   },
   {
