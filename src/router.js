@@ -9,9 +9,11 @@ import events from './store/module/events'
  * @param  {Object} route
  * @return {Object}
  */
-const localize = (route, urlPrefix) => {
+export const localize = (route, urlPrefix) => {
+  let originalRouteParams = route.params || {}
   return merge(route, {
     params: {
+      ...originalRouteParams,
       lang: urlPrefix
     }
   })
