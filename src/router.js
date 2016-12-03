@@ -1,5 +1,6 @@
 import find from 'lodash/find'
 import merge from 'lodash/merge'
+import pick from 'lodash/pick'
 import each from 'lodash/each'
 
 import events from './store/module/events'
@@ -10,7 +11,14 @@ import events from './store/module/events'
  * @return {Object}
  */
 const localize = (route, urlPrefix) => {
-  return merge(route, {
+  const base = pick(route, [
+    'name',
+    'path',
+    'query',
+    'params'
+  ])
+
+  return merge(base, {
     params: {
       lang: urlPrefix
     }
@@ -26,7 +34,7 @@ export const updateURLPrefix = (router, urlPrefix) => {
   const { currentRoute } = router
 
   if (router && currentRoute) {
-    router.replace(localize({ name: currentRoute.name }, urlPrefix))
+    router.replace(localize({ ...currentRoute }, urlPrefix))
   }
 }
 
@@ -60,7 +68,7 @@ export const registerRouter = (router, store) => {
      * a different language on purpose and we need to check it.
      */
     if (!urlLanguage || !from.name) {
-      return next(localize({ name: to.name }, currentLanguage.urlPrefix))
+      return next(localize({ ...to }, currentLanguage.urlPrefix))
     }
 
     /**
