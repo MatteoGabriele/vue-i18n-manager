@@ -11,7 +11,16 @@ import events from './store/module/events'
  */
 export const localize = (route, urlPrefix) => {
   let originalRouteParams = route.params || {}
-  return merge(route, {
+
+  /**
+   * It's not possible to push/replace a route with the readonly property `path`
+   * so it's necessary to copy the route in a new object first and then delete
+   * the property
+   */
+  let routeCopy = { ...route }
+  delete routeCopy.path
+
+  return merge(routeCopy, {
     params: {
       ...originalRouteParams,
       lang: urlPrefix
@@ -28,16 +37,16 @@ export const updateURLPrefix = (router, urlPrefix) => {
   const { currentRoute } = router
 
   if (router && currentRoute) {
-    router.replace(localize({ name: currentRoute.name }, urlPrefix))
+    router.replace(localize(currentRoute, urlPrefix))
   }
 }
 
 /**
  * Applies specific functionalities to handle language redirects and URL prefixing.
  * The application will be able to add the language urlPrefix property in its URL and
- * to change the application language based on that specific parameter.
- * If that urlPrefix provided via URL is not valid or it doesn't exist the application
- * will fallback to the default language.
+ * change the application language based on that specific parameter.
+ * If that prefix is not valid or it doesn't exist, the application will fallback
+ * to the default language.
  * VueRouter instance is required to unlock this feature.
  */
 export const registerRouter = (router, store) => {
@@ -62,7 +71,7 @@ export const registerRouter = (router, store) => {
      * a different language on purpose and we need to check it.
      */
     if (!urlLanguage || !from.name) {
-      return next(localize({ name: to.name }, currentLanguage.urlPrefix))
+      return next(localize(to, currentLanguage.urlPrefix))
     }
 
     /**
