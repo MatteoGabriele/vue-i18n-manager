@@ -85,7 +85,20 @@ const setLanguage = (router, store) => {
 export const translate = (store) => {
   return function (label, params) {
     const { translation } = store.getters
-    const value = translation[label]
+    const keys = label.split('.')
+
+    let value = translation
+
+    while (keys.length) {
+      const key = keys.shift()
+      if (value[key]) {
+        value = value[key]
+      }
+    }
+
+    if (typeof value !== 'string') {
+      value = null
+    }
 
     if (!translation || !value) {
       return label
