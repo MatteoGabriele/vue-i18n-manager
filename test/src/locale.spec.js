@@ -23,7 +23,10 @@ describe('Locale', () => {
     Object.defineProperty(store.getters, 'translation', {
       get () {
         return {
-          message: 'foo is equal to {foo}'
+          message: 'foo is equal to {foo}',
+          author: {
+            name: 'matteo {surname}'
+          }
         }
       }
     })
@@ -31,6 +34,7 @@ describe('Locale', () => {
     const $t = translate(store)
 
     expect($t('message', { foo: 'bar' })).to.equal('foo is equal to bar')
+    expect($t('author.name', { surname: 'gabriele' })).to.equal('matteo gabriele')
   })
 
   it ('should return a string', () => {
@@ -39,7 +43,10 @@ describe('Locale', () => {
     Object.defineProperty(store.getters, 'translation', {
       get () {
         return {
-          message: 'hello world'
+          message: 'hello world',
+          author: {
+            name: 'matteo gabriele'
+          }
         }
       }
     })
@@ -48,6 +55,25 @@ describe('Locale', () => {
 
     expect($t('dasd')).to.be.a('String')
     expect($t('message')).to.equal('hello world')
+    expect($t('author.name')).to.equal('matteo gabriele')
+  })
+
+  it ('should return a string when using label with dot notation', () => {
+    let store = { getters: {} }
+
+    Object.defineProperty(store.getters, 'translation', {
+      get () {
+        return {
+          author: {
+            name: 'matteo gabriele'
+          }
+        }
+      }
+    })
+
+    const $t = translate(store)
+
+    expect($t('author.name')).to.equal('matteo gabriele')
   })
 
   it ('should warn when a wrong property is interpolated', () => {
