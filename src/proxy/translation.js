@@ -17,7 +17,7 @@ export const getTranslation = async (state, language) => {
     })
   })
 
-  const response = await fetch(request)
+  const response = await fetch(request, { credentials: 'same-origin' })
 
   if (!response.ok) {
     if (response.status === 404) {
