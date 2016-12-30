@@ -1,5 +1,6 @@
 import storageHelper from 'storage-helper'
 import find from 'lodash/find'
+import { warn } from '../../utils'
 
 export default {
   /**
@@ -89,6 +90,10 @@ export default {
        * is too old and we forgot to remove it from the browser memory.
        */
       const exists = find(languageList, { code: storagedLangCode })
+
+      if (defaultCode !== storagedLangCode) {
+        warn(`The code in the localStorage doesn't match with the defaultCode. Try to remve it.`)
+      }
 
       if (exists) {
         return storagedLangCode
