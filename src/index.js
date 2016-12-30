@@ -30,7 +30,7 @@ const installComponents = (Vue) => {
 const initializePlugin = (Vue, { store, router, config }) => {
   return async function () {
     await store.dispatch(events.UPDATE_CONFIGURATION, config)
-    await store.dispatch(events.SET_LANGUAGE, router.currentRoute.params.lang)
+    await store.dispatch(events.SET_LANGUAGE, store.getters.defaultCode)
 
     // Router needs to be registered after the store is fully setup
     registerRouter(router, store)

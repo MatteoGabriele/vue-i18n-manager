@@ -62,8 +62,14 @@ export const registerRouter = (router, store) => {
   const currentUrlPrefix = router.currentRoute.params.lang
   const detectedURLPrefix = detectedURLPrefixExists(currentUrlPrefix, store.getters.languages)
 
-  if (detectedURLPrefix) {
+  /**
+   * Sometimes there's no way that we have and end-point where we receive the default code
+   * every time the application changes it, so we can enable the trustURL property to always
+   * trust the URL parameter and dispatch again the language mutation.
+   */
+  if (detectedURLPrefix && store.getters.trustURL) {
     initialUrlPrefix = detectedURLPrefix.urlPrefix
+    store.dispatch(events.SET_LANGUAGE, initialUrlPrefix)
   }
 
   // First time the router is registered, the route needs to be synced with the current language
@@ -74,7 +80,6 @@ export const registerRouter = (router, store) => {
     const urlPrefix = to.params.lang
     const languageList = forceTranslation ? languages : availableLanguages
     const urlLanguage = find(languageList, { urlPrefix })
-
     /**
      * In case the language is not provided or doesn't exists,
      * the default language will be used.

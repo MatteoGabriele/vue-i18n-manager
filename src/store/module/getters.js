@@ -9,6 +9,8 @@ export default {
    */
   availableLanguages: state => state.availableLanguages,
 
+  trustURL: state => state.trustURL,
+
   /**
    * All languages without filters
    * @param  {Object} state
