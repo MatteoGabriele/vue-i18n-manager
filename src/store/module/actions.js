@@ -69,12 +69,11 @@ export default {
   },
 
   [events.SET_LANGUAGE]: async ({ dispatch, commit, state }, code) => {
-    if (!code) {
-      return
-    }
+    const exists = find(state.languages, { code })
+    const languageCode = exists ? code : state.defaultCode
 
-    commit(events.SET_LANGUAGE, code)
+    commit(events.SET_LANGUAGE, languageCode)
 
-    return dispatch(events.GET_TRANSLATION, code)
+    return dispatch(events.GET_TRANSLATION, languageCode)
   }
 }

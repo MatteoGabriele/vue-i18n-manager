@@ -41,6 +41,10 @@ export const updateURLPrefix = (router, urlPrefix) => {
   }
 }
 
+const detectedURLPrefixExists = (urlPrefix, languages) => {
+  return find(languages, { urlPrefix })
+}
+
 /**
  * Applies specific functionalities to handle language redirects and URL prefixing.
  * The application will be able to add the language urlPrefix property in its URL and
@@ -54,8 +58,16 @@ export const registerRouter = (router, store) => {
     return
   }
 
+  let initialUrlPrefix = store.getters.currentLanguage.urlPrefix
+  const currentUrlPrefix = router.currentRoute.params.lang
+  const detectedURLPrefix = detectedURLPrefixExists(currentUrlPrefix, store.getters.languages)
+
+  if (detectedURLPrefix) {
+    initialUrlPrefix = detectedURLPrefix.urlPrefix
+  }
+
   // First time the router is registered, the route needs to be synced with the current language
-  updateURLPrefix(router, store.getters.currentLanguage.urlPrefix)
+  updateURLPrefix(router, initialUrlPrefix)
 
   router.beforeEach((to, from, next) => {
     const { availableLanguages, currentLanguage, forceTranslation, languages } = store.getters
