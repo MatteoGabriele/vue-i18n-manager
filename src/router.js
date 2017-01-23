@@ -12,15 +12,16 @@ import events from './store/module/events'
 export const localize = (route, urlPrefix) => {
   let originalRouteParams = route.params || {}
 
-  /**
-   * It's not possible to push/replace a route with the readonly property `path`
-   * so it's necessary to copy the route in a new object first and then delete
-   * the property
-   */
   let routeCopy = { ...route }
+
+  // Fixes issue #12
+  // https://github.com/MatteoGabriele/vue-i18n-manager/issues/12
+  const path = routeCopy.path
+
   delete routeCopy.path
 
   return merge(routeCopy, {
+    path,
     params: {
       ...originalRouteParams,
       lang: urlPrefix
