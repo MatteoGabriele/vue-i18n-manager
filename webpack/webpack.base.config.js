@@ -5,7 +5,7 @@ var plugins = require('./plugins');
 module.exports = {
   entry: {
     'vue-i18n-manager': [
-      'whatwg-fetch',
+      // 'whatwg-fetch',
       './src'
     ],
     'translation-tool': [
@@ -36,7 +36,7 @@ module.exports = {
         exclude: /node_modules/,
         options: {
           presets: [
-            ['es2015', { loose: true }],
+            'es2015',
             'stage-2'
           ]
         }
