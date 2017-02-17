@@ -36,7 +36,7 @@ module.exports = {
         exclude: /node_modules/,
         options: {
           presets: [
-            'es2015',
+            ['es2015', { loose: true }],
             'stage-2'
           ]
         }

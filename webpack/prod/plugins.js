@@ -2,6 +2,7 @@ var path = require('path');
 var _ = require('lodash');
 var webpack = require('webpack');
 var ProgressBarPlugin = require('progress-bar-webpack-plugin');
+var LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 
 var plugins = [
   new ProgressBarPlugin(),
@@ -13,7 +14,7 @@ var plugins = [
     comments: false,
     minimize: false
   }),
-  new webpack.optimize.DedupePlugin()
+  new LodashModuleReplacementPlugin()
 ];
 
 module.exports = _.compact(plugins);
