@@ -40,14 +40,14 @@ module.exports = function (config) {
         filename: 'test-bundle.js'
       },
       module: {
-        loaders: [
+        rules: [
           {
             test: /sinon.js$/,
             loader: "imports?define=>false"
           },
           {
             test: /\.js$/,
-            loader: 'babel',
+            loader: 'babel-loader',
             query: {
               compact: false,
               presets: ['es2015', 'stage-2']
