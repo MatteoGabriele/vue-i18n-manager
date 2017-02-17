@@ -28,12 +28,14 @@ const installComponents = (Vue) => {
  * @return {Promise}
  */
 const initializePlugin = (Vue, { store, router, config }) => {
-  return async function () {
-    await store.dispatch(events.UPDATE_CONFIGURATION, config)
-    await store.dispatch(events.SET_LANGUAGE, store.getters.defaultCode)
-
-    // Router needs to be registered after the store is fully setup
-    registerRouter(router, store)
+  return function () {
+    return Promise.all([
+      store.dispatch(events.UPDATE_CONFIGURATION, config),
+      store.dispatch(events.SET_LANGUAGE, store.getters.defaultCode)
+    ]).then(() => {
+      // Router needs to be registered after the store is fully setup
+      registerRouter(router, store)
+    })
   }
 }
 

@@ -20,9 +20,14 @@ export default {
     commit(events.SET_FORCE_TRANSLATION, payload)
   },
 
-  [events.UPDATE_CONFIGURATION]: async ({ commit, state }, config = {}) => {
-    const params = (config && config.then) ? await config : config
-    commit(events.UPDATE_CONFIGURATION, params)
+  [events.UPDATE_CONFIGURATION]: ({ commit, state }, config = {}) => {
+    if (config && config.then) {
+      return config.then(params => {
+        commit(events.UPDATE_CONFIGURATION, params)
+      })
+    }
+
+    commit(events.UPDATE_CONFIGURATION, config)
   },
 
   /**
@@ -31,7 +36,7 @@ export default {
    * If the translation already exists in our "translations" array, the proxy is skipped and
    * we dispatch the translation directly.
    */
-  [events.GET_TRANSLATION]: async ({ dispatch, commit, state }, code) => {
+  [events.GET_TRANSLATION]: ({ dispatch, commit, state }, code) => {
     const { forceTranslation, availableLanguages, languages, currentLanguage, translations } = state
     const languageList = forceTranslation ? languages : availableLanguages
     const language = find(languageList, { code })
@@ -46,10 +51,11 @@ export default {
       return cached
     }
 
-    const translation = await getTranslation(state, language)
-    dispatch(events.SET_TRANSLATION, { translation, code })
+    return getTranslation(state, language).then(translation => {
+      dispatch(events.SET_TRANSLATION, { translation, code })
 
-    return translation
+      return translation
+    })
   },
 
   [events.SET_TRANSLATION]: ({ commit }, payload) => {
@@ -68,7 +74,7 @@ export default {
     commit(events.ADD_LANGUAGE, language)
   },
 
-  [events.SET_LANGUAGE]: async ({ dispatch, commit, state }, code) => {
+  [events.SET_LANGUAGE]: ({ dispatch, commit, state }, code) => {
     const exists = find(state.languages, { code })
     const languageCode = exists ? code : state.defaultCode
 

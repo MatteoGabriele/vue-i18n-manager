@@ -6,7 +6,7 @@ import { warn } from '../utils'
  * @param  {Object}  state
  * @return {Promise}
  */
-export const getTranslation = async (state, language) => {
+export const getTranslation = (state, language) => {
   const requestURL = `${state.path}/${language.translateTo}.json`
 
   const request = new Request(requestURL, {
@@ -17,17 +17,17 @@ export const getTranslation = async (state, language) => {
     })
   })
 
-  const response = await fetch(request, { credentials: 'same-origin' })
+  return fetch(request, { credentials: 'same-origin' }).then(response => {
+    if (!response.ok) {
+      if (response.status === 404) {
+        warn('Translation error. Check if the file exists and the url is correct')
+      } else {
+        warn(`${response.statusText} for ${requestURL}`)
+      }
 
-  if (!response.ok) {
-    if (response.status === 404) {
-      warn('Translation error. Check if the file exists and the url is correct')
-    } else {
-      warn(`${response.statusText} for ${requestURL}`)
+      return {}
     }
 
-    return {}
-  }
-
-  return await response.json()
+    return response.json()
+  })
 }
