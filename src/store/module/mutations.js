@@ -13,7 +13,8 @@ const mutations = {
   },
 
   [events.SET_TRANSLATION] (state, { translation, code }) {
-    const { translateTo, languages } = state.currentLanguage
+    const { languages } = state
+    const { translateTo } = state.currentLanguage
     const language = languages.find(n => n.code === code)
 
     /**
@@ -49,16 +50,20 @@ const mutations = {
     let newState = {}
 
     stateKeys.forEach(key => {
+      if (typeof newParams[key] === 'undefined') {
+        return
+      }
+
       newState[key] = newParams[key]
     })
 
-    state = Object.assign({}, state, newState)
+    state = Object.assign(state, newState)
     state.availableLanguages = state.languages
 
     // Filter all languages
     if (state.languageFilter.length > 0 && state.availableLanguages.length > 1) {
       state.availableLanguages = state.availableLanguages.filter(language => {
-        return state.languageFilter.indexOf(language.code) > 0
+        return state.languageFilter.indexOf(language.code) !== -1
       })
     }
 
