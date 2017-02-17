@@ -3,13 +3,21 @@ var name = require('../package.json').name;
 var plugins = require('./plugins');
 
 module.exports = {
-  entry: [
-    'whatwg-fetch',
-    './src'
-  ],
+  entry: {
+    'vue-i18n-manager': [
+      'whatwg-fetch',
+      './src'
+    ],
+    'translation-tool': [
+      './src/component/translation-tool'
+    ],
+    'language-switcher': [
+      './src/component/translation-tool'
+    ]
+  },
   output: {
     path: path.resolve(__dirname, './../dist'),
-    filename: name + '.js',
+    filename: '[name].js',
     libraryTarget: 'umd'
   },
   resolve: {
