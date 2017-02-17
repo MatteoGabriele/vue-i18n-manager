@@ -6,14 +6,14 @@ var ProgressBarPlugin = require('progress-bar-webpack-plugin');
 var plugins = [
   new ProgressBarPlugin(),
   new webpack.optimize.UglifyJsPlugin({
-    output: {
-      comments: false
-    },
     compress: {
-      warnings: false
-    }
+      warnings: false,
+      drop_console: false
+    },
+    comments: false,
+    minimize: false
   }),
-  new webpack.optimize.OccurenceOrderPlugin()
+  new webpack.optimize.DedupePlugin()
 ];
 
 module.exports = _.compact(plugins);

@@ -65,14 +65,14 @@ const interpolate = (string, params) => {
  * @return {Promise}
  */
 const setLanguage = (router, store) => {
-  return async function (code = store.getters.defaultCode, replaceRoute = true) {
-    await store.dispatch(events.SET_LANGUAGE, code)
+  return function (code = store.getters.defaultCode, replaceRoute = true) {
+    return store.dispatch(events.SET_LANGUAGE, code).then(() => {
+      if (!replaceRoute || !router) {
+        return
+      }
 
-    if (!replaceRoute || !router) {
-      return
-    }
-
-    updateURLPrefix(router, store.getters.currentLanguage.urlPrefix)
+      updateURLPrefix(router, store.getters.currentLanguage.urlPrefix)
+    })
   }
 }
 

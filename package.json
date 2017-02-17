@@ -27,8 +27,8 @@
     "url": "https://github.com/MatteoGabriele/vue-i18n-manager/issues"
   },
   "homepage": "https://github.com/MatteoGabriele/vue-i18n-manager#readme",
-  "dependencies": {},
   "devDependencies": {
+    "webpack": "^2.2.0",
     "babel-core": "^6.17.0",
     "babel-eslint": "^7.0.0",
     "babel-loader": "^6.2.5",
@@ -60,7 +60,6 @@
     "karma-sinon": "^1.0.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^1.8.0",
-    "lodash": "^4.17.2",
     "mocha": "^3.1.2",
     "node-sass": "^3.11.2",
     "progress-bar-webpack-plugin": "^1.9.0",
@@ -71,5 +70,8 @@
     "webpack": "^1.13.2",
     "webpack-merge": "^0.16.0",
     "whatwg-fetch": "^2.0.0"
+  },
+  "peerDependencies": {
+    "lodash": "^4.17.2"
   }
 }

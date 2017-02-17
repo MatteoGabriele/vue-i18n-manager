@@ -1,32 +1,69 @@
 var path = require('path');
 var name = require('../package.json').name;
-var loaders = require('./loaders');
-var preLoaders = require('./preLoaders');
 var plugins = require('./plugins');
 
 module.exports = {
-  entry: [
-    'whatwg-fetch',
-    './src'
-  ],
+  entry: {
+    'vue-i18n-manager': [
+      'whatwg-fetch',
+      './src'
+    ],
+    'translation-tool': [
+      './src/component/translation-tool'
+    ],
+    'language-switcher': [
+      './src/component/translation-tool'
+    ]
+  },
   output: {
     path: path.resolve(__dirname, './../dist'),
-    filename: name + '.js',
+    filename: '[name].js',
     libraryTarget: 'umd'
   },
   resolve: {
-    extensions: ['', '.js', '.json'],
-    component: path.resolve(__dirname, '../src/component'),
-    module: path.resolve(__dirname, '../src/store/module'),
-    events: path.resolve(__dirname, '../src/store/module/events')
-  },
-  eslint: {
-    configFile: './.eslintrc',
-    formatter: require('eslint-friendly-formatter')
+    extensions: ['.js', '.json'],
+    alias: {
+      component: path.resolve(__dirname, '../src/component'),
+      module: path.resolve(__dirname, '../src/store/module'),
+      events: path.resolve(__dirname, '../src/store/module/events')
+    }
   },
   module: {
-    preLoaders,
-    loaders
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+        options: {
+          presets: [
+            'es2015',
+            'stage-2'
+          ]
+        }
+      },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader'
+          }
+        ]
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader'
+          },
+          {
+            loader: 'sass-loader'
+          }
+        ]
+      }
+    ]
   },
   plugins
 }
