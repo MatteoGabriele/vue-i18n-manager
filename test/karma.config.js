@@ -15,6 +15,8 @@ module.exports = function (config) {
     // },
     files: [
         './index.js',
+        '../node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
+        '../node_modules/phantomjs-polyfill-find/find-polyfill.js'
     ],
     client: {
       captureConsole: false
