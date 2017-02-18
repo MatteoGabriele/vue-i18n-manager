@@ -17,10 +17,16 @@ export default {
     commit(events.SET_FORCE_TRANSLATION, payload)
   },
 
-  [events.UPDATE_CONFIGURATION]: ({ commit, state }, config = {}) => {
+  [events.UPDATE_CONFIGURATION]: ({ commit, state, getters }, config = {}) => {
     if (config && config.then) {
       return config.then(params => {
         commit(events.UPDATE_CONFIGURATION, params)
+
+        // When we wait for the configuration to load asynchronously
+        // we need to mutate the default language because the application
+        // could be already mounted with a default language that is not
+        // the one in the configuration
+        commit(events.SET_LANGUAGE, getters.defaultCode)
       })
     }
 
