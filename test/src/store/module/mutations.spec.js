@@ -11,19 +11,19 @@ let sandbox
 const dutch = {
   code: 'nl-NL',
   urlPrefix: 'nl',
-  translateTo: 'nl_NL'
+  translationKey: 'nl'
 }
 const english = {
   name: 'English',
   code: 'en-GB',
   urlPrefix: 'en',
-  translateTo: 'en_GB'
+  translationKey: 'en'
 }
 const italian = {
   name: 'Italiano',
   code: 'it-IT',
   urlPrefix: 'it',
-  translateTo: 'it_IT'
+  translationKey: 'it'
 }
 
 describe('Mutations', () => {
@@ -70,7 +70,7 @@ describe('Mutations', () => {
       const { currentLanguage, translations } = state
       expect(currentLanguage).to.be.defined
       expect(_.size(translations)).to.equal(1)
-      expect(translations[currentLanguage.translateTo].message).to.equal('hello world')
+      expect(translations[currentLanguage.translationKey].message).to.equal('hello world')
     })
 
     it ('should accept parameters that are in the default state only', () => {
@@ -140,8 +140,8 @@ describe('Mutations', () => {
   describe('SET_TRANSLATION', () => {
     it ('should return the translation based on the selected language', () => {
       const translations = {
-        [dutch.translateTo]: { hello: 'hallo' },
-        [italian.translateTo]: { hello: 'ciao' }
+        [dutch.translationKey]: { hello: 'hallo' },
+        [italian.translationKey]: { hello: 'ciao' }
       }
 
       const newState = {
@@ -209,9 +209,9 @@ describe('Mutations', () => {
 
       mutations[events.SET_TRANSLATION](state, { translation, code: english.code })
 
-      const { code, translateTo } = state.currentLanguage
+      const { code, translationKey } = state.currentLanguage
       expect(code).to.equal(english.code)
-      expect(state.translations[translateTo]).to.deep.equal(translation)
+      expect(state.translations[translationKey]).to.deep.equal(translation)
     })
   })
 })

@@ -5,7 +5,6 @@ var plugins = require('./plugins');
 module.exports = {
   entry: {
     'vue-i18n-manager': [
-      // 'whatwg-fetch',
       './src'
     ],
     'translation-tool': [

@@ -1,12 +1,20 @@
 /**
- * Default language of the store
+ * Default language
  * @type {Object}
  */
 const defaultLanguage = {
   name: 'English',
   code: 'en_GB',
   urlPrefix: 'en',
-  translateTo: 'en_GB'
+  translationKey: 'en'
+}
+
+/**
+ * Default translation
+ * @type {Object}
+ */
+const defaultTranslation = {
+  hello: 'hello!'
 }
 
 /**
@@ -16,8 +24,10 @@ const defaultLanguage = {
  */
 const state = {
   currentLanguage: defaultLanguage,
-  translation: {},
-  translations: {},
+  translation: defaultTranslation,
+  translations: {
+    [defaultLanguage.translationKey]: defaultTranslation
+  },
   forceTranslation: false,
   persistent: true,
   storageKey: 'language_key',
