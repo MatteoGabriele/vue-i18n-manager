@@ -5,6 +5,12 @@ import { translate } from '../../src/locale'
 
 let sandbox
 
+const currentLanguage = {
+  code: 'en_GB',
+  translationKey: 'en',
+  urlPrefix: 'en'
+}
+
 describe('Locale', () => {
 
   beforeEach(() => {
@@ -18,7 +24,11 @@ describe('Locale', () => {
   })
 
   it ('should interpolate a variable in the string', () => {
-    let store = { getters: {} }
+    let store = {
+      getters: {
+        currentLanguage
+      }
+    }
 
     Object.defineProperty(store.getters, 'translation', {
       get () {
@@ -38,7 +48,11 @@ describe('Locale', () => {
   })
 
   it ('should return a string', () => {
-    let store = { getters: {} }
+    let store = {
+      getters: {
+        currentLanguage
+      }
+    }
 
     Object.defineProperty(store.getters, 'translation', {
       get () {
@@ -59,7 +73,11 @@ describe('Locale', () => {
   })
 
   it ('should return a string when using label with dot notation', () => {
-    let store = { getters: {} }
+    let store = {
+      getters: {
+        currentLanguage
+      }
+    }
 
     Object.defineProperty(store.getters, 'translation', {
       get () {
@@ -77,7 +95,11 @@ describe('Locale', () => {
   })
 
   it ('should warn when a wrong property is interpolated', () => {
-    let store = { getters: {} }
+    let store = {
+      getters: {
+        currentLanguage
+      }
+    }
 
     Object.defineProperty(store.getters, 'translation', {
       get () {
