@@ -12,7 +12,7 @@ module.exports = {
       './src/component/translation-tool'
     ],
     'language-switcher': [
-      './src/component/translation-tool'
+      './src/component/language-switcher'
     ]
   },
   output: {
