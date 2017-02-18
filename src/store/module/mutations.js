@@ -14,7 +14,7 @@ const mutations = {
 
   [events.SET_TRANSLATION] (state, { translation, code }) {
     const { languages } = state
-    const { translateTo } = state.currentLanguage
+    const { translationKey } = state.currentLanguage
     const language = languages.find(n => n.code === code)
 
     /**
@@ -22,9 +22,12 @@ const mutations = {
      * If the language doesn't exist, it falls back to the current language
      * @type {String}
      */
-    const index = language && language.translateTo || translateTo
+    const index = language && language.translationKey || translationKey
 
-    state.translations = { ...state.translations, [index]: translation }
+    state.translations = {
+      ...state.translations,
+      [index]: translation
+    }
 
     // We need to cast the current translation just in case we can't retrieve
     // immediatly a new translation in the getters
@@ -39,7 +42,10 @@ const mutations = {
       return
     }
 
-    state.translations = { ...state.translations, [language.translateTo]: translation }
+    state.translations = {
+      ...state.translations,
+      [language.translationKey]: translation
+    }
   },
 
   [events.UPDATE_CONFIGURATION] (state, newParams) {

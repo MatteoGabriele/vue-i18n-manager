@@ -27,12 +27,12 @@ export const defineUniqueLanguage = (languages, language) => {
  * @return {Boolean}
  */
 export const defineLanguage = (language) => {
-  const mandatory = ['code', 'translateTo', 'urlPrefix']
+  const mandatory = ['code', 'translationKey', 'urlPrefix']
   const languageKeys = Object.keys(language)
   const differences = difference(mandatory, languageKeys)
 
   if (differences.length) {
-    warn(`Invalid language definition. Property ${differences.join(', ')} missing.`)
+    warn(`Invalid definition. Property "${differences.join(', ')}" missing in "${language.code}".`)
     return false
   }
 
@@ -47,9 +47,18 @@ export const defineLanguage = (language) => {
  * @return {Boolean}
  */
 export const defineLanguages = (languages, code) => {
-  const language = languages.find(n => n.code === code)
+  let defaultLanguageMatch
 
-  if (!language) {
+  languages.forEach(language => {
+    // Check if the language has all mandatory properties
+    defineLanguage(language)
+
+    if (language.code === code) {
+      defaultLanguageMatch = language
+    }
+  })
+
+  if (!defaultLanguageMatch) {
     warn('The default code must matches at least one language in the provided list')
     return false
   }

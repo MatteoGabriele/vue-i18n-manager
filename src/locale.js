@@ -79,16 +79,20 @@ const setLanguage = (router, store) => {
  */
 export const translate = (store) => {
   return function (label, params) {
-    const { translation } = store.getters
+    const { translation, currentLanguage } = store.getters
+    const translationKey = currentLanguage.translationKey
     const keys = label.split('.')
 
     let value = translation
 
     while (keys.length) {
       const key = keys.shift()
-      if (value[key]) {
-        value = value[key]
+
+      if (!value[key]) {
+        warn(`The "${key}" key doesn't exist in "${translationKey}" translation object`)
       }
+
+      value = value[key]
     }
 
     if (typeof value !== 'string') {

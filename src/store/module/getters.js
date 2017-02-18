@@ -1,5 +1,4 @@
 import storageHelper from 'storage-helper'
-import { warn } from '../../utils'
 
 export default {
   /**
@@ -46,7 +45,7 @@ export default {
       return {}
     }
 
-    const newTranslation = translations[currentLanguage.translateTo]
+    const newTranslation = translations[currentLanguage.translationKey]
 
     if (!newTranslation) {
       return translation
@@ -89,10 +88,6 @@ export default {
        * is too old and we forgot to remove it from the browser memory.
        */
       const exists = languageList.find(n => n.code === storagedLangCode)
-
-      if (defaultCode !== storagedLangCode) {
-        warn(`The code in the localStorage doesn't match with the defaultCode. Try to remve it.`)
-      }
 
       if (exists) {
         return storagedLangCode
