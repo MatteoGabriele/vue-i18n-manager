@@ -32,6 +32,11 @@ const interpolate = (string, params) => {
   const matchedParams = string.match(betweenCurlyBracesRegEx)
   const paramsKeys = Object.keys(params)
 
+  if (!matchedParams) {
+    warn(`"${paramsKeys.join(', ')}" not found in the translation string`)
+    return
+  }
+
   matchedParams.forEach((match, i) => {
     const prop = match.slice(1, -1)
     const value = params[prop]
