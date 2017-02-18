@@ -1,6 +1,4 @@
 import storageHelper from 'storage-helper'
-import find from 'lodash/find'
-import { warn } from '../../utils'
 
 export default {
   /**
@@ -47,7 +45,7 @@ export default {
       return {}
     }
 
-    const newTranslation = translations[currentLanguage.translateTo]
+    const newTranslation = translations[currentLanguage.translationKey]
 
     if (!newTranslation) {
       return translation
@@ -89,11 +87,7 @@ export default {
        * current array of languages, otherwise it means that our localstorage value
        * is too old and we forgot to remove it from the browser memory.
        */
-      const exists = find(languageList, { code: storagedLangCode })
-
-      if (defaultCode !== storagedLangCode) {
-        warn(`The code in the localStorage doesn't match with the defaultCode. Try to remve it.`)
-      }
+      const exists = languageList.find(n => n.code === storagedLangCode)
 
       if (exists) {
         return storagedLangCode

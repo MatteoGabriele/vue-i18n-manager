@@ -1,8 +1,3 @@
-import each from 'lodash/each'
-import map from 'lodash/map'
-import replace from 'lodash/replace'
-import keys from 'lodash/keys'
-
 import events from './store/module/events'
 import { updateURLPrefix } from './router'
 import { warn } from './utils'
@@ -13,7 +8,7 @@ import { warn } from './utils'
  */
 const warnPropertyError = (errors, context) => {
   if (errors.length > 0) {
-    errors = map(errors, error => `"${error}"`)
+    errors = errors.map(error => `"${error}"`)
 
     warn(`No match found for ${errors.join(', ')} in "${context}"`)
   }
@@ -35,9 +30,14 @@ const interpolate = (string, params) => {
 
   const betweenCurlyBracesRegEx = new RegExp(/\{.*?}s?/g)
   const matchedParams = string.match(betweenCurlyBracesRegEx)
-  const paramsKeys = keys(params)
+  const paramsKeys = Object.keys(params)
 
-  each(matchedParams, (match, i) => {
+  if (!matchedParams) {
+    warn(`"${paramsKeys.join(', ')}" not found in the translation string`)
+    return
+  }
+
+  matchedParams.forEach((match, i) => {
     const prop = match.slice(1, -1)
     const value = params[prop]
     const paramKey = paramsKeys[i]
@@ -47,7 +47,7 @@ const interpolate = (string, params) => {
       return
     }
 
-    string = replace(string, match, value)
+    string = string.replace(match, value)
   })
 
   warnPropertyError(propErrors, originalString)
@@ -65,14 +65,14 @@ const interpolate = (string, params) => {
  * @return {Promise}
  */
 const setLanguage = (router, store) => {
-  return async function (code = store.getters.defaultCode, replaceRoute = true) {
-    await store.dispatch(events.SET_LANGUAGE, code)
+  return function (code = store.getters.defaultCode, replaceRoute = true) {
+    return store.dispatch(events.SET_LANGUAGE, code).then(() => {
+      if (!replaceRoute || !router) {
+        return
+      }
 
-    if (!replaceRoute || !router) {
-      return
-    }
-
-    updateURLPrefix(router, store.getters.currentLanguage.urlPrefix)
+      updateURLPrefix(router, store.getters.currentLanguage.urlPrefix)
+    })
   }
 }
 
@@ -84,16 +84,20 @@ const setLanguage = (router, store) => {
  */
 export const translate = (store) => {
   return function (label, params) {
-    const { translation } = store.getters
+    const { translation, currentLanguage } = store.getters
+    const translationKey = currentLanguage.translationKey
     const keys = label.split('.')
 
     let value = translation
 
     while (keys.length) {
       const key = keys.shift()
-      if (value[key]) {
-        value = value[key]
+
+      if (!value[key]) {
+        warn(`The "${key}" key doesn't exist in "${translationKey}" translation object`)
       }
+
+      value = value[key]
     }
 
     if (typeof value !== 'string') {

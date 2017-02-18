@@ -1,7 +1,3 @@
-import find from 'lodash/find'
-import merge from 'lodash/merge'
-import each from 'lodash/each'
-
 import events from './store/module/events'
 
 /**
@@ -20,7 +16,7 @@ export const localize = (route, urlPrefix) => {
 
   delete routeCopy.path
 
-  return merge(routeCopy, {
+  return Object.assign({}, routeCopy, {
     path,
     params: {
       ...originalRouteParams,
@@ -43,7 +39,7 @@ export const updateURLPrefix = (router, urlPrefix) => {
 }
 
 const detectedURLPrefixExists = (urlPrefix, languages) => {
-  return find(languages, { urlPrefix })
+  return languages.find(n => n.urlPrefix === urlPrefix)
 }
 
 /**
@@ -80,7 +76,7 @@ export const registerRouter = (router, store) => {
     const { availableLanguages, currentLanguage, forceTranslation, languages } = store.getters
     const urlPrefix = to.params.lang
     const languageList = forceTranslation ? languages : availableLanguages
-    const urlLanguage = find(languageList, { urlPrefix })
+    const urlLanguage = languageList.find(n => n.urlPrefix === urlPrefix)
     /**
      * In case the language is not provided or doesn't exists,
      * the default language will be used.
@@ -115,7 +111,7 @@ export const registerRouter = (router, store) => {
  * @return {Array<Object>}
  */
 export const routeParser = (routes, defaultCode = 'en') => {
-  each(routes, route => {
+  routes.forEach(route => {
     const { path } = route
     route.path = `/:lang${path}`
   })

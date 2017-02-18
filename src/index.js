@@ -1,25 +1,7 @@
-import keys from 'lodash/keys'
-import each from 'lodash/each'
-
 import events from './store/module/events'
 import Store from './store'
 import Locale from './locale'
 import Router, { routeParser, registerRouter } from './router'
-import Component from './component'
-
-/**
- * Install components
- * It will install all components listed in the component index file.
- * All components will be already available in the application without needs
- * to imports
- * @param  {Vue} Vue
- */
-const installComponents = (Vue) => {
-  const components = Component(Vue)
-  each(keys(components), name => {
-    Vue.component(name, components[name])
-  })
-}
 
 /**
  * Initialize plugin
@@ -28,12 +10,14 @@ const installComponents = (Vue) => {
  * @return {Promise}
  */
 const initializePlugin = (Vue, { store, router, config }) => {
-  return async function () {
-    await store.dispatch(events.UPDATE_CONFIGURATION, config)
-    await store.dispatch(events.SET_LANGUAGE, store.getters.defaultCode)
-
-    // Router needs to be registered after the store is fully setup
-    registerRouter(router, store)
+  return function () {
+    return Promise.all([
+      store.dispatch(events.UPDATE_CONFIGURATION, config),
+      store.dispatch(events.SET_LANGUAGE, store.getters.defaultCode)
+    ]).then(() => {
+      // Router needs to be registered after the store is fully setup
+      registerRouter(router, store)
+    })
   }
 }
 
@@ -48,7 +32,6 @@ export default function install (Vue, options = {}) {
   Store(store)
   Locale(Vue, router, store)
   Router(Vue, router, store)
-  installComponents(Vue)
 
   Vue.initI18nManager = initializePlugin(Vue, options)
 }

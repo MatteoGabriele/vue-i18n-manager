@@ -15,6 +15,8 @@ module.exports = function (config) {
     // },
     files: [
         './index.js',
+        '../node_modules/phantomjs-polyfill-object-assign/object-assign-polyfill.js',
+        '../node_modules/phantomjs-polyfill-find/find-polyfill.js'
     ],
     client: {
       captureConsole: false
@@ -40,14 +42,14 @@ module.exports = function (config) {
         filename: 'test-bundle.js'
       },
       module: {
-        loaders: [
+        rules: [
           {
             test: /sinon.js$/,
             loader: "imports?define=>false"
           },
           {
             test: /\.js$/,
-            loader: 'babel',
+            loader: 'babel-loader',
             query: {
               compact: false,
               presets: ['es2015', 'stage-2']
