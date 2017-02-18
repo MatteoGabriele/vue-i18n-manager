@@ -1,8 +1,3 @@
-import each from 'lodash/each'
-import map from 'lodash/map'
-import replace from 'lodash/replace'
-import keys from 'lodash/keys'
-
 import events from './store/module/events'
 import { updateURLPrefix } from './router'
 import { warn } from './utils'
@@ -13,7 +8,7 @@ import { warn } from './utils'
  */
 const warnPropertyError = (errors, context) => {
   if (errors.length > 0) {
-    errors = map(errors, error => `"${error}"`)
+    errors = errors.map(error => `"${error}"`)
 
     warn(`No match found for ${errors.join(', ')} in "${context}"`)
   }
@@ -35,9 +30,9 @@ const interpolate = (string, params) => {
 
   const betweenCurlyBracesRegEx = new RegExp(/\{.*?}s?/g)
   const matchedParams = string.match(betweenCurlyBracesRegEx)
-  const paramsKeys = keys(params)
+  const paramsKeys = Object.keys(params)
 
-  each(matchedParams, (match, i) => {
+  matchedParams.forEach((match, i) => {
     const prop = match.slice(1, -1)
     const value = params[prop]
     const paramKey = paramsKeys[i]
@@ -47,7 +42,7 @@ const interpolate = (string, params) => {
       return
     }
 
-    string = replace(string, match, value)
+    string = string.replace(match, value)
   })
 
   warnPropertyError(propErrors, originalString)

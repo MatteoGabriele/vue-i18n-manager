@@ -1,8 +1,8 @@
 import { warn } from './utils'
-import keys from 'lodash/keys'
-import difference from 'lodash/difference'
-import each from 'lodash/each'
-import find from 'lodash/find'
+
+const difference = (array1, array2) => {
+  return array1.filter(n => array2.indexOf(n) < 0)
+}
 
 /**
  * Warns when the same language is added to the state
@@ -11,7 +11,7 @@ import find from 'lodash/find'
  * @return {Boolean}
  */
 export const defineUniqueLanguage = (languages, language) => {
-  const exists = find(languages, { code: language.code })
+  const exists = languages.find(n => n.code === language.code)
 
   if (!exists) {
     return true
@@ -28,7 +28,7 @@ export const defineUniqueLanguage = (languages, language) => {
  */
 export const defineLanguage = (language) => {
   const mandatory = ['code', 'translateTo', 'urlPrefix']
-  const languageKeys = keys(language)
+  const languageKeys = Object.keys(language)
   const differences = difference(mandatory, languageKeys)
 
   if (differences.length) {
@@ -47,7 +47,7 @@ export const defineLanguage = (language) => {
  * @return {Boolean}
  */
 export const defineLanguages = (languages, code) => {
-  const language = find(languages, { code })
+  const language = languages.find(n => n.code === code)
 
   if (!language) {
     warn('The default code must matches at least one language in the provided list')
@@ -69,8 +69,8 @@ export const defineKeys = (newKeys, allowedKeys, context, deprecatedKeys = []) =
   const invalidKeyes = difference(newKeys, allowedKeys)
 
   if (invalidKeyes.length) {
-    each(invalidKeyes, key => {
-      const deprecated = find(deprecatedKeys, { old: key })
+    invalidKeyes.forEach(key => {
+      const deprecated = deprecatedKeys.find(n => n.old === key)
 
       if (deprecated) {
         warn(`"${key}" is a deprecated parameter. Please use "${deprecated.new}"`)

@@ -1,9 +1,3 @@
-import find from 'lodash/find'
-import filter from 'lodash/filter'
-import includes from 'lodash/includes'
-import pick from 'lodash/pick'
-import keys from 'lodash/keys'
-import assignIn from 'lodash/assignIn'
 import storageHelper from 'storage-helper'
 
 import { defineKeys, defineLanguages, defineUniqueLanguage } from '../../format'
@@ -19,8 +13,9 @@ const mutations = {
   },
 
   [events.SET_TRANSLATION] (state, { translation, code }) {
-    const { translateTo, languages } = state.currentLanguage
-    const language = find(languages, { code })
+    const { languages } = state
+    const { translateTo } = state.currentLanguage
+    const language = languages.find(n => n.code === code)
 
     /**
      * The index of the translation we want to inject or update.
@@ -38,7 +33,7 @@ const mutations = {
 
   [events.ADD_TRANSLATION] (state, { translation, code }) {
     const { languages } = state
-    const language = find(languages, { code })
+    const language = languages.find(n => n.code === code)
 
     if (!language) {
       return
@@ -48,19 +43,27 @@ const mutations = {
   },
 
   [events.UPDATE_CONFIGURATION] (state, newParams) {
-    const newParamsKeys = keys(newParams)
-    const stateKeys = keys(state)
+    const newParamsKeys = Object.keys(newParams)
+    const stateKeys = Object.keys(state)
 
     // Only the properties in the store module are taken
-    const newState = pick(newParams, stateKeys)
+    let newState = {}
 
-    state = assignIn(state, newState)
+    stateKeys.forEach(key => {
+      if (typeof newParams[key] === 'undefined') {
+        return
+      }
+
+      newState[key] = newParams[key]
+    })
+
+    state = Object.assign(state, newState)
     state.availableLanguages = state.languages
 
     // Filter all languages
     if (state.languageFilter.length > 0 && state.availableLanguages.length > 1) {
-      state.availableLanguages = filter(state.availableLanguages, (language) => {
-        return includes(state.languageFilter, language.code)
+      state.availableLanguages = state.availableLanguages.filter(language => {
+        return state.languageFilter.indexOf(language.code) !== -1
       })
     }
 
@@ -78,7 +81,7 @@ const mutations = {
   [events.SET_LANGUAGE] (state, code) {
     const { persistent, storageKey, forceTranslation, languages, availableLanguages } = state
     const languageList = forceTranslation ? languages : availableLanguages
-    const language = find(languageList, { code })
+    const language = languageList.find(n => n.code === code)
 
     if (!language) {
       return

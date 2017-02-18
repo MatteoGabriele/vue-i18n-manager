@@ -1,4 +1,3 @@
-import find from 'lodash/find'
 import { getTranslation } from '../../proxy/translation'
 import { warn } from '../../utils'
 import { defineLanguage } from '../../format'
@@ -39,7 +38,7 @@ export default {
   [events.GET_TRANSLATION]: ({ dispatch, commit, state }, code) => {
     const { forceTranslation, availableLanguages, languages, currentLanguage, translations } = state
     const languageList = forceTranslation ? languages : availableLanguages
-    const language = find(languageList, { code })
+    const language = languageList.find(n => n.code === code)
     const cached = translations[currentLanguage.translateTo]
 
     if (!language) {
@@ -75,7 +74,7 @@ export default {
   },
 
   [events.SET_LANGUAGE]: ({ dispatch, commit, state }, code) => {
-    const exists = find(state.languages, { code })
+    const exists = state.languages.find(n => n.code === code)
     const languageCode = exists ? code : state.defaultCode
 
     commit(events.SET_LANGUAGE, languageCode)
