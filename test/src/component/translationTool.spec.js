@@ -1,5 +1,4 @@
 import { expect } from 'chai'
-import storageHelper from 'storage-helper'
 import _ from 'lodash'
 import VueI18nManager, { routeParser } from '../../../dist/vue-i18n-manager'
 import mutations from '../../../src/store/module/mutations'
@@ -30,8 +29,6 @@ const italian = {
 describe('<translation-tool />', () => {
 
   beforeEach(() => {
-    storageHelper.clear()
-
     sandbox = sinon.sandbox.create()
     sandbox.stub(window.console, 'warn');
     sandbox.stub(window.console, 'error');
