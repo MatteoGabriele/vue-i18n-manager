@@ -1,3 +1,4 @@
+import proxy from '../../proxy'
 import { defineKeys, defineLanguages, defineUniqueLanguage } from '../../format'
 import events from './events'
 
@@ -92,7 +93,7 @@ const mutations = {
     }
 
     if (persistent) {
-      // localStorageProxy.set(storageKey, language.code)
+      proxy.localStorage.setItem(storageKey, language.code)
     }
 
     state.currentLanguage = language

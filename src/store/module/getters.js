@@ -1,3 +1,5 @@
+import proxy from '../../proxy'
+
 export default {
   /**
    * All available languages with filters
@@ -75,7 +77,7 @@ export default {
       availableLanguages,
       languages
     } = state
-    const storagedLangCode = null // localstorageProxy.get(storageKey)
+    const storagedLangCode = proxy.localStorage.getItem(storageKey)
 
     if (persistent && storagedLangCode) {
       const languageList = forceTranslation ? languages : availableLanguages
