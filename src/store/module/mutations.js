@@ -1,5 +1,3 @@
-import storageHelper from 'storage-helper'
-
 import { defineKeys, defineLanguages, defineUniqueLanguage } from '../../format'
 import events from './events'
 
@@ -94,7 +92,7 @@ const mutations = {
     }
 
     if (persistent) {
-      storageHelper.setItem(storageKey, language.code)
+      // localStorageProxy.set(storageKey, language.code)
     }
 
     state.currentLanguage = language

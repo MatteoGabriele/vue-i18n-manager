@@ -2,6 +2,7 @@ import events from './store/module/events'
 import Store from './store'
 import Locale from './locale'
 import Router, { routeParser, registerRouter } from './router'
+import { assignProxy } from './proxy'
 
 /**
  * Initialize plugin
@@ -32,6 +33,11 @@ export default function install (Vue, options = {}) {
   Store(store)
   Locale(Vue, router, store)
   Router(Vue, router, store)
+
+  if (options.proxy) {
+    const proxies = Object.keys(options.proxy)
+    proxies.forEach(key => assignProxy(key, options.proxy[key]))
+  }
 
   Vue.initI18nManager = initializePlugin(Vue, options)
 }

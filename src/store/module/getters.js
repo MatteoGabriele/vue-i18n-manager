@@ -1,5 +1,3 @@
-import storageHelper from 'storage-helper'
-
 export default {
   /**
    * All available languages with filters
@@ -77,7 +75,7 @@ export default {
       availableLanguages,
       languages
     } = state
-    const storagedLangCode = storageHelper.getItem(storageKey)
+    const storagedLangCode = null // localstorageProxy.get(storageKey)
 
     if (persistent && storagedLangCode) {
       const languageList = forceTranslation ? languages : availableLanguages

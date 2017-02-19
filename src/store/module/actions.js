@@ -1,3 +1,5 @@
+import { warn } from '../../utils'
+import proxy from '../../proxy'
 import { defineLanguage } from '../../format'
 import events from './events'
 
@@ -18,6 +20,11 @@ export default {
   },
 
   [events.UPDATE_CONFIGURATION]: ({ commit, state, getters }, config = {}) => {
+    if (typeof config === 'function') {
+      warn('Configuration must be an object or a promise. Check documentation')
+      return
+    }
+
     if (config && config.then) {
       return config.then(params => {
         commit(events.UPDATE_CONFIGURATION, params)
@@ -58,5 +65,21 @@ export default {
     }
 
     commit(events.SET_LANGUAGE, languageCode)
+
+    if (state.translations[state.currentLanguage.translationKey]) {
+      return
+    }
+
+    if (!proxy.getTranslation) {
+      warn('Translation is missing. Please read the documentation')
+      return
+    }
+
+    proxy.getTranslation(state.currentLanguage).then((response) => {
+      dispatch(events.SET_TRANSLATION, {
+        translation: response,
+        code: languageCode
+      })
+    })
   }
 }

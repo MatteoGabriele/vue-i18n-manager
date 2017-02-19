@@ -33,7 +33,6 @@ const interpolate = (string, params) => {
   const paramsKeys = Object.keys(params)
 
   if (!matchedParams) {
-    warn(`"${paramsKeys.join(', ')}" not found in the translation string`)
     return
   }
 

@@ -10,24 +10,14 @@ const defaultLanguage = {
 }
 
 /**
- * Default translation
- * @type {Object}
- */
-const defaultTranslation = {
-  hello: 'hello!'
-}
-
-/**
  * Default store state
  * @type {Object}
  *
  */
 const state = {
   currentLanguage: defaultLanguage,
-  translation: defaultTranslation,
-  translations: {
-    [defaultLanguage.translationKey]: defaultTranslation
-  },
+  translation: {},
+  translations: {},
   forceTranslation: false,
   persistent: true,
   storageKey: 'language_key',
