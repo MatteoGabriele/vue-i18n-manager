@@ -1,6 +1,8 @@
+import { getLocalStorage } from './utils'
+
 let proxies = {
   getTranslation: null,
-  localStorage: window.localStorage
+  localStorage: getLocalStorage()
 }
 
 /**

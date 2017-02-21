@@ -15,6 +15,33 @@ export const warn = (text, debug = true) => {
   /* eslint-enable */
 }
 
+/**
+ * Returns is the window object is available
+ * @return {Boolean} [description]
+ */
+export const isBrowser = () => {
+  return typeof window !== 'undefined'
+}
+
+/**
+ * Return localStorage if available or mock it in case we are running on a node env
+ * @return {Object}
+ */
+export const getLocalStorage = () => {
+  if (isBrowser) {
+    return window.localStorage
+  }
+
+  const noop = function () { /* emptiness */ }
+
+  return {
+    getItem: noop,
+    setItem: noop,
+    remove: noop,
+    clear: noop
+  }
+}
+
 export const error = (text, debug = true) => {
   if (!debug) {
     return
