@@ -59,8 +59,9 @@ export default {
   [events.SET_LANGUAGE]: ({ dispatch, commit, state }, code) => {
     const exists = state.languages.find(n => n.code === code)
     const languageCode = exists ? code : state.defaultCode
+    const currentTranslation = state.translations[state.currentLanguage.translationKey]
 
-    if (state.currentLanguage.code === code) {
+    if (state.currentLanguage.code === code && currentTranslation) {
       return
     }
 
