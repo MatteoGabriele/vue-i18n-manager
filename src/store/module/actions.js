@@ -57,29 +57,35 @@ export default {
   },
 
   [events.SET_LANGUAGE]: ({ dispatch, commit, state }, code) => {
-    const exists = state.languages.find(n => n.code === code)
-    const languageCode = exists ? code : state.defaultCode
-    const currentTranslation = state.translations[state.currentLanguage.translationKey]
+    // the language can matches both url prefix and language code
+    const exists = state.languages.find(n => n.code === code || n.urlPrefix === code)
+    // always resolve with at least one language
+    const currentLanguage = exists || state.currentLanguage
+    // get the language translation
+    const currentTranslation = state.translations[currentLanguage.translationKey]
 
-    if (state.currentLanguage.code === code && currentTranslation) {
+    if (currentLanguage.code === state.currentLanguage.code && currentTranslation) {
       return
     }
 
-    commit(events.SET_LANGUAGE, languageCode)
+    // set the new language
+    commit(events.SET_LANGUAGE, currentLanguage.code)
 
-    if (state.translations[state.currentLanguage.translationKey]) {
+    if (state.translations[currentLanguage.translationKey]) {
       return
     }
 
+    // warn in the console if there's no translation or a proxy to retrieve that
     if (!proxy.getTranslation) {
       warn('Translation is missing. Please read the documentation')
       return
     }
 
-    proxy.getTranslation(state.currentLanguage).then((response) => {
+    // use the proxy to dynamically retrieve the translation
+    proxy.getTranslation(currentLanguage).then((response) => {
       dispatch(events.SET_TRANSLATION, {
         translation: response,
-        code: languageCode
+        code: currentLanguage.code
       })
     })
   }

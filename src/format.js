@@ -10,14 +10,14 @@ const difference = (array1, array2) => {
  * @param  {Object} language
  * @return {Boolean}
  */
-export const defineUniqueLanguage = (languages, language) => {
-  const exists = languages.find(n => n.code === language.code)
+export const defineUniqueLanguage = (languages, { code }) => {
+  const exists = languages.find(language => language.code === code)
 
   if (!exists) {
     return true
   }
 
-  warn(`"${language.code}" already exists in the list of languages`)
+  warn(`"${code}" already exists in the list of languages`)
   return false
 }
 

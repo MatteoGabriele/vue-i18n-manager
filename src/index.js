@@ -1,7 +1,7 @@
 import events from './store/module/events'
 import Store from './store'
 import Locale from './locale'
-import Router, { routeParser, registerRouter } from './router'
+import Router, { routeParser, getUrlPrefix, registerRouter } from './router'
 import { assignProxy } from './proxy'
 
 /**
@@ -14,8 +14,8 @@ const initializePlugin = (Vue, { store, router, config }) => {
   return function () {
     return Promise.all([
       store.dispatch(events.UPDATE_CONFIGURATION, config),
-      store.dispatch(events.SET_LANGUAGE, store.getters.defaultCode)
-    ]).then(() => {
+      store.dispatch(events.SET_LANGUAGE, getUrlPrefix())
+    ]).then((res) => {
       // Router needs to be registered after the store is fully setup
       registerRouter(router, store)
     })

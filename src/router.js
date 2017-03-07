@@ -1,4 +1,5 @@
 import events from './store/module/events'
+import { isBrowser } from './utils'
 
 /**
  * Includes language in the route
@@ -43,6 +44,20 @@ const detectedURLPrefixExists = (urlPrefix, languages) => {
 }
 
 /**
+ * Get the language from the location object
+ * @return {String}
+ */
+export const getUrlPrefix = function () {
+  if (!isBrowser) {
+    return
+  }
+
+  const { pathname } = window.location
+
+  return pathname.split('/')[1]
+}
+
+/**
  * Applies specific functionalities to handle language redirects and URL prefixing.
  * The application will be able to add the language urlPrefix property in its URL and
  * change the application language based on that specific parameter.
@@ -56,27 +71,29 @@ export const registerRouter = (router, store) => {
   }
 
   let initialUrlPrefix = store.getters.currentLanguage.urlPrefix
-  const currentUrlPrefix = router.currentRoute.params.lang
+  const currentUrlPrefix = router.currentRoute.params.lang || getUrlPrefix()
   const detectedURLPrefix = detectedURLPrefixExists(currentUrlPrefix, store.getters.languages)
 
   /**
-   * Sometimes there's no way that we have and end-point where we receive the default code
+   * Sometimes there's no way that we have an end-point where we receive the default code
    * every time the application changes it, so we can enable the trustURL property to always
    * trust the URL parameter and dispatch again the language mutation.
    */
-  if (detectedURLPrefix && store.getters.trustURL) {
+  if (detectedURLPrefix) {
     initialUrlPrefix = detectedURLPrefix.urlPrefix
     store.dispatch(events.SET_LANGUAGE, initialUrlPrefix)
+  } else {
+    // First time the router is registered, or the language doesn't exists,
+    // the route needs to be synced with the current language.
+    updateURLPrefix(router, initialUrlPrefix)
   }
-
-  // First time the router is registered, the route needs to be synced with the current language
-  updateURLPrefix(router, initialUrlPrefix)
 
   router.beforeEach((to, from, next) => {
     const { availableLanguages, currentLanguage, forceTranslation, languages } = store.getters
     const urlPrefix = to.params.lang
     const languageList = forceTranslation ? languages : availableLanguages
     const urlLanguage = languageList.find(n => n.urlPrefix === urlPrefix)
+
     /**
      * In case the language is not provided or doesn't exists,
      * the default language will be used.
@@ -120,7 +137,6 @@ export const routeParser = (routes, defaultCode = 'en') => {
     ...routes,
     {
       path: '/*',
-      name: 'redirect',
       redirect: {
         path: `/${defaultCode}`
       }

@@ -80,6 +80,7 @@ const mutations = {
     if (!defineUniqueLanguage(state.languages, language)) {
       return
     }
+
     state.languages.push(language)
   },
 
