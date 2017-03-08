@@ -9,10 +9,8 @@ import { isBrowser } from './utils'
 export const localize = (route, urlPrefix) => {
   let originalRouteParams = route.params || {}
 
+  // see https://github.com/MatteoGabriele/vue-i18n-manager/issues/12
   let routeCopy = { ...route }
-
-  // Fixes issue #12
-  // https://github.com/MatteoGabriele/vue-i18n-manager/issues/12
   const path = routeCopy.path
 
   delete routeCopy.path
@@ -64,28 +62,26 @@ export const getUrlPrefix = function () {
  * If that prefix is not valid or it doesn't exist, the application will fallback
  * to the default language.
  * VueRouter instance is required to unlock this feature.
+ * @param  {VueRouter} router
+ * @param  {VuexStore} store
  */
 export const registerRouter = (router, store) => {
   if (!router) {
     return
   }
 
-  let initialUrlPrefix = store.getters.currentLanguage.urlPrefix
+  // check if there's a language in the route params or get it from the url
   const currentUrlPrefix = router.currentRoute.params.lang || getUrlPrefix()
+  // check if the current url prefix exists in the language list
   const detectedURLPrefix = detectedURLPrefixExists(currentUrlPrefix, store.getters.languages)
 
-  /**
-   * Sometimes there's no way that we have an end-point where we receive the default code
-   * every time the application changes it, so we can enable the trustURL property to always
-   * trust the URL parameter and dispatch again the language mutation.
-   */
   if (detectedURLPrefix) {
-    initialUrlPrefix = detectedURLPrefix.urlPrefix
-    store.dispatch(events.SET_LANGUAGE, initialUrlPrefix)
+    // Set the detected language as the new language
+    store.dispatch(events.SET_LANGUAGE, detectedURLPrefix.urlPrefix)
   } else {
     // First time the router is registered, or the language doesn't exists,
     // the route needs to be synced with the current language.
-    updateURLPrefix(router, initialUrlPrefix)
+    updateURLPrefix(router, store.getters.defaultCode)
   }
 
   router.beforeEach((to, from, next) => {
@@ -94,25 +90,22 @@ export const registerRouter = (router, store) => {
     const languageList = forceTranslation ? languages : availableLanguages
     const urlLanguage = languageList.find(n => n.urlPrefix === urlPrefix)
 
-    /**
-     * In case the language is not provided or doesn't exists,
-     * the default language will be used.
-     * This will only be fired on landing, because most of the time
-     * the URL doesn't contain a language prefix or the user typed
-     * a different language on purpose and we need to check it.
-     */
+    // In case the language is not provided or doesn't exists,
+    // the default language will be used.
+    // This will only be fired on landing, because most of the time
+    // the URL doesn't contain a language prefix or the user typed
+    // a different language on purpose and we need to check it.
     if (!urlLanguage || !from.name) {
       return next(localize(to, currentLanguage.urlPrefix))
     }
 
-    /**
-     * Check if the detected language in the URL is also the current
-     * translated language, otherwise it needs to be updated.
-     * Browser language has prioriry over the store state
-     */
+    // Check if the detected language in the URL is also the current
+    // translated language, otherwise it needs to be updated.
+    // Browser language has prioriry over the store state
     const isDiff = urlLanguage && urlLanguage.urlPrefix !== currentLanguage.urlPrefix
 
     if (isDiff) {
+      // Resolve the router hook after the new language is set
       return store.dispatch(events.SET_LANGUAGE, urlLanguage.code).then(() => next())
     }
 

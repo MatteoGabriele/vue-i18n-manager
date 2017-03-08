@@ -25,8 +25,7 @@ const state = {
   defaultCode: defaultLanguage.code,
   availableLanguages: [defaultLanguage],
   languages: [defaultLanguage],
-  languageFilter: [],
-  trustURL: false
+  languageFilter: []
 }
 
 export default state

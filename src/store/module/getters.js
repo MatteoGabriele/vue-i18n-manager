@@ -8,8 +8,6 @@ export default {
    */
   availableLanguages: state => state.availableLanguages,
 
-  trustURL: state => state.trustURL,
-
   /**
    * All languages without filters
    * @param  {Object} state
@@ -38,6 +36,11 @@ export default {
    */
   languageFilter: state => state.languageFilter,
 
+  /**
+   * Current language translation
+   * @param  {Object} state
+   * @return {Object}
+   */
   translation: state => {
     const { translation, translations, currentLanguage } = state
 
@@ -69,31 +72,11 @@ export default {
    * @return {String}
    */
   defaultCode: state => {
-    const {
-      persistent,
-      defaultCode,
-      storageKey,
-      forceTranslation,
-      availableLanguages,
-      languages
-    } = state
-    const storagedLangCode = proxy.localStorage.getItem(storageKey)
+    const storagedLangCode = proxy.localStorage.getItem(state.storageKey)
+    const languageList = state.forceTranslation ? state.languages : state.availableLanguages
+    const hasLocalstorage = state.persistent && storagedLangCode
+    const exists = languageList.find(n => n.code === storagedLangCode)
 
-    if (persistent && storagedLangCode) {
-      const languageList = forceTranslation ? languages : availableLanguages
-
-      /**
-       * This part is actually checking if the language stored exists in the
-       * current array of languages, otherwise it means that our localstorage value
-       * is too old and we forgot to remove it from the browser memory.
-       */
-      const exists = languageList.find(n => n.code === storagedLangCode)
-
-      if (exists) {
-        return storagedLangCode
-      }
-    }
-
-    return defaultCode
+    return (hasLocalstorage && exists) ? storagedLangCode : state.defaultCode
   }
 }
