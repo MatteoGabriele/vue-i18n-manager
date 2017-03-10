@@ -21,7 +21,7 @@ const mutations = {
      * If the language doesn't exist, it falls back to the current language
      * @type {String}
      */
-    const index = language && language.translationKey || translationKey
+    const index = language && (language.translationKey || translationKey)
 
     state.translations = {
       ...state.translations,

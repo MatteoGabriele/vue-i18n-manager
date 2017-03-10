@@ -111,6 +111,17 @@ export const registerRouter = (router, store) => {
 
     next()
   })
+
+  router.afterEach((to, from) => {
+    const urlPrefix = to.params.lang
+    const { currentLanguage } = store.getters
+
+    if (currentLanguage.urlPrefix === urlPrefix) {
+      return
+    }
+
+    router.replace(localize(to, currentLanguage.urlPrefix))
+  })
 }
 
 /**
@@ -120,7 +131,7 @@ export const registerRouter = (router, store) => {
  * @param  {String} [defaultCode='en'] - language redirect
  * @return {Array<Object>}
  */
-export const routeParser = (routes, defaultCode = 'en') => {
+export const routeParser = (routes, code = 'en') => {
   routes.forEach(route => {
     const { path } = route
     route.path = `/:lang${path}`
@@ -131,7 +142,7 @@ export const routeParser = (routes, defaultCode = 'en') => {
     {
       path: '/*',
       redirect: {
-        path: `/${defaultCode}`
+        path: `/${code}`
       }
     }
   ]

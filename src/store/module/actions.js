@@ -61,10 +61,9 @@ export default {
     const exists = state.languages.find(n => n.code === code || n.urlPrefix === code)
     // always resolve with at least one language
     const currentLanguage = exists || state.currentLanguage
-    // get the language translation
-    const currentTranslation = state.translations[currentLanguage.translationKey]
 
-    if (currentLanguage.code === state.currentLanguage.code && currentTranslation) {
+    // check if we are asking for the same language we already have as current
+    if (state.currentLanguage && currentLanguage.code === state.currentLanguage.code) {
       return
     }
 
@@ -77,7 +76,7 @@ export default {
 
     // warn in the console if there's no translation or a proxy to retrieve that
     if (!proxy.getTranslation) {
-      warn('Translation is missing. Please read the documentation')
+      warn(`Translation is missing for "${currentLanguage.code}"`)
       return
     }
 

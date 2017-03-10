@@ -21,7 +21,6 @@ const state = {
   forceTranslation: false,
   persistent: false,
   storageKey: 'language_key',
-  path: 'static/i18n',
   defaultCode: defaultLanguage.code,
   availableLanguages: [defaultLanguage],
   languages: [defaultLanguage],

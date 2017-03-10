@@ -93,7 +93,8 @@ export const translate = (store) => {
       const key = keys.shift()
 
       if (!value[key]) {
-        warn(`The "${key}" key doesn't exist in "${translationKey}" translation object`)
+        warn(`"${label}" key doesn't exist in "${translationKey}" translation object`)
+        return label
       }
 
       value = value[key]
