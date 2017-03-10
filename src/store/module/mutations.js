@@ -72,7 +72,7 @@ const mutations = {
       })
     }
 
-    defineKeys(newParamsKeys, stateKeys, 'config')
+    defineKeys(newParamsKeys, stateKeys, 'config', ['path', 'trustURL'])
     defineLanguages(state.availableLanguages, state.defaultCode)
   },
 

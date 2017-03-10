@@ -58,14 +58,16 @@ describe('Mutations', () => {
    * ======================================
    */
   describe('UPDATE_CONFIGURATION', () => {
-    it ('should work without sending any configurations', () => {
-      const newState = {}
-      const translation = { message: 'hello world' }
-      const code = dutch.code
+    it ('should log in the console if deprecated words are passed in configuration', () => {
+      const newState = {
+        translations: {
+          [english.translationKey]: {
+            message: 'hello world'
+          }
+        }
+      }
 
       mutations[events.UPDATE_CONFIGURATION](state, newState)
-      mutations[events.SET_LANGUAGE](state, state.defaultCode)
-      mutations[events.SET_TRANSLATION](state, { translation, code })
 
       const { currentLanguage, translations } = state
       expect(currentLanguage).to.be.defined
