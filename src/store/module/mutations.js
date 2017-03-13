@@ -1,4 +1,5 @@
 import proxy from '../../proxy'
+import { warn } from '../../utils'
 import { defineKeys, defineLanguages, defineUniqueLanguage } from '../../format'
 import events from './events'
 
@@ -44,6 +45,23 @@ const mutations = {
     state.translations = {
       ...state.translations,
       [language.translationKey]: translation
+    }
+  },
+
+  [events.UPDATE_TRANSLATION] (state, { keys, code }) {
+    const { languages } = state
+    const language = languages.find(n => n.code === code)
+
+    if (!language) {
+      warn(`Language with "${code}" as code doesn't exist`)
+      return
+    }
+
+    const newTranslation = Object.assign(state.translations[language.translationKey], keys)
+
+    state.translations = {
+      ...state.translations,
+      [language.translationKey]: newTranslation
     }
   },
 

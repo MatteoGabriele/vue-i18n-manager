@@ -4,7 +4,7 @@
  */
 const defaultLanguage = {
   name: 'English',
-  code: 'en_GB',
+  code: 'en-GB',
   urlPrefix: 'en',
   translationKey: 'en'
 }

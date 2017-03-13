@@ -44,6 +44,10 @@ export default {
     commit(events.SET_TRANSLATION, payload)
   },
 
+  [events.UPDATE_TRANSLATION]: ({ commit }, payload) => {
+    commit(events.UPDATE_TRANSLATION, payload)
+  },
+
   [events.ADD_TRANSLATION]: ({ commit }, payload) => {
     commit(events.ADD_TRANSLATION, payload)
   },
