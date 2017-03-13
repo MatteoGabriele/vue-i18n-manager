@@ -50,7 +50,6 @@
     "eslint-loader": "^1.6.3",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^2.1.1",
-    "html-loader": "^0.4.5",
     "json-loader": "^0.5.4",
     "karma": "^1.5.0",
     "karma-babel-preprocessor": "^6.0.1",
@@ -74,8 +73,11 @@
     "sass-loader": "^6.0.2",
     "sinon": "^1.17.7",
     "style-loader": "^0.13.2",
+    "vue-loader": "^11.1.4",
+    "vue-template-compiler": "^2.2.3",
     "webpack": "^2.2.1",
     "webpack-auto-inject-version": "^0.2.11",
     "webpack-merge": "^4.0.0"
-  }
+  },
+  "dependencies": {}
 }
