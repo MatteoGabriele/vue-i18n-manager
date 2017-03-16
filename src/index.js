@@ -3,6 +3,7 @@ import Store from './store'
 import Locale from './locale'
 import Router, { routeParser, registerRouter } from './router'
 import { assignProxy } from './proxy'
+import { defineKeys } from './format'
 
 /**
  * Initialize plugin
@@ -29,6 +30,13 @@ const initializePlugin = (Vue, { store, router, config }) => {
  */
 export default function install (Vue, options = {}) {
   const { router, store } = options
+
+  // check if the options object is respecting the configuration
+  defineKeys(
+    Object.keys(options),
+    ['store', 'router', 'config', 'proxy'],
+    'plugin configuration'
+  )
 
   Store(store)
   Locale(Vue, router, store)
