@@ -21,7 +21,7 @@ export default {
 
   [events.UPDATE_CONFIGURATION]: ({ commit, state, getters }, config = {}) => {
     if (typeof config === 'function') {
-      warn('Configuration must be an object or a promise. Check documentation')
+      warn('Configuration must be an object or a promise')
       return
     }
 
@@ -64,31 +64,28 @@ export default {
     // the language can matches both url prefix and language code
     const exists = state.languages.find(n => n.code === code || n.urlPrefix === code)
     // always resolve with at least one language
-    const currentLanguage = exists || state.currentLanguage
+    const lang = exists || state.currentLanguage
 
     // check if we are asking for the same language we already have as current
-    if (state.currentLanguage && currentLanguage.code === state.currentLanguage.code) {
-      return
+    if (state.currentLanguage && lang.code !== state.currentLanguage.code) {
+      commit(events.SET_LANGUAGE, lang.code)
     }
 
-    // set the new language
-    commit(events.SET_LANGUAGE, currentLanguage.code)
-
-    if (state.translations[currentLanguage.translationKey]) {
+    if (state.translations[lang.translationKey]) {
       return
     }
 
     // warn in the console if there's no translation or a proxy to retrieve that
     if (!proxy.getTranslation) {
-      warn(`Translation is missing for "${currentLanguage.code}"`)
+      warn(`Translation is missing for "${lang.code}"`)
       return
     }
 
     // use the proxy to dynamically retrieve the translation
-    proxy.getTranslation(currentLanguage).then((response) => {
+    proxy.getTranslation(lang).then((response) => {
       dispatch(events.SET_TRANSLATION, {
         translation: response,
-        code: currentLanguage.code
+        code: lang.code
       })
     })
   }

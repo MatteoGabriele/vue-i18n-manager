@@ -70,12 +70,14 @@ export const registerRouter = (router, store) => {
     return
   }
 
-  // check if there's a language in the route params or get it from the url
+  // get a language from the route params or from the url
   const currentUrlPrefix = router.currentRoute.params.lang || getUrlPrefix()
-  // check if the current url prefix exists in the language list
+  // get the language object from the current url profix
   const detectedURLPrefix = detectedURLPrefixExists(currentUrlPrefix, store.getters.languages)
+  // check if the language we are currently processing is already the current one, then we skip any store manipulation
+  const isLanguageSetAsCurrent = store.getters.currentLanguage.code === (detectedURLPrefix && detectedURLPrefix.code)
 
-  if (detectedURLPrefix) {
+  if (detectedURLPrefix && !isLanguageSetAsCurrent) {
     // Set the detected language as the new language
     store.dispatch(events.SET_LANGUAGE, detectedURLPrefix.urlPrefix)
   } else {
