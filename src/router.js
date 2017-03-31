@@ -80,10 +80,6 @@ export const registerRouter = (router, store) => {
   if (detectedURLPrefix && !isLanguageSetAsCurrent) {
     // Set the detected language as the new language
     store.dispatch(events.SET_LANGUAGE, detectedURLPrefix.urlPrefix)
-  } else {
-    // First time the router is registered, or the language doesn't exists,
-    // the route needs to be synced with the current language.
-    updateURLPrefix(router, store.getters.defaultCode)
   }
 
   router.beforeEach((to, from, next) => {
