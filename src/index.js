@@ -11,7 +11,7 @@ import { defineKeys } from './format'
  * @param  {Object} config - plugin configuration options
  * @return {Promise}
  */
-const initializePlugin = (Vue, { store, router, config }) => {
+function initializePlugin (Vue, { store, router, config }) {
   return function () {
     return Promise.all([
       store.dispatch(events.UPDATE_CONFIGURATION, config),

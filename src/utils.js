@@ -5,7 +5,7 @@ export const pluginName = 'vue-i18n-manager'
  * @param  {String}  text
  * @param  {Boolean} [debug=true]
  */
-export const warn = function (text, debug = true) {
+export function warn (text, debug = true) {
   if (!debug) {
     return
   }
@@ -15,15 +15,11 @@ export const warn = function (text, debug = true) {
   /* eslint-enable */
 }
 
-export const getDoc = function () {
-
-}
-
 /**
  * Returns is the window object is available
  * @return {Boolean} [description]
  */
-export const isBrowser = function () {
+export function isBrowser () {
   return typeof window !== 'undefined'
 }
 
@@ -31,7 +27,7 @@ export const isBrowser = function () {
  * Return localStorage if available or mock it in case we are running on a node env
  * @return {Object}
  */
-export const getLocalStorage = function () {
+export function getLocalStorage () {
   if (isBrowser) {
     return window.localStorage
   }
@@ -46,7 +42,7 @@ export const getLocalStorage = function () {
   }
 }
 
-export const error = function (text, debug = true) {
+export function error (text, debug = true) {
   if (!debug) {
     return
   }
@@ -61,7 +57,7 @@ export const error = function (text, debug = true) {
  * @param  {String} text
  * @return {String}
  */
-export const getNamespace = function (text) {
+export function getNamespace (text) {
   return `${pluginName}/${text}`
 }
 
@@ -70,7 +66,7 @@ export const getNamespace = function (text) {
  * @param  {Array<String>} getters
  * @return {Object}
  */
-export const mapGetters = function (getters) {
+export function mapGetters (getters) {
   let res = {}
   getters.forEach(key => {
     res[key] = function () {

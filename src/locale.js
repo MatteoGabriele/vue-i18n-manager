@@ -6,7 +6,7 @@ import { warn } from './utils'
  * To better manage errors and typos, every errors will be logged in the console
  * with the current translated value
  */
-const warnPropertyError = (errors, context) => {
+function warnPropertyError (errors, context) {
   if (errors.length > 0) {
     errors = errors.map(error => `"${error}"`)
 
@@ -20,7 +20,7 @@ const warnPropertyError = (errors, context) => {
  * @param  {Object} params - dynamic properties
  * @return {String}
  */
-const interpolate = (string, params) => {
+function interpolate (string, params) {
   if (!params) {
     return string
   }
@@ -63,7 +63,7 @@ const interpolate = (string, params) => {
  * @param {Boolean} [replaceRoute=true] - a check for routes manipulations
  * @return {Promise}
  */
-const setLanguage = (router, store) => {
+function setLanguage (router, store) {
   return function (code = store.getters.defaultCode, replaceRoute = true) {
     return store.dispatch(events.SET_LANGUAGE, code).then(() => {
       if (!replaceRoute || !router) {
@@ -81,7 +81,7 @@ const setLanguage = (router, store) => {
  * @param  {Object} params - translation dynamic properties
  * @return {String}
  */
-export const translate = (store) => {
+export function translate (store) {
   return function (label, params) {
     const { translation, currentLanguage } = store.getters
     const translationKey = currentLanguage.translationKey

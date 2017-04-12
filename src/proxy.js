@@ -10,7 +10,7 @@ let proxies = {
  * @param  {String} proxy - the property name
  * @param  {any} fn - the replacement
  */
-export const assignProxy = function (proxy, fn) {
+export function assignProxy (proxy, fn) {
   proxies[proxy] = fn
 }
 
