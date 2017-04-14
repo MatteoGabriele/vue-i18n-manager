@@ -86,6 +86,7 @@ const mutations = {
     // Filter all languages
     if (state.languageFilter.length > 0 && state.availableLanguages.length > 1) {
       state.availableLanguages = state.availableLanguages.filter(language => {
+        // add only languages that are in the langaugeFilter array
         return state.languageFilter.indexOf(language.code) !== -1
       })
     }

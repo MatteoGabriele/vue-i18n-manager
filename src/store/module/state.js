@@ -16,7 +16,6 @@ const defaultLanguage = {
  */
 const state = {
   currentLanguage: defaultLanguage,
-  translation: {},
   translations: {},
   forceTranslation: false,
   persistent: false,

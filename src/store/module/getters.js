@@ -42,16 +42,16 @@ export default {
    * @return {Object}
    */
   translation: state => {
-    const { translation, translations, currentLanguage } = state
+    const { translations, currentLanguage } = state
 
     if (!currentLanguage) {
       return {}
     }
 
-    const newTranslation = translations[currentLanguage.translationKey]
+    let newTranslation = translations[currentLanguage.translationKey]
 
     if (!newTranslation) {
-      return translation
+      newTranslation = {}
     }
 
     return newTranslation

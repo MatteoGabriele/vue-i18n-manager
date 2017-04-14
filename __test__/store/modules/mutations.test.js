@@ -1,46 +1,32 @@
 import _ from 'lodash'
+
+import languages from '../../__data__/languages'
+
 import mutations from '../../../src/store/module/mutations'
-import storeState from '../../../src/store/module/state'
+import defaultState from '../../../src/store/module/state'
 import events from '../../../src/store/module/events'
 
 global.console.warn = jest.fn()
 global.console.error = jest.fn()
 
-const dutch = {
-  name: 'Dutch',
-  code: 'nl-NL',
-  urlPrefix: 'nl',
-  translationKey: 'nl'
-}
-const english = {
-  name: 'English',
-  code: 'en-GB',
-  urlPrefix: 'en',
-  translationKey: 'en'
-}
-const italian = {
-  name: 'Italiano',
-  code: 'it-IT',
-  urlPrefix: 'it',
-  translationKey: 'it'
-}
+const { dutch, italian, english } = languages
 
 let state
 
 beforeEach(function () {
   // create brand new instance of the default store
-  state = { ...storeState }
+  state = { ...defaultState }
 })
 
 describe('remove language persistency', function () {
-  test ('remove language pensistency', function () {
+  it ('should disable language persistency', function () {
     mutations[events.REMOVE_LANGUAGE_PERSISTENCY](state)
     expect(state.persistent).toEqual(false)
   })
 })
 
 describe('update configuration', function () {
-  test ('accepts parameters that are in the default state only', function () {
+  it ('should accept parameters that are in the default state only', function () {
     const newState = {
       foo: 'bar',
       defaultCode: dutch.code,
@@ -53,7 +39,7 @@ describe('update configuration', function () {
     expect(state.defaultCode).toEqual(dutch.code)
   })
 
-  test ('logs deprecated words passed in the configuration', function () {
+  it ('should log deprecated parameters passed in the configuration', function () {
     const newState = {
       translations: {
         [english.translationKey]: {
@@ -70,7 +56,7 @@ describe('update configuration', function () {
     expect(translations[currentLanguage.translationKey].message).toEqual('hello world')
   })
 
-  test ('logs a message if an invalid parameters is passed', function () {
+  it ('should log a message if an invalid parameters is passed', function () {
     const newState = {
       foo: 'bar'
     }
@@ -80,7 +66,7 @@ describe('update configuration', function () {
     expect(console.warn).toBeCalled()
   })
 
-  test ('logs a message if the defaultCode doesn\'t match any language', function () {
+  it ('should log a message if the defaultCode doesn\'t match any language', function () {
     const newState = {
       defaultCode: dutch.code
     }
@@ -90,7 +76,7 @@ describe('update configuration', function () {
     expect(console.warn).toBeCalled()
   })
 
-  test ('has a defaultCode that matches at least one available languages', function () {
+  it ('should have a defaultCode that matches at least one available languages', function () {
     const newState = {
       defaultCode: dutch.code,
       languages: [dutch, italian, english]
@@ -105,7 +91,7 @@ describe('update configuration', function () {
     expect(language).toMatchObject(dutch)
   })
 
-  test ('displays only languages existing in the availableLanguages array', function () {
+  it ('should display only languages existing in the availableLanguages array', function () {
     const newState = {
       languageFilter: [italian.code, english.code],
       languages: [dutch, english, italian]
@@ -119,7 +105,7 @@ describe('update configuration', function () {
 })
 
 describe('set translation', function () {
-  test ('returns the translation based on the selected language', () => {
+  it ('should add the italian translation to the translations object', () => {
     const translations = {
       [dutch.translationKey]: { hello: 'hallo' },
       [italian.translationKey]: { hello: 'ciao' }
@@ -127,24 +113,30 @@ describe('set translation', function () {
 
     const newState = {
       defaultCode: dutch.code,
-      languages: [ dutch, italian ]
+      languages: [ dutch, italian ],
+      translations: {
+        [dutch.translationKey]: translations[dutch.translationKey]
+      }
     }
+
 
     mutations[events.UPDATE_CONFIGURATION](state, newState)
 
-    mutations[events.SET_LANGUAGE](state, dutch.code)
+    mutations[events.SET_LANGUAGE](state, state.defaultCode)
 
-    const { translationKey } = state.currentLanguage
-    const translation = translations[translationKey]
+    const italianTranslation = translations[italian.translationKey]
 
-    mutations[events.SET_TRANSLATION](state, { translation, code: dutch.code })
+    mutations[events.SET_TRANSLATION](state, {
+      translation: italianTranslation,
+      code: italian.code
+    })
 
-    expect(state.translations[translationKey]).toMatchObject(translation)
+    expect(state.translations[italian.translationKey]).toMatchObject(italianTranslation)
   })
 })
 
 describe('set language', function () {
-  test ('sets the current language based on a given language code', function () {
+  it ('should set the current language based on a given language code', function () {
     const newState = {
       languages: [dutch, english, italian]
     }
@@ -158,22 +150,10 @@ describe('set language', function () {
     expect(state.currentLanguage.code).toEqual(italian.code)
   })
 
-  test ('sets the new language and retrieve its translation', () => {
-    const translation = {
-      foo: 'bar'
-    }
-    const newState = {
-      languages: [dutch, english]
-    }
+  it ('should fallback to default language when new language doesn\'t exist', function () {
+    mutations[events.SET_LANGUAGE](state, italian.code)
 
-    mutations[events.UPDATE_CONFIGURATION](state, newState)
-
-    mutations[events.SET_LANGUAGE](state, english.code)
-
-    mutations[events.SET_TRANSLATION](state, { translation, code: english.code })
-
-    const { code, translationKey } = state.currentLanguage
-    expect(code).toEqual(english.code)
-    expect(state.translations[translationKey]).toMatchObject(translation)
+    expect(state.defaultCode).toEqual(english.code)
+    expect(state.currentLanguage.code).toEqual(english.code)
   })
 })

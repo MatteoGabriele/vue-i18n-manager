@@ -1,7 +1,7 @@
 import { localize } from '../src/router'
 
 describe('localize', function () {
-  test('should inject the language in the route', function () {
+  it('should inject the language in the route', function () {
     const params = {}
 
     const route = localize({

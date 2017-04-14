@@ -5,7 +5,7 @@ global.console.warn = jest.fn()
 global.console.error = jest.fn()
 
 describe('translate', function () {
-  test('interpolate a variable in the string', function () {
+  it('should interpolate a variable in the string', function () {
     const store = createGetterInStore('translation', {
       message: 'foo is equal to {foo}',
       author: {
@@ -19,7 +19,7 @@ describe('translate', function () {
     expect($t('author.name', { surname: 'gabriele' })).toEqual('matteo gabriele')
   })
 
-  test('return a string', function () {
+  it('should return a string', function () {
     const store = createGetterInStore('translation', {
       message: 'hello world',
       author: {
@@ -34,7 +34,7 @@ describe('translate', function () {
     expect($t('author.name')).toEqual('matteo gabriele')
   })
 
-  test('logs in the console when a wrong property is interpolated', function () {
+  it('should log in the console when a wrong property is interpolated', function () {
     const store = createGetterInStore('translation', {
       message: 'hello {context}'
     })
