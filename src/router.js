@@ -43,16 +43,16 @@ const detectedURLPrefixExists = (urlPrefix, languages) => {
 
 /**
  * Get the language from the location object
+ * @param {String} baseURL
  * @return {String}
  */
-export const getUrlPrefix = function () {
+export function getUrlPrefix (baseURL) {
   if (!isBrowser) {
     return
   }
 
-  const { pathname } = window.location
-
-  return pathname.split('/')[1]
+  const needle = baseURL || '/'
+  return window.location.pathname.split(needle)[1]
 }
 
 /**
@@ -71,7 +71,7 @@ export const registerRouter = (router, store) => {
   }
 
   // get a language from the route params or from the url
-  const currentUrlPrefix = router.currentRoute.params.lang || getUrlPrefix()
+  const currentUrlPrefix = router.currentRoute.params.lang || getUrlPrefix(router.options.base)
   // get the language object from the current url profix
   const detectedURLPrefix = detectedURLPrefixExists(currentUrlPrefix, store.getters.languages)
   // check if the language we are currently processing is already the current one, then we skip any store manipulation
