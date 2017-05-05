@@ -29,17 +29,31 @@ const interpolate = (string, params) => {
   let propErrors = []
 
   const betweenCurlyBracesRegEx = new RegExp(/\{.*?}s?/g)
-  const matchedParams = string.match(betweenCurlyBracesRegEx)
+  const matchedCurlies = string.match(betweenCurlyBracesRegEx)
   const paramsKeys = Object.keys(params)
 
-  if (!matchedParams) {
+  if (!matchedCurlies) {
     return
   }
 
-  matchedParams.forEach((match, i) => {
+  matchedCurlies.forEach((match, i) => {
     const prop = match.slice(1, -1)
     const value = params[prop]
     const paramKey = paramsKeys[i]
+
+    if (prop === '$link') {
+      if (!value.length) {
+        string = string.replace(match, prop)
+        return
+      }
+
+      const href = value[0]
+      const label = value[1] || value[0]
+      const css = value[2] || ''
+
+      string = string.replace(match, `<a class="${css}" href="${href}">${label}</a>`)
+      return
+    }
 
     if (!value && paramKey) {
       propErrors.push(paramKey)
