@@ -89,6 +89,10 @@ export const translate = (store) => {
 
     let value = translation
 
+    if (Object.keys(value).length === 0) {
+      return label
+    }
+
     while (keys.length) {
       const key = keys.shift()
 
