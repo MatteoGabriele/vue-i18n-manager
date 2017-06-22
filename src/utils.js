@@ -15,8 +15,11 @@ export const warn = function (text, debug = true) {
   /* eslint-enable */
 }
 
-export const getDoc = function () {
-
+export function findItem (value, list, fallback) {
+  return list.find(item => {
+    return Object.keys(item)
+      .find(prop => item[prop] === value)
+  }) || fallback
 }
 
 /**

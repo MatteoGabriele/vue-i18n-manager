@@ -1,4 +1,4 @@
-import events from './store/module/events'
+import { setLanguage } from 'module'
 import { updateURLPrefix } from './router'
 import { warn } from './utils'
 
@@ -9,7 +9,6 @@ import { warn } from './utils'
 const warnPropertyError = (errors, context) => {
   if (errors.length > 0) {
     errors = errors.map(error => `"${error}"`)
-
     warn(`No match found for ${errors.join(', ')} in "${context}"`)
   }
 }
@@ -69,27 +68,6 @@ const interpolate = (string, params) => {
 }
 
 /**
- * Set language
- * It sets the new requested language, replaces the url prefix in the url
- * and returns translations which are then applyed using vue-i18n.
- * If no language is passed, the language will be the one choosen as default
- * @param {String} [code=defaultCode] - the new language code
- * @param {Boolean} [replaceRoute=true] - a check for routes manipulations
- * @return {Promise}
- */
-const setLanguage = (router, store) => {
-  return function (code = store.getters.defaultCode, replaceRoute = true) {
-    return store.dispatch(events.SET_LANGUAGE, code).then(() => {
-      if (!replaceRoute || !router) {
-        return
-      }
-
-      updateURLPrefix(router, store.getters.currentLanguage.urlPrefix)
-    })
-  }
-}
-
-/**
  * Translation
  * @param  {String} label - translation label
  * @param  {Object} params - translation dynamic properties
@@ -98,7 +76,7 @@ const setLanguage = (router, store) => {
 export const translate = (store) => {
   return function (label, params) {
     const { translation, currentLanguage } = store.getters
-    const translationKey = currentLanguage.translationKey
+    const translationKey = currentLanguage.key
     const keys = label.split('.')
 
     let value = translation
@@ -131,6 +109,14 @@ export const translate = (store) => {
 }
 
 export default function (Vue, router, store) {
-  Vue.prototype.$setLanguage = setLanguage(router, store)
+  Vue.prototype.$setLanguage = (code = store.getters.defaultCode, replaceRoute = true) => {
+    return store.dispatch(setLanguage(code)).then(language => {
+      if (replaceRoute && router) {
+        updateURLPrefix(router, store.getters.currentLanguage.urlPrefix)
+      }
+      return language
+    })
+  }
+
   Vue.prototype.$t = translate(store)
 }
