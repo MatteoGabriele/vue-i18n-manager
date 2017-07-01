@@ -1,6 +1,6 @@
 import { getLocalStorage } from './utils'
 
-let proxies = {
+export let proxies = {
   getTranslation: null,
   localStorage: getLocalStorage()
 }
@@ -10,8 +10,15 @@ let proxies = {
  * @param  {String} proxy - the property name
  * @param  {any} fn - the replacement
  */
-export const assignProxy = function (proxy, fn) {
+const assignProxy = function (proxy, fn) {
   proxies[proxy] = fn
 }
 
-export default proxies
+export default function (proxy) {
+  if (!proxy) {
+    return
+  }
+
+  const proxies = Object.keys(proxy)
+  proxies.forEach(key => assignProxy(key, proxy[key]))
+}

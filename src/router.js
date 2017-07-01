@@ -1,4 +1,3 @@
-import events from './store/module/events'
 import { isBrowser } from './utils'
 
 /**
@@ -6,7 +5,7 @@ import { isBrowser } from './utils'
  * @param  {Object} route
  * @return {Object}
  */
-export const localize = (route, urlPrefix) => {
+export function localize (route, urlPrefix) {
   let originalRouteParams = route.params || {}
 
   // see https://github.com/MatteoGabriele/vue-i18n-manager/issues/12
@@ -29,7 +28,7 @@ export const localize = (route, urlPrefix) => {
  * @param  {VueRouter} router
  * @param  {String} urlPrefix
  */
-export const updateURLPrefix = (router, urlPrefix) => {
+export function updateURLPrefix (router, urlPrefix) {
   const { currentRoute } = router
 
   if (router && currentRoute) {
@@ -37,8 +36,14 @@ export const updateURLPrefix = (router, urlPrefix) => {
   }
 }
 
-const detectedURLPrefixExists = (urlPrefix, languages) => {
-  return languages.find(n => n.urlPrefix === urlPrefix)
+/**
+ * [detectedURLPrefixExists description]
+ * @param  {[type]} urlPrefix [description]
+ * @param  {[type]} languages [description]
+ * @return {[type]}           [description]
+ */
+function detectedURLPrefixExists (urlPrefix, languages) {
+  return languages.find(language => language.urlPrefix === urlPrefix)
 }
 
 /**
@@ -65,7 +70,7 @@ export function getUrlPrefix (baseURL) {
  * @param  {VueRouter} router
  * @param  {VuexStore} store
  */
-export const registerRouter = (router, store) => {
+export function registerRouter (router, store) {
   if (!router) {
     return
   }
@@ -79,7 +84,7 @@ export const registerRouter = (router, store) => {
 
   if (detectedURLPrefix && !isLanguageSetAsCurrent) {
     // Set the detected language as the new language
-    store.dispatch(events.SET_LANGUAGE, detectedURLPrefix.urlPrefix)
+    // store.dispatch(events.SET_LANGUAGE, detectedURLPrefix.urlPrefix)
   }
 
   router.beforeEach((to, from, next) => {
@@ -104,7 +109,7 @@ export const registerRouter = (router, store) => {
 
     if (isDiff) {
       // Resolve the router hook after the new language is set
-      return store.dispatch(events.SET_LANGUAGE, urlLanguage.code).then(() => next())
+      // return store.dispatch(events.SET_LANGUAGE, urlLanguage.code).then(() => next())
     }
 
     next()
@@ -129,7 +134,7 @@ export const registerRouter = (router, store) => {
  * @param  {String} [defaultCode='en'] - language redirect
  * @return {Array<Object>}
  */
-export const routeParser = (routes, code = 'en') => {
+export function routeParser (routes, code = 'en') {
   routes.forEach(route => {
     const { path } = route
     route.path = `/:lang${path}`
@@ -146,8 +151,10 @@ export const routeParser = (routes, code = 'en') => {
   ]
 }
 
-export default function (Vue, router, store) {
+export default function routeHandler (Vue, { router, store }) {
   Vue.prototype.$localize = (route) => {
     return localize(route, store.getters.currentLanguage.urlPrefix)
   }
+
+  registerRouter(router, store)
 }

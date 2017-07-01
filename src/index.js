@@ -1,6 +1,9 @@
-import Locale from './locale'
-import Router, { routeParser, registerRouter } from './router'
-import storeModule, { changeSettings } from 'module'
+import { assert } from './utils'
+import localeHandler from './locale'
+import routerHandler, { routeParser } from './router'
+import proxyHandler from './proxy'
+import storeModule, { changeSettings } from './store'
+import { defineOptionsKeys } from './format'
 
 /**
  * Expose the install function to let Vue install the plugin
@@ -10,14 +13,18 @@ import storeModule, { changeSettings } from 'module'
 export default function install (Vue, options = {}) {
   const { router, store, config } = options
 
-  Locale(Vue, router, store)
-  Router(Vue, router, store)
+  assert(store, 'vuex store instance is mandatory.')
+
+  defineOptionsKeys(options)
+
+  localeHandler(Vue, { store, router })
+  proxyHandler(options.proxy)
 
   store.registerModule('i18n', storeModule)
 
   store.dispatch(changeSettings(config)).then(() => {
     // Register router after store state is updated
-    registerRouter(router, store)
+    routerHandler(Vue, { router, store })
   })
 }
 

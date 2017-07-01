@@ -94,3 +94,9 @@ export const defineKeys = (newKeys, allowedKeys, context, deprecatedKeys = []) =
 
   return true
 }
+
+export function defineOptionsKeys (options) {
+  return defineKeys(
+    Object.keys(options), ['store', 'router', 'config', 'proxy']
+  )
+}

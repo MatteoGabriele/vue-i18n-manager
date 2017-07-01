@@ -5,11 +5,7 @@ export const pluginName = 'vue-i18n-manager'
  * @param  {String}  text
  * @param  {Boolean} [debug=true]
  */
-export const warn = function (text, debug = true) {
-  if (!debug) {
-    return
-  }
-
+export function warn (text) {
   /* eslint-disable */
   console.warn(`[${pluginName}] ${text}`)
   /* eslint-enable */
@@ -26,15 +22,13 @@ export function findItem (value, list, fallback) {
  * Returns is the window object is available
  * @return {Boolean} [description]
  */
-export const isBrowser = function () {
-  return typeof window !== 'undefined'
-}
+export const isBrowser = (typeof window !== 'undefined')
 
 /**
  * Return localStorage if available or mock it in case we are running on a node env
  * @return {Object}
  */
-export const getLocalStorage = function () {
+export function getLocalStorage () {
   if (isBrowser) {
     return window.localStorage
   }
@@ -49,14 +43,12 @@ export const getLocalStorage = function () {
   }
 }
 
-export const error = function (text, debug = true) {
-  if (!debug) {
+export function assert (test, text) {
+  if (typeof test !== 'undefined') {
     return
   }
 
-  /* eslint-disable */
-  console.error(`[${pluginName}] ${text}`)
-  /* eslint-enable */
+  throw new Error(`[${pluginName}] ${text}`)
 }
 
 /**

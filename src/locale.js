@@ -1,17 +1,6 @@
-import { setLanguage } from 'module'
+import { setLanguage } from './store'
 import { updateURLPrefix } from './router'
 import { warn } from './utils'
-
-/**
- * To better manage errors and typos, every errors will be logged in the console
- * with the current translated value
- */
-const warnPropertyError = (errors, context) => {
-  if (errors.length > 0) {
-    errors = errors.map(error => `"${error}"`)
-    warn(`No match found for ${errors.join(', ')} in "${context}"`)
-  }
-}
 
 /**
  * Interpolates variables with the translation string
@@ -30,39 +19,32 @@ const interpolate = (string, params) => {
   const betweenCurlyBracesRegEx = new RegExp(/\{.*?}s?/g)
   const matchedCurlies = string.match(betweenCurlyBracesRegEx)
   const paramsKeys = Object.keys(params)
+  const paramKeyError = []
 
   if (!matchedCurlies) {
-    return
+    throw new Error('Missing keys in the string to interpolate with the given parameters')
   }
 
   matchedCurlies.forEach((match, i) => {
-    const prop = match.slice(1, -1)
+    const prop = match.slice(1, -1).trim()
     const value = params[prop]
     const paramKey = paramsKeys[i]
 
-    if (prop === '$link') {
-      if (!value.length) {
-        string = string.replace(match, prop)
-        return
-      }
-
-      const href = value[0]
-      const label = value[1] || value[0]
-      const css = value[2] || ''
-
-      string = string.replace(match, `<a class="${css}" href="${href}">${label}</a>`)
-      return
+    if (prop !== paramKey) {
+      paramKeyError.push(paramKey)
     }
 
     if (!value && paramKey) {
       propErrors.push(paramKey)
-      return
     }
 
     string = string.replace(match, value)
   })
 
-  warnPropertyError(propErrors, originalString)
+  if (paramKeyError.length > 0) {
+    const keys = paramKeyError.map(i => `"${i}"`).join(', ')
+    throw new Error(`${keys} not matching given keys`)
+  }
 
   return string
 }
@@ -89,7 +71,10 @@ export const translate = (store) => {
       const key = keys.shift()
 
       if (!value[key]) {
-        warn(`"${label}" key doesn't exist in "${translationKey}" translation object`)
+        console.warn(
+          '[vue-i18n-manager] ' +
+          `"${label}" key doesn't exist in "${translationKey}" translation object`
+        )
         return label
       }
 
@@ -104,11 +89,20 @@ export const translate = (store) => {
       return label
     }
 
-    return interpolate(value, params)
+    try {
+      return interpolate(value, params)
+    } catch (error) {
+      console.warn(
+        '[vue-i18n-manager] ' +
+        `"${label}" in "${currentLanguage.key}" translation. ${error.message}.`
+      )
+
+      return label
+    }
   }
 }
 
-export default function (Vue, router, store) {
+export default function (Vue, { router, store }) {
   Vue.prototype.$setLanguage = (code = store.getters.defaultCode, replaceRoute = true) => {
     return store.dispatch(setLanguage(code)).then(language => {
       if (replaceRoute && router) {
