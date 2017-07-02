@@ -1,8 +1,15 @@
-import { getLocalStorage } from './utils'
+import { isBrowser } from './utils'
+
+// localStorage mock avoids errors in SSR
+const noop = () => {}
+const localStorageMock = {
+  getItem: noop,
+  setItem: noop
+}
 
 export let proxies = {
   getTranslation: null,
-  localStorage: getLocalStorage()
+  localStorage: isBrowser ? window.localStorage : localStorageMock
 }
 
 /**
