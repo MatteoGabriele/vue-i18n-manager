@@ -1,12 +1,12 @@
 import { setLanguage } from './store/language'
 import { updateURLPrefix } from './router'
-import { warn } from './utils'
+import { getPropByString } from './utils'
 
 /**
  * Interpolates variables with the translation string
  * @param  {String} string - translation label
  * @param  {Object} params - dynamic properties
- * @return {String}
+ * @return {String|Object}
  */
 const interpolate = (string, params) => {
   if (!params) {
@@ -14,7 +14,6 @@ const interpolate = (string, params) => {
   }
 
   let originalString = string
-  let propErrors = []
 
   const betweenCurlyBracesRegEx = new RegExp(/\{.*?}s?/g)
   const matchedCurlies = string.match(betweenCurlyBracesRegEx)
@@ -22,7 +21,11 @@ const interpolate = (string, params) => {
   const paramKeyError = []
 
   if (!matchedCurlies) {
-    throw new Error('Missing keys in the string to interpolate with the given parameters')
+    return {
+      error: {
+        message: 'Missing matching keys in the given translation string'
+      }
+    }
   }
 
   matchedCurlies.forEach((match, i) => {
@@ -34,16 +37,15 @@ const interpolate = (string, params) => {
       paramKeyError.push(paramKey)
     }
 
-    if (!value && paramKey) {
-      propErrors.push(paramKey)
-    }
-
     string = string.replace(match, value)
   })
 
   if (paramKeyError.length > 0) {
-    const keys = paramKeyError.map(i => `"${i}"`).join(', ')
-    throw new Error(`${keys} not matching given keys`)
+    return {
+      error: {
+        message: `${getKeysAsString(paramKeyError)} not matching given keys`
+      }
+    }
   }
 
   return string
@@ -75,6 +77,7 @@ export const translate = (store) => {
           '[vue-i18n-manager] ' +
           `"${label}" key doesn't exist in "${translationKey}" translation object`
         )
+
         return label
       }
 
@@ -82,23 +85,25 @@ export const translate = (store) => {
     }
 
     if (typeof value !== 'string') {
-      value = null
-    }
-
-    if (!translation || !value) {
-      return label
-    }
-
-    try {
-      return interpolate(value, params)
-    } catch (error) {
       console.error(
         '[vue-i18n-manager] ' +
-        `"${label}" in "${currentLanguage.key}" translation. ${error.message}.`
+        `The value of "${label}" is not a string. ` +
+        'You are probably looking for children of this element.'
       )
-
       return label
     }
+
+    const interpolation = interpolate(value, params)
+
+    if (interpolation.error) {
+      console.error(
+        '[vue-i18n-manager] ' +
+        'An error occured during string interpolation. ' +
+        interpolation.error.message
+      )
+    }
+
+    return interpolation.error ? label : interpolation
   }
 }
 

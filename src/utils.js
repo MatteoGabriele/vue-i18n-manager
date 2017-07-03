@@ -36,3 +36,7 @@ export function applyIfDef (value, fallback) {
  * @return {Boolean}
  */
 export const isBrowser = isDef(window)
+
+export function getKeysAsString (keys) {
+  return keys.map(key => `"${key}"`).join(', ')
+}
