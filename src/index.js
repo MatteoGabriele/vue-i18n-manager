@@ -2,7 +2,8 @@ import { isDef } from './utils'
 import localeHandler from './locale'
 import routerHandler, { routeParser } from './router'
 import proxyHandler from './proxy'
-import storeModule, { changeSettings } from './store'
+import storeModule from './store'
+import { changeSettings } from './store'
 import { defineOptionsKeys } from './format'
 
 /**
@@ -30,7 +31,7 @@ export default function install (Vue, options = {}) {
 
   store.dispatch(changeSettings(config)).then(() => {
     // Register router after store state is updated
-    routerHandler(Vue, { router, store })
+    // routerHandler(Vue, { router, store })
   })
 }
 

@@ -16,6 +16,7 @@ var plugins = [
     minimize: false
   }),
   new LodashModuleReplacementPlugin(),
+  new webpack.optimize.ModuleConcatenationPlugin(),
   new webpackAutoInjectVersion()
 ];
 

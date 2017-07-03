@@ -1,4 +1,4 @@
-import { setLanguage } from './store'
+import { setLanguage } from './store/language'
 import { updateURLPrefix } from './router'
 import { warn } from './utils'
 
@@ -71,7 +71,7 @@ export const translate = (store) => {
       const key = keys.shift()
 
       if (!value[key]) {
-        console.warn(
+        console.error(
           '[vue-i18n-manager] ' +
           `"${label}" key doesn't exist in "${translationKey}" translation object`
         )
@@ -92,7 +92,7 @@ export const translate = (store) => {
     try {
       return interpolate(value, params)
     } catch (error) {
-      console.warn(
+      console.error(
         '[vue-i18n-manager] ' +
         `"${label}" in "${currentLanguage.key}" translation. ${error.message}.`
       )

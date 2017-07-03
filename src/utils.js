@@ -27,6 +27,10 @@ export function isDef (value) {
   return typeof value !== 'undefined'
 }
 
+export function applyIfDef (value, fallback) {
+  return isDef(value) ? value : fallback
+}
+
 /**
  * Returns is the window object is available
  * @return {Boolean}
