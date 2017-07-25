@@ -115,10 +115,18 @@ export const registerRouter = (router, store) => {
  * @return {Array<Object>}
  */
 export const routeParser = (routes, defaultCode = 'en') => {
+  const customCatchAll = find(routes, route => {
+    return route.path.includes('*')
+  })
+
   each(routes, route => {
     const { path } = route
     route.path = `/:lang${path}`
   })
+
+  if (customCatchAll) {
+    return routes
+  }
 
   return [
     ...routes,
