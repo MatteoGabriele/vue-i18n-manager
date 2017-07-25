@@ -1,6 +1,6 @@
 {
   "name": "vue-i18n-manager",
-  "version": "2.2.10",
+  "version": "2.3.0",
   "description": "Multi-language manager for Vue",
   "main": "dist/vue-i18n-manager.js",
   "scripts": {
