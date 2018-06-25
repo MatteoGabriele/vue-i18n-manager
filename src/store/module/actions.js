@@ -82,8 +82,8 @@ export default {
     }
 
     // use the proxy to dynamically retrieve the translation
-    proxy.getTranslation(lang).then((response) => {
-      dispatch(events.SET_TRANSLATION, {
+    return proxy.getTranslation(lang).then((response) => {
+      return dispatch(events.SET_TRANSLATION, {
         translation: response,
         code: lang.code
       })
