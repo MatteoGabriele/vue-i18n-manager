@@ -75,10 +75,13 @@ export default {
       return Promise.resolve()
     }
 
-    // warn in the console if there's no translation or a proxy to retrieve that
+    // reject the promise and warn if there's no translation or a proxy to retrieve that
     if (!proxy.getTranslation) {
-      warn(`Translation is missing for "${lang.code}"`)
-      return Promise.reject(`Translation is missing for "${lang.code}"`)
+      const message = `Translation is missing for "${lang.code}"`
+
+      warn(message)
+
+      return Promise.reject(new Error(message))
     }
 
     // use the proxy to dynamically retrieve the translation
