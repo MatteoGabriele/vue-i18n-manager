@@ -72,21 +72,21 @@ export default {
     }
 
     if (state.translations[lang.translationKey]) {
-      return
+      return Promise.resolve()
     }
 
     // warn in the console if there's no translation or a proxy to retrieve that
     if (!proxy.getTranslation) {
       warn(`Translation is missing for "${lang.code}"`)
-      return
+      return Promise.reject(`Translation is missing for "${lang.code}"`)
     }
 
     // use the proxy to dynamically retrieve the translation
-    return proxy.getTranslation(lang).then((response) => {
-      return dispatch(events.SET_TRANSLATION, {
+    return proxy.getTranslation(lang).then((response) =>
+      dispatch(events.SET_TRANSLATION, {
         translation: response,
         code: lang.code
       })
-    })
+    )
   }
 }
